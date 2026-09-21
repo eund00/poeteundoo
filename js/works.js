@@ -19,7 +19,7 @@ fetch("works.json")
 
     document.querySelector("#work-content").innerHTML = work.content;
 
-    document.title = `${work.title} — LEE EUN JOO`;
+    document.title = `읽어봐요 : ${work.title}`;
   })
   .catch((error) => {
     console.error("작품을 불러오는 중 오류가 발생했습니다.", error);

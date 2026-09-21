@@ -4,16 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>LEE EUN JOO</title>
+    <title>읽어봐요 : 은주닷컴</title>
+    <link rel="icon" type="image/png" href="./img/favicon.png" />
 
     <link rel="stylesheet" href="index.css" />
-
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dongle&display=swap"
+      rel="stylesheet"
+    />
     <style>
       .work-detail {
         max-width: 500px;
+        padding: 5rem 0;
       }
       .work-detail__poem {
         white-space: pre-line;
+        text-align: justify;
+        overflow-wrap: anywhere;
       }
       .work-detail__meta {
         text-align: right;
@@ -25,8 +34,9 @@
         margin-top: 2rem;
       }
       .work-detail__footer {
-        margin-top: 2rem;
-        font-size: 14px;
+        margin-top: 5rem;
+        font-size: 0.8rem;
+        color: #999;
       }
     </style>
   </head>
@@ -35,7 +45,7 @@
     <header class="header">
       <div class="header__inner">
         <h1 class="logo">
-          <a href="/">LEE EUN JOO</a>
+          <a href="/">은듀닷컴</a>
         </h1>
 
         <nav class="gnb">
@@ -61,13 +71,13 @@
       </div>
 
       <div class="work-detail__footer">
-        <a href="/works">← WORKS</a>
+        <a href="javascript:history.back();">← Back</a>
       </div>
     </main>
 
     <footer class="footer">
       <div class="footer__inner">
-        <p class="footer__name">LEE EUN JOO</p>
+        <p class="footer__name">eundoo.com</p>
         <p class="footer__copyright">© 2026 Lee Eun Joo</p>
       </div>
     </footer>

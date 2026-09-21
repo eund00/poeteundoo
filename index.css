@@ -68,8 +68,8 @@ select {
 }
 
 .logo {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 18px;
+  font-family: "Dongle", sans-serif;
+  font-size: 2.5rem;
   font-weight: 500;
   letter-spacing: -0.02em;
 }
@@ -168,7 +168,7 @@ main {
   max-width: 900px;
 
   font-family: "Noto Serif KR", Georgia, serif;
-  font-size: clamp(60px, 7vw, 150px);
+  font-size: 3.5rem;
   font-weight: 400;
   line-height: 1.08;
   letter-spacing: -0.07em;
@@ -314,22 +314,47 @@ main {
 .about {
   border-top: 1px solid #111;
   border-bottom: 1px solid #111;
+  position: relative;
+  background-color: #f0ffe9;
+}
+.about_bg {
+  background-image: url("https://images.unsplash.com/photo-1578059456805-cd4809a05d70?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0.25;
+  background-attachment: fixed;
 }
 
 .about__inner {
+  position: relative;
+  z-index: 99;
   width: min(1400px, calc(100% - 80px));
-  min-height: 600px;
   margin: 0 auto;
+  padding: 1.5rem 0;
 
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
+
+  column-gap: 5rem;
 }
 
-.about__heading p {
-  margin-bottom: 20px;
+.about__heading {
+  max-width: 600px;
+}
 
-  font-size: 11px;
+.about__heading .tell {
+  text-align: right;
+  margin-top: 0.5rem;
+}
+
+.about__heading .tell p {
+  font-size: 1rem;
   letter-spacing: 0.12em;
 }
 
@@ -343,10 +368,25 @@ main {
 
 .about__content {
   max-width: 480px;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   font-family: "Noto Serif KR", serif;
   font-size: 18px;
   line-height: 2;
+
+  background-color: #ffffff6b;
+  border-radius: 0.5rem;
+  margin: 1rem;
+  padding: 1.5rem;
+}
+
+.about__content p {
+  font-size: 1rem;
+  line-height: 1.5rem;
 }
 
 .about__content a {
@@ -360,6 +400,14 @@ main {
   font-family: "Pretendard", sans-serif;
   font-size: 11px;
   letter-spacing: 0.08em;
+}
+.about__content p a {
+  margin: 0;
+  padding: 0;
+  border-bottom: none;
+  font-family: inherit;
+  font-size: inherit;
+  letter-spacing: inherit;
 }
 
 /* ==================================================
@@ -543,14 +591,6 @@ main {
     gap: 18px;
   }
 
-  /* .hero {
-    min-height: 600px;
-  } */
-
-  .hero__title {
-    font-size: clamp(52px, 13vw, 100px);
-  }
-
   .latest-works {
     padding: 100px 0;
   }
@@ -577,20 +617,12 @@ main {
     font-size: 10px;
   }
 
-  .logo {
-    font-size: 15px;
-  }
-
-  /* .hero {
-    min-height: 500px;
-  } */
-
-  .hero__title {
-    font-size: 50px;
-  }
-
   .hero__link {
     margin-top: 50px;
+  }
+
+  .hero__title {
+    font-size: 3rem;
   }
 
   .section-header {
@@ -664,5 +696,11 @@ main {
 @media (max-width: 600px) {
   .work-card a {
     min-height: 200px;
+  }
+}
+
+@media (max-width: 500px) {
+  .hero__title {
+    font-size: 2rem;
   }
 }
