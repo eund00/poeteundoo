@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>LEE EUN JOO</title>
+
+    <link rel="stylesheet" href="index.css" />
+
+    <style>
+      .work-detail {
+        max-width: 500px;
+      }
+      .work-detail__poem {
+        white-space: pre-line;
+      }
+      .work-detail__meta {
+        text-align: right;
+      }
+      .work-detail__title {
+        margin: 3rem 0 1rem;
+      }
+      .work-detail__content {
+        margin-top: 2rem;
+      }
+      .work-detail__footer {
+        margin-top: 2rem;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="header__inner">
+        <h1 class="logo">
+          <a href="/">LEE EUN JOO</a>
+        </h1>
+
+        <nav class="gnb">
+          <ul class="gnb__list">
+            <li><a href="/works">Works</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/interview">Interview</a></li>
+            <li><a href="/archive">Archive</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="work-detail">
+      <div class="work-detail__header">
+        <p class="work-detail__meta" id="work-meta"></p>
+
+        <h2 class="work-detail__title" id="work-title"></h2>
+      </div>
+
+      <div class="work-detail__content">
+        <div class="work-detail__poem" id="work-content"></div>
+      </div>
+
+      <div class="work-detail__footer">
+        <a href="/works">← WORKS</a>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer__inner">
+        <p class="footer__name">LEE EUN JOO</p>
+        <p class="footer__copyright">© 2026 Lee Eun Joo</p>
+      </div>
+    </footer>
+
+    <script src="js/works.js"></script>
+  </body>
+</html>
