@@ -81,7 +81,7 @@ select {
 }
 
 .gnb__item {
-  font-size: 13px;
+  font-size: 1.5rem;
   letter-spacing: 0.03em;
 }
 
@@ -614,7 +614,7 @@ main {
   }
 
   .gnb__item {
-    font-size: 10px;
+    font-size: 1rem;
   }
 
   .hero__link {
@@ -702,5 +702,8 @@ main {
 @media (max-width: 500px) {
   .hero__title {
     font-size: 2rem;
+  }
+  .gnb__item {
+    font-size: 0.8rem;
   }
 }
