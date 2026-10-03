@@ -426,18 +426,27 @@ main {
 
 .interview-item {
   border-bottom: 1px solid #111;
-  padding-right: 1rem
+  padding-right: 1rem;
 }
 
 .interview-item a {
-    display: flex;
-    align-items: center;
-    column-gap: 5%;
-    padding: 20px 0;
+  display: flex;
+  align-items: center;
+  column-gap: 5%;
+  padding: 20px 0;
+  transition: 0.3s ease;
 }
 
 .interview-item a:hover {
   padding-left: 15px;
+}
+
+.interview-item a .interview-item__category {
+  min-width: 100px;
+  background-color: rgba(186, 238, 66, 0.308);
+  text-align: center;
+  border-radius: 25px;
+  color: #004b00;
 }
 
 .interview-item__date {
@@ -612,6 +621,12 @@ main {
 }
 
 @media (max-width: 600px) {
+  .interview-item a .interview-item__category {
+    margin-left: 10px;
+    font-size: 14px;
+    padding: 5px 10px;
+  }
+
   .gnb__list {
     gap: 12px;
   }
@@ -663,6 +678,7 @@ main {
 
   .interview-item__title {
     font-size: 16px;
+    margin-top: 15px;
   }
 
   .work-detail {
