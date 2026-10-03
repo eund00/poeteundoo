@@ -12,6 +12,8 @@ fetch("works.json")
       return;
     }
 
+    document.title = `읽어봐요 : ${work.title}`;
+
     document.querySelector("#work-meta").textContent =
       `${work.year} · ${work.publication}`;
 
@@ -19,7 +21,15 @@ fetch("works.json")
 
     document.querySelector("#work-content").innerHTML = work.content;
 
-    document.title = `읽어봐요 : ${work.title}`;
+    const workLink = document.querySelector("#work-link");
+
+    if (work.link === undefined || work.link === "undefined") {
+      workLink.style.display = "none";
+    } else {
+      workLink.setAttribute("href", work.link);
+    }
+
+    document.querySelector("#work-img").src = work.img;
   })
   .catch((error) => {
     console.error("작품을 불러오는 중 오류가 발생했습니다.", error);
