@@ -107,6 +107,72 @@
 
         <div class="work-list" id="work-list"></div>
       </section>
+      <script>
+        fetch("./works.json")
+          .then((response) => response.json())
+          .then((works) => {
+            const workList = document.getElementById("work-list");
+            const totalCount = works.length;
+
+            // 작품 순서 거꾸로
+            works.reverse();
+
+            // 1 ~ totalCount 이미지 번호 만들기
+            const imageNumbers = Array.from(
+              { length: totalCount },
+              (_, index) => index + 1,
+            );
+
+            // 이미지 번호 섞기
+            imageNumbers.sort(() => Math.random() - 0.5);
+
+            works.forEach((work, index) => {
+              const article = document.createElement("article");
+              article.className = "work-card";
+
+              // 중복되지 않는 랜덤 이미지 번호
+              const randomNumber = imageNumbers[index];
+
+              article.innerHTML = `
+          <span style="position: absolute;
+          top: 0;
+          right: 0;
+          margin: 20px;
+          background: #1d6b1d7a;
+          padding: 2px 10px;
+          border-radius: 25px;
+          color: #ffffff;
+          font-size: 14px;">
+            ${work.kind}
+          </span>
+          <img
+            class="bg_img"
+            src="img/img_bg (${randomNumber}).jpeg"
+            alt=""
+          >
+
+          <a href="./work.html?id=${work.id}">
+            <div class="work-card__meta">
+              <span>${work.year}</span>
+              <span> · </span>
+              <span>${work.publication}</span>
+            </div>
+
+            <h3 class="work-card__title">${work.title}</h3>
+
+            <p class="work-card__excerpt">
+              ${work.subtitle}
+            </p>
+          </a>
+        `;
+
+              workList.appendChild(article);
+            });
+          })
+          .catch((error) => {
+            console.error("작품 데이터를 불러오지 못했습니다.", error);
+          });
+      </script>
 
       <!-- 작가 소개 -->
       <section id="about" class="about">
@@ -144,10 +210,12 @@
       <section id="interview" class="interview">
         <div class="section-header">
           <p class="section-header__label">INTERVIEW</p>
-          <h2 class="section-header__title">말과 기록</h2>
+          <h2 class="section-header__title">뽈뽈</h2>
         </div>
 
-        <ul class="interview-list">
+        <ul class="interview-list" id="interview-list"></ul>
+
+        <!-- <ul class="interview-list">
           <li class="interview-item">
             <a
               href="https://www.instagram.com/p/DafECsdD13J/?utm_source=ig_web_copy_link&mdxt=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA=="
@@ -191,9 +259,7 @@
             >
               <span class="interview-item__date">2025.11.28</span>
               <span class="interview-item__category">들어봐요</span>
-              <strong class="interview-item__title"
-                >체리암: 이은주 시인 낭독회</strong
-              >
+              <strong class="interview-item__title">이은주 시인 낭독회</strong>
             </a>
           </li>
           <li class="interview-item">
@@ -221,7 +287,7 @@
               >
             </a>
           </li>
-        </ul>
+        </ul> -->
       </section>
     </main>
 
@@ -234,72 +300,8 @@
     </footer>
   </body>
 </html>
+<script src="js/interviews.js"></script>
 <script>
-  fetch("./works.json")
-    .then((response) => response.json())
-    .then((works) => {
-      const workList = document.getElementById("work-list");
-      const totalCount = works.length;
-
-      // 작품 순서 거꾸로
-      works.reverse();
-
-      // 1 ~ totalCount 이미지 번호 만들기
-      const imageNumbers = Array.from(
-        { length: totalCount },
-        (_, index) => index + 1,
-      );
-
-      // 이미지 번호 섞기
-      imageNumbers.sort(() => Math.random() - 0.5);
-
-      works.forEach((work, index) => {
-        const article = document.createElement("article");
-        article.className = "work-card";
-
-        // 중복되지 않는 랜덤 이미지 번호
-        const randomNumber = imageNumbers[index];
-
-        article.innerHTML = `
-          <span style="position: absolute;
-          top: 0;
-          right: 0;
-          margin: 20px;
-          background: #1d6b1d7a;
-          padding: 2px 10px;
-          border-radius: 25px;
-          color: #ffffff;
-          font-size: 14px;">
-            ${work.kind}
-          </span>
-          <img
-            class="bg_img"
-            src="img/img_bg (${randomNumber}).jpeg"
-            alt=""
-          >
-
-          <a href="./work.html?id=${work.id}">
-            <div class="work-card__meta">
-              <span>${work.year}</span>
-              <span> · </span>
-              <span>${work.publication}</span>
-            </div>
-
-            <h3 class="work-card__title">${work.title}</h3>
-
-            <p class="work-card__excerpt">
-              ${work.subtitle}
-            </p>
-          </a>
-        `;
-
-        workList.appendChild(article);
-      });
-    })
-    .catch((error) => {
-      console.error("작품 데이터를 불러오지 못했습니다.", error);
-    });
-
   document
     .querySelector('a[href="#diary"]')
     .addEventListener("click", function (event) {
