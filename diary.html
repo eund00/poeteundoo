@@ -309,58 +309,6 @@
   </head>
 
   <body>
-    <div class="modal">
-      <div class="modal-in">
-        <span style="font-size: 2rem">💌</span>
-        <p>이 곳은 내 다이어리야. 비밀을 지켜야 해.</p>
-        <div>
-          <button id="modal-yes">응, 알겠어.</button>
-          <button id="modal-no">싫어, 내가 왜?</button>
-        </div>
-      </div>
-    </div>
-    <style>
-      .modal {
-        position: fixed;
-        width: 100vw;
-        height: 100vh;
-        background-color: #739b73;
-        z-index: 999;
-      }
-      .modal-in {
-        text-align: center;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-
-        z-index: 1000;
-        padding: 24px;
-        background: white;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-      }
-      .modal-in > div {
-        display: flex;
-        justify-content: center;
-        gap: 12px;
-        margin-top: 18px;
-      }
-    </style>
-    <script>
-      const modal = document.querySelector(".modal");
-      const yesBtn = document.querySelector("#modal-yes");
-      const noBtn = document.querySelector("#modal-no");
-
-      yesBtn.addEventListener("click", () => {
-        modal.style.display = "none";
-      });
-
-      noBtn.addEventListener("click", () => {
-        alert("흥, 나가!");
-        history.back();
-      });
     </script>
     <!-- Google Tag Manager (noscript) -->
     <noscript

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-6X0BDHRPZX"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-6X0BDHRPZX");
+    </script>
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-TRR38Z77");
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>지킬거야? : 은듀닷컴</title>
+    <link rel="icon" type="image/png" href="./img/favicon.png" />
+
+    <link rel="stylesheet" href="index.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dongle&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="modal">
+      <div class="modal-in">
+        <span id="modal-icon" style="font-size: 2rem">💌</span>
+        <p id="modal-text">이 곳은 내 다이어리야. 비밀을 지켜야 해.</p>
+        <div>
+          <button id="modal-yes">응, 알겠어.</button>
+          <button id="modal-no">싫어, 내가 왜?</button>
+        </div>
+      </div>
+    </div>
+    <style>
+      .modal {
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        background-color: #739b73;
+        z-index: 999;
+      }
+      .modal-in {
+        max-width: 500px;
+        width: 86%;
+
+        text-align: center;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        z-index: 1000;
+        padding: 24px;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      }
+      .modal-in > div {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 18px;
+      }
+    </style>
+    <script>
+      const modal = document.querySelector(".modal");
+      const yesBtn = document.querySelector("#modal-yes");
+      const noBtn = document.querySelector("#modal-no");
+      const modalIcon = document.querySelector("#modal-icon");
+      const modalText = document.querySelector("#modal-text");
+
+      yesBtn.addEventListener("click", () => {
+        location.href = "diary.html";
+      });
+
+      noBtn.addEventListener("click", () => {
+        modalIcon.textContent = "💔";
+        modalText.innerHTML =
+          '<span style="color: red; font-size: 20px">너무해!!</span>';
+
+        yesBtn.style.display = "none";
+        noBtn.style.display = "none";
+
+        setTimeout(() => {
+          location.href =
+            "https://www.google.com/search?q=%EC%96%91%EC%8B%AC&sca_esv=9b409f63e8a1ac33&hl=ko&sxsrf=APpeQntzNC26xx-9Z34WQr8KIGNSwkiwOA%3A1792042301838&source=hp&ei=PWXQapzMMO3i2roP2PeumQ4&iflsig=ABILxe8AAAAAatBzTcoLRDuBxij2WR002SR1CeAI5Zc7&ved=0ahUKEwjc3sjmpbuXAxVtsVYBHdi7K-MQ4dUDCCg&uact=5&oq=%EC%96%91%EC%8B%AC&gs_lp=Egdnd3Mtd2l6IgbslpHsi6wyBRAAGIAEMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgAQyBRAAGIAESM8MUABYpwtwAHgAkAEAmAFhoAGsBKoBATa4AQPIAQD4AQGYAgOgAqYCwgILEC4YgAQYsQMYgwHCAgsQABiABBixAxiDAcICBBAAGAPCAggQLhiABBixA8ICBRAuGIAEmAMAkgcDMi4xoAe_N7IHAzIuMbgHpgLCBwUwLjIuMcgHBYAIAQ&sclient=gws-wiz";
+        }, 1500);
+      });
+    </script>
+  </body>
+</html>
