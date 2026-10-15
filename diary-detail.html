@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-6X0BDHRPZX"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-6X0BDHRPZX");
+    </script>
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-TRR38Z77");
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>다이어리 : 은듀닷컴</title>
+    <link rel="icon" type="image/png" href="./img/favicon.png" />
+
+    <link rel="stylesheet" href="index.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dongle&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        color: #292929;
+        background: #fff;
+        font-family:
+          "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+        line-height: 1.8;
+      }
+
+      .diary-detail {
+        width: min(760px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 70px 0 100px;
+      }
+
+      .back {
+        display: inline-block;
+        margin-top: 5rem;
+        font-size: 0.8rem;
+        color: #999;
+      }
+
+      .category,
+      .date {
+        color: #999;
+        font-size: 12px;
+      }
+
+      h1 {
+        margin: 12px 0;
+        font-size: clamp(28px, 5vw, 40px);
+        font-weight: 500;
+        line-height: 1.4;
+        letter-spacing: -0.04em;
+        word-break: keep-all;
+      }
+
+      .content {
+        margin-top: 45px;
+        padding-top: 35px;
+        border-top: 1px solid #eee;
+        font-size: 15px;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+
+      @media (max-width: 600px) {
+        .diary-detail {
+          padding-top: 40px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-TRR38Z77"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <header class="header">
+      <div class="header__inner">
+        <h1 class="logo">
+          <a href="/">은듀닷컴</a>
+        </h1>
+
+        <!-- <nav class="gnb">
+          <ul class="gnb__list">
+            <li><a href="/works">Works</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/interview">Interview</a></li>
+            <li><a href="/archive">Archive</a></li>
+          </ul>
+        </nav> -->
+      </div>
+    </header>
+    <main class="diary-detail">
+      <div id="category" class="category"></div>
+      <h1 id="title">불러오는 중...</h1>
+      <time id="date" class="date"></time>
+      <div id="content" class="content"></div>
+
+      <a class="back" href="diary.html">← Diary</a>
+    </main>
+
+    <script>
+      const escapeHTML = (value) =>
+        String(value ?? "").replace(
+          /[&<>"']/g,
+          (char) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[char],
+        );
+
+      async function init() {
+        const id = new URLSearchParams(location.search).get("id");
+
+        if (!id) {
+          document.getElementById("title").textContent =
+            "게시글을 찾을 수 없습니다.";
+          return;
+        }
+
+        try {
+          const response = await fetch("./diary.json");
+
+          if (!response.ok) throw new Error("목록 로드 실패");
+
+          const posts = await response.json();
+          const post = posts.find((item) => item.id === id);
+
+          if (!post) throw new Error("게시글 없음");
+
+          document.title = `${post.title} | 은듀닷컴`;
+
+          document.getElementById("category").textContent = post.category;
+
+          document.getElementById("title").textContent = post.title;
+
+          document.getElementById("date").textContent = post.date.replaceAll(
+            "-",
+            ".",
+          );
+
+          const contentResponse = await fetch(`./${post.contentFile}`);
+
+          if (!contentResponse.ok) {
+            throw new Error("본문 로드 실패");
+          }
+
+          const content = await contentResponse.text();
+
+          document.getElementById("content").innerHTML = content;
+        } catch (error) {
+          console.error(error);
+          document.getElementById("title").textContent =
+            "게시글을 불러오지 못했습니다.";
+          document.getElementById("content").textContent =
+            "주소를 확인하거나 목록으로 돌아가 주세요.";
+        }
+      }
+
+      init();
+    </script>
+  </body>
+</html>
