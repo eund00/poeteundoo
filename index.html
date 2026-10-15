@@ -134,28 +134,30 @@
               const randomNumber = imageNumbers[index];
 
               article.innerHTML = `
-          <span style="position: absolute;
-          top: 0;
-          right: 0;
-          margin: 20px;
-          background: #1d6b1d7a;
-          padding: 2px 10px;
-          border-radius: 25px;
-          color: #ffffff;
-          font-size: 14px;">
-            ${work.kind}
-          </span>
-          <img
-            class="bg_img"
-            src="img/img_bg (${randomNumber}).jpeg"
-            alt=""
-          >
-
-          <a href="./work.html?id=${work.id}">
-            <div class="work-card__meta">
-              <span>${work.year}</span>
-              <span> · </span>
-              <span>${work.publication}</span>
+            <a href="./work.html?id=${work.id}">
+            <div class="work-card__meta" style="display: flex;
+              justify-content: space-between;
+              align-items: baseline;">
+              <div>
+                <span>${work.year}</span>
+                <span> · </span>
+                <span>${work.publication}</span>  
+              </div>
+              <span style="
+                flex-shrink: 0;
+                background: #739b73;
+                padding: 2px 10px;
+                border-radius: 25px;
+                color: #ffffff;
+                margin-left: 1vw;
+                font-size: 14px;">
+                  ${work.kind}
+                </span>
+              <img
+                class="bg_img"
+                src="img/img_bg (${randomNumber}).jpeg"
+                alt=""
+              >
             </div>
 
             <h3 class="work-card__title">${work.title}</h3>
