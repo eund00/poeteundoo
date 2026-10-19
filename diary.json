@@ -1,48 +1,128 @@
 [
   {
     "id": "000",
+    "date": "2025-04-28",
+    "category": "💌",
+    "title": "더위는 자꾸만 저를 채근하는 것 같아요.",
+    "preview": "",
+    "contentFile": "diary/250428.md"
+  },
+  {
+    "id": "001",
+    "date": "2025-07-01",
+    "category": "💌",
+    "title": "신길동에서는 매운 짬뽕",
+    "preview": "",
+    "contentFile": "diary/250701.md"
+  },
+  {
+    "id": "002",
+    "date": "2026-01-25",
+    "category": "💌",
+    "title": "소원",
+    "preview": "",
+    "contentFile": "diary/260322.md"
+  },
+  {
+    "id": "003",
+    "date": "2026-03-27",
+    "category": "💌",
+    "title": "시에서 흐르는 시간",
+    "preview": "",
+    "contentFile": "diary/260327.md"
+  },
+  {
+    "id": "004",
+    "date": "2026-03-30",
+    "category": "💌",
+    "title": "자기해방을 위한 자기구속",
+    "preview": "",
+    "contentFile": "diary/260330.md"
+  },
+  {
+    "id": "005",
+    "date": "2026-04-15",
+    "category": "💌",
+    "title": "트라이하드(try-hard)",
+    "preview": "",
+    "contentFile": "diary/260415.md"
+  },
+  {
+    "id": "006",
+    "date": "2026-05-11",
+    "category": "💌",
+    "title": "사람 때문에 울어본 적 있어요?",
+    "preview": "",
+    "contentFile": "diary/260511.md"
+  },
+  {
+    "id": "007",
+    "date": "2026-05-24",
+    "category": "💪",
+    "title": "사유(思惟, thought)",
+    "preview": "",
+    "contentFile": "diary/260524.md"
+  },
+  {
+    "id": "008",
+    "date": "2026-08-07",
+    "category": "💪",
+    "title": "불안은 기척없이",
+    "preview": "",
+    "contentFile": "diary/260807.md"
+  },
+  {
+    "id": "009",
+    "date": "2026-09-09",
+    "category": "💪",
+    "title": "어떻게 해야 했을까",
+    "preview": "",
+    "contentFile": "diary/260909.md"
+  },
+  {
+    "id": "010",
     "date": "2026-09-14",
-    "category": "애니웨이",
+    "category": "🎈",
     "title": "그래서 과열. 간단하게 나는 과열",
     "preview": "",
     "contentFile": "diary/260914.md"
   },
   {
-    "id": "001",
+    "id": "011",
     "date": "2026-09-15",
-    "category": "애니웨이",
+    "category": "🎈",
     "title": "실패했다.",
     "preview": "",
     "contentFile": "diary/260915.md"
   },
   {
-    "id": "002",
+    "id": "012",
     "date": "2026-09-16",
-    "category": "애니웨이",
+    "category": "🎈",
     "title": "마음에도 감각이 있는데",
     "preview": "",
     "contentFile": "diary/260916.md"
   },
   {
-    "id": "003",
+    "id": "013",
     "date": "2026-09-18",
-    "category": "애니웨이",
+    "category": "🎈",
     "title": "여름에도 눈이 내리는 건 꽤 유명한 기상이변",
     "preview": "",
     "contentFile": "diary/260918.md"
   },
   {
-    "id": "004",
+    "id": "014",
     "date": "2026-10-10",
-    "category": "단상훈련",
+    "category": "💪",
     "title": "도착한 미래, 잃어버린 것",
     "preview": "",
     "contentFile": "diary/261010.md"
   },
   {
-    "id": "005",
+    "id": "015",
     "date": "2026-10-18",
-    "category": "애니웨이",
+    "category": "🎈",
     "title": "사랑 없는 세상은 어떻게 돌아가고 있을까",
     "preview": "",
     "contentFile": "diary/261018.md"
