@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ko">
   <head>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <!-- Google tag (gtag.js) -->
     <script
       async
@@ -44,7 +45,7 @@
     />
     <style>
       .work-detail {
-        max-width: 500px;
+        max-width: 550px;
         padding: 5rem 0;
       }
       .work-detail__poem {
@@ -67,8 +68,8 @@
         justify-content: end;
       }
       #work-link img {
-        width: 30%;
         border: 1px solid #000;
+        max-height: 230px;
       }
       .work-detail__footer {
         margin-top: 5rem;
@@ -138,6 +139,56 @@
       </div>
     </footer>
 
-    <script src="js/works.js"></script>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const workId = params.get("id");
+
+      fetch("works.json")
+        .then((response) => response.json())
+        .then((works) => {
+          const work = works.find((item) => item.id === workId);
+
+          if (!work) {
+            document.querySelector(".work-detail").innerHTML =
+              "<p>작품을 찾을 수 없습니다.</p>";
+            return;
+          }
+
+          document.title = `읽어봐요 : ${work.title}`;
+
+          document.querySelector("#work-meta").textContent =
+            `${work.year} · ${work.publication}`;
+
+          document.querySelector("#work-title").textContent = work.title;
+
+          // 마크다운 파일 불러오기
+          return fetch(work.contentFile)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("마크다운 파일을 불러오지 못했습니다.");
+              }
+              return response.text();
+            })
+            .then((markdown) => {
+              document.querySelector("#work-content").innerHTML =
+                marked.parse(markdown);
+            })
+            .then(() => {
+              const workLink = document.querySelector("#work-link");
+
+              if (!work.link || work.link === "undefined") {
+                workLink.style.display = "none";
+              } else {
+                workLink.style.display = "";
+                workLink.setAttribute("href", work.link);
+              }
+
+              document.querySelector("#work-img").src = work.img;
+            });
+        })
+        .catch((error) => {
+          console.error("작품을 불러오는 중 오류가 발생했습니다.", error);
+        });
+    </script>
   </body>
 </html>
