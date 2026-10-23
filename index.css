@@ -120,8 +120,7 @@ main {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-
-  margin-bottom: 60px;
+  margin-bottom: 30px;
 }
 
 .section-header__label {
@@ -207,15 +206,11 @@ main {
 .work-list {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-
-  border-top: 1px solid #111;
-  border-left: 1px solid #111;
 }
 
 .work-card {
   position: relative;
-  border-right: 1px solid #111;
-  border-bottom: 1px solid #111;
+  border-right: none;
 }
 .work-card .bg_img {
   position: absolute;
