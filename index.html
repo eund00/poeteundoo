@@ -122,9 +122,8 @@
 
         .hero__title {
           max-width: 900px;
-
           font-family: "Noto Serif KR", Georgia, serif;
-          font-size: 3.5rem;
+          font-size: clamp(32px, 4vw, 30px);
           font-weight: 400;
           line-height: 1.08;
           letter-spacing: -0.07em;
@@ -688,6 +687,21 @@
   ============================== */
 
         @media (max-width: 768px) {
+          .interview {
+            width: min(1400px, calc(100% - 40px)) !important;
+          }
+          .interview-item__title {
+            font-size: 1rem !important;
+          }
+
+          .about__inner {
+            width: min(1400px, calc(100% - 40px)) !important;
+          }
+
+          .hero__inner {
+            width: min(1400px, calc(100% - 40px));
+          }
+
           .latest-works {
             width: calc(100% - 40px);
             padding-block: 60px;

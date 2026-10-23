@@ -131,7 +131,7 @@ main {
 
 .section-header__title {
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(32px, 4vw, 30px);
+  font-size: clamp(25px, 4vw, 30px);
   font-weight: 400;
   line-height: 1;
   letter-spacing: -0.04em;
@@ -201,7 +201,7 @@ main {
   }
 
   .interview {
-    padding: 100px 0;
+    margin-top: 50px !important;
   }
 }
 
