@@ -44,6 +44,98 @@
       rel="stylesheet"
     />
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500&display=swap");
+
+      #work-title {
+        font-family: "Noto Serif KR", serif;
+      }
+      #work-content {
+        font-family: "Noto Serif KR", serif;
+      }
+      .work-detail {
+        width: min(1100px, calc(100% - 80px));
+        margin: 0 auto;
+        padding: 150px 0;
+      }
+
+      .work__header {
+        padding-bottom: 70px;
+        border-bottom: 1px solid #111;
+      }
+
+      .work__category {
+        margin-bottom: 30px;
+
+        font-size: 10px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+      }
+
+      .work__title {
+        font-family: "Noto Serif KR", Georgia, serif;
+        font-size: clamp(50px, 7vw, 100px);
+        font-weight: 400;
+        line-height: 1.15;
+        letter-spacing: -0.07em;
+      }
+
+      .work__meta {
+        display: flex;
+        gap: 25px;
+
+        margin-top: 40px;
+
+        font-size: 12px;
+        opacity: 0.6;
+      }
+
+      .work__body {
+        padding: 100px 0;
+      }
+
+      .work__text {
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+
+        font-family: "Noto Serif KR", serif;
+        font-size: 17px;
+        line-height: 2.4;
+        letter-spacing: -0.02em;
+      }
+
+      .work__text p {
+        margin-bottom: 1em;
+      }
+
+      .work__footer {
+        padding-top: 40px;
+        border-top: 1px solid #111;
+      }
+
+      .work__credits {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+      }
+
+      .work__credits div {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+      }
+
+      .work__credits dt {
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 0.5;
+      }
+
+      .work__credits dd {
+        margin: 0;
+        font-size: 12px;
+      }
+
       .work-detail {
         max-width: 550px;
         padding: 5rem 0;
@@ -72,9 +164,13 @@
         max-height: 230px;
       }
       .work-detail__footer {
+        display: inline-block;
         margin-top: 5rem;
+        background: #739b7394;
+        color: #fff;
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
         font-size: 0.8rem;
-        color: #999;
       }
     </style>
   </head>
@@ -128,7 +224,7 @@
       </a>
 
       <div class="work-detail__footer">
-        <a href="javascript:history.back();">← Back</a>
+        <a href="javascript:history.back();">← 뒤로가기</a>
       </div>
     </main>
 

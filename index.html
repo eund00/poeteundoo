@@ -97,6 +97,59 @@
           <!-- <a href="/works" class="hero__link"> VIEW WORKS → </a> -->
         </div>
       </section>
+      <style>
+        .hero {
+          /* min-height: 720px; */
+          padding: 30px 0;
+          display: flex;
+          align-items: center;
+
+          border-bottom: 1px solid #111;
+        }
+
+        .hero__inner {
+          width: min(1400px, calc(100% - 80px));
+          margin: 0 auto;
+        }
+
+        .hero__eyebrow {
+          margin-bottom: 36px;
+
+          font-size: 18px;
+          font-weight: 300;
+          letter-spacing: 0.14em;
+        }
+
+        .hero__title {
+          max-width: 900px;
+
+          font-family: "Noto Serif KR", Georgia, serif;
+          font-size: 3.5rem;
+          font-weight: 400;
+          line-height: 1.08;
+          letter-spacing: -0.07em;
+        }
+
+        .hero__link {
+          display: inline-block;
+          margin-top: 70px;
+
+          padding-bottom: 6px;
+
+          border-bottom: 1px solid #111;
+
+          font-size: 12px;
+          letter-spacing: 0.08em;
+
+          transition:
+            padding 0.25s ease,
+            opacity 0.25s ease;
+        }
+
+        .hero__link:hover {
+          padding-right: 15px;
+        }
+      </style>
 
       <!-- 최근 작품 -->
       <section id="work" class="latest-works">
@@ -109,244 +162,363 @@
           <button
             class="work-slider__btn work-slider__btn--prev"
             id="work-prev"
+            type="button"
             aria-label="이전 작품"
           >
             &#8592;
           </button>
+
           <button
             class="work-slider__btn work-slider__btn--next"
             id="work-next"
+            type="button"
             aria-label="다음 작품"
           >
             &#8594;
           </button>
+
           <div class="work-slider__viewport">
             <div class="work-list" id="work-list"></div>
           </div>
         </div>
       </section>
       <script>
-        fetch("./works.json")
-          .then((response) => response.json())
-          .then((works) => {
-            const workList = document.getElementById("work-list");
-            const prevButton = document.getElementById("work-prev");
-            const nextButton = document.getElementById("work-next");
+        document.addEventListener("DOMContentLoaded", initWorkSlider);
+        async function initWorkSlider() {
+          const workList = document.getElementById("work-list");
+          const viewport = document.querySelector(".work-slider__viewport");
+          const prevButton = document.getElementById("work-prev");
+          const nextButton = document.getElementById("work-next");
+
+          if (!workList || !viewport || !prevButton || !nextButton) return;
+
+          const AUTO_DELAY = 3000;
+          const DRAG_THRESHOLD = 6;
+          const SWIPE_THRESHOLD = 50;
+
+          let currentIndex = 0;
+          let autoSlide = null;
+          let isDragging = false;
+          let dragMoved = false;
+          let startX = 0;
+          let startTranslate = 0;
+          let activePointerId = null;
+          let suppressClick = false;
+          let clickResetTimer = null;
+
+          try {
+            const response = await fetch("./works.json");
+
+            if (!response.ok) {
+              throw new Error(`작품 데이터 요청 실패: ${response.status}`);
+            }
+
+            const works = await response.json();
 
             // 최신 작품부터 표시
-            works.reverse();
+            const sortedWorks = [...works].reverse();
 
-            const totalCount = works.length;
+            if (!sortedWorks.length) return;
 
-            // 배경 이미지 번호 섞기
-            const imageNumbers = Array.from(
-              { length: totalCount },
-              (_, index) => index + 1,
-            );
+            renderWorks(sortedWorks);
+            updateSlider();
+            startAutoSlide();
 
-            imageNumbers.sort(() => Math.random() - 0.5);
+            // ------------------------------
+            // 작품 렌더링
+            // ------------------------------
 
-            works.forEach((work, index) => {
-              const article = document.createElement("article");
-              article.className = "work-card";
+            function renderWorks(works) {
+              const imageNumbers = Array.from(
+                { length: works.length },
+                (_, index) => index + 1,
+              );
 
-              const randomNumber = imageNumbers[index];
+              // 배경 이미지 번호 무작위 배정
+              for (let i = imageNumbers.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [imageNumbers[i], imageNumbers[j]] = [
+                  imageNumbers[j],
+                  imageNumbers[i],
+                ];
+              }
 
-              article.innerHTML = `
-          <a href="./work.html?id=${work.id}">
-            <div class="work-card__meta"
-              style="display:flex; justify-content:space-between; align-items:baseline;">
-              <div>
-                <span>${work.year}</span>
-                <span> · </span>
-                <span>${work.publication}</span>
-              </div>
+              const fragment = document.createDocumentFragment();
 
-              <span style="
-                flex-shrink:0;
-                background:#739b73;
-                padding:2px 10px;
-                border-radius:25px;
-                color:#fff;
-                margin-left:1vw;
-                font-size:14px;">
-                ${work.kind}
-              </span>
+              works.forEach((work, index) => {
+                const card = document.createElement("article");
+                card.className = "work-card";
 
-              <img
-                class="bg_img"
-                src="img/img_bg (${randomNumber}).jpeg"
-                alt=""
-              >
-            </div>
+                const link = document.createElement("a");
+                link.className = "work-card__link";
+                link.href = `./work.html?id=${encodeURIComponent(work.id)}`;
 
-            <h3 class="work-card__title">${work.title}</h3>
+                const background = document.createElement("img");
+                background.className = "work-card__background";
+                background.src = `img/img_bg (${imageNumbers[index]}).jpeg`;
+                background.alt = "";
+                background.draggable = false;
 
-            <p class="work-card__excerpt">
-              ${work.subtitle}
-            </p>
-          </a>
-        `;
+                const meta = document.createElement("div");
+                meta.className = "work-card__meta";
 
-              workList.appendChild(article);
-            });
+                const publication = document.createElement("div");
+                publication.className = "work-card__publication";
 
-            let currentIndex = 0;
+                const year = document.createElement("span");
+                year.textContent = work.year ?? "";
+
+                const separator = document.createElement("span");
+                separator.textContent = " · ";
+                separator.setAttribute("aria-hidden", "true");
+
+                const publicationName = document.createElement("span");
+                publicationName.textContent = work.publication ?? "";
+
+                publication.append(year, separator, publicationName);
+
+                const type = document.createElement("span");
+                type.className = "work-card__type";
+                type.textContent = work.kind ?? "";
+
+                meta.append(publication, type);
+
+                const title = document.createElement("h3");
+                title.className = "work-card__title";
+                title.textContent = work.title ?? "";
+
+                const excerpt = document.createElement("p");
+                excerpt.className = "work-card__excerpt";
+                excerpt.textContent = work.subtitle ?? "";
+
+                link.append(background, meta, title, excerpt);
+                card.appendChild(link);
+                fragment.appendChild(card);
+              });
+
+              workList.replaceChildren(fragment);
+            }
+
+            // ------------------------------
+            // 슬라이더 계산 및 이동
+            // ------------------------------
 
             function getVisibleCount() {
               return window.innerWidth <= 768 ? 1 : 3;
             }
 
-            function updateSlider() {
-              const cards = workList.querySelectorAll(".work-card");
-              const visibleCount = getVisibleCount();
-              const maxIndex = Math.max(0, totalCount - visibleCount);
+            function getMaxIndex() {
+              return Math.max(0, workList.children.length - getVisibleCount());
+            }
 
-              currentIndex = Math.min(currentIndex, maxIndex);
+            function getStep() {
+              const card = workList.querySelector(".work-card");
 
-              if (cards.length === 0) return;
+              if (!card) return 0;
 
-              const cardWidth = cards[0].getBoundingClientRect().width;
               const gap = parseFloat(getComputedStyle(workList).gap) || 0;
 
-              workList.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
+              return card.getBoundingClientRect().width + gap;
+            }
+
+            function updateSlider(animate = true) {
+              const maxIndex = getMaxIndex();
+              const step = getStep();
+
+              currentIndex = Math.max(0, Math.min(currentIndex, maxIndex));
+
+              workList.style.transition = animate ? "" : "none";
+
+              workList.style.transform = `translate3d(${-currentIndex * step}px, 0, 0)`;
 
               prevButton.disabled = currentIndex === 0;
               nextButton.disabled = currentIndex >= maxIndex;
 
-              prevButton.style.opacity = prevButton.disabled ? "0.3" : "1";
-              nextButton.style.opacity = nextButton.disabled ? "0.3" : "1";
+              prevButton.setAttribute(
+                "aria-disabled",
+                String(prevButton.disabled),
+              );
+
+              nextButton.setAttribute(
+                "aria-disabled",
+                String(nextButton.disabled),
+              );
             }
 
-            prevButton.addEventListener("click", () => {
-              currentIndex = Math.max(0, currentIndex - 1);
+            function moveSlider(direction) {
+              currentIndex = Math.max(
+                0,
+                Math.min(getMaxIndex(), currentIndex + direction),
+              );
+
               updateSlider();
-            });
+              restartAutoSlide();
+            }
 
-            nextButton.addEventListener("click", () => {
-              const maxIndex = Math.max(0, totalCount - getVisibleCount());
+            prevButton.addEventListener("click", () => moveSlider(-1));
+            nextButton.addEventListener("click", () => moveSlider(1));
 
-              currentIndex = Math.min(maxIndex, currentIndex + 1);
-              updateSlider();
-            });
+            // ------------------------------
+            // 자동 슬라이드
+            // ------------------------------
 
-            window.addEventListener("resize", updateSlider);
-
-            // 마우스 드래그 + 모바일 터치 스와이프
-            let startX = 0;
-            let isDragging = false;
-            let dragMoved = false;
-
-            // 드래그 시작
-            workList.addEventListener("pointerdown", (event) => {
-              // 마우스는 왼쪽 버튼만 허용
-              if (event.pointerType === "mouse" && event.button !== 0) {
-                return;
-              }
-
-              startX = event.clientX;
-              isDragging = true;
-              dragMoved = false;
-
-              workList.setPointerCapture(event.pointerId);
+            function stopAutoSlide() {
               clearInterval(autoSlide);
-            });
+              autoSlide = null;
+            }
 
-            // 드래그 중
-            workList.addEventListener("pointermove", (event) => {
-              if (!isDragging) return;
+            function startAutoSlide() {
+              stopAutoSlide();
 
-              const diff = startX - event.clientX;
+              if (getMaxIndex() === 0) return;
 
-              if (Math.abs(diff) > 5) {
-                dragMoved = true;
-              }
-            });
+              autoSlide = setInterval(() => {
+                if (isDragging || viewport.matches(":hover")) return;
 
-            // 드래그 종료
-            workList.addEventListener("pointerup", (event) => {
-              if (!isDragging) return;
-
-              const diff = startX - event.clientX;
-              isDragging = false;
-
-              if (Math.abs(diff) >= 50) {
-                const maxIndex = Math.max(0, totalCount - getVisibleCount());
-
-                if (diff > 0) {
-                  currentIndex = Math.min(maxIndex, currentIndex + 1);
-                } else {
-                  currentIndex = Math.max(0, currentIndex - 1);
-                }
+                currentIndex =
+                  currentIndex >= getMaxIndex() ? 0 : currentIndex + 1;
 
                 updateSlider();
+              }, AUTO_DELAY);
+            }
+
+            function restartAutoSlide() {
+              startAutoSlide();
+            }
+
+            viewport.addEventListener("mouseenter", stopAutoSlide);
+            viewport.addEventListener("mouseleave", startAutoSlide);
+
+            // ------------------------------
+            // 마우스 드래그 및 터치 스와이프
+            // ------------------------------
+
+            workList.addEventListener("pointerdown", (event) => {
+              if (event.pointerType === "mouse" && event.button !== 0) return;
+
+              // 링크를 누른 경우에도 클릭 여부를 확인할 수 있도록 준비
+              isDragging = true;
+              dragMoved = false;
+              startX = event.clientX;
+              startTranslate = currentIndex * getStep();
+              activePointerId = event.pointerId;
+
+              stopAutoSlide();
+              workList.style.transition = "none";
+            });
+
+            // 포인터가 카드 바깥으로 나가도 드래그 추적
+            window.addEventListener("pointermove", (event) => {
+              if (!isDragging || event.pointerId !== activePointerId) return;
+
+              const diff = event.clientX - startX;
+
+              if (Math.abs(diff) > DRAG_THRESHOLD) {
+                dragMoved = true;
               }
 
-              startAutoSlide();
+              if (!dragMoved) return;
+
+              const maxTranslate = getMaxIndex() * getStep();
+              const translate = Math.max(
+                0,
+                Math.min(maxTranslate, startTranslate - diff),
+              );
+
+              workList.style.transform = `translate3d(${-translate}px, 0, 0)`;
             });
 
-            // 드래그 취소 대응
-            workList.addEventListener("pointercancel", () => {
+            function finishDrag(event, cancelled = false) {
+              if (!isDragging || event.pointerId !== activePointerId) return;
+
+              const diff = event.clientX - startX;
+
               isDragging = false;
+              activePointerId = null;
+
+              if (dragMoved) {
+                if (!cancelled && Math.abs(diff) >= SWIPE_THRESHOLD) {
+                  currentIndex = Math.max(
+                    0,
+                    Math.min(getMaxIndex(), currentIndex + (diff < 0 ? 1 : -1)),
+                  );
+                }
+
+                // 드래그 직후 발생하는 링크 클릭 방지
+                suppressClick = true;
+                clearTimeout(clickResetTimer);
+
+                clickResetTimer = setTimeout(() => {
+                  suppressClick = false;
+                }, 400);
+              }
+
+              updateSlider();
               startAutoSlide();
+            }
+
+            window.addEventListener("pointerup", (event) => {
+              finishDrag(event);
             });
 
-            // 드래그 직후 링크가 클릭되는 것 방지
+            window.addEventListener("pointercancel", (event) => {
+              finishDrag(event, true);
+            });
+
             workList.addEventListener(
               "click",
               (event) => {
-                if (dragMoved) {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  dragMoved = false;
-                }
+                if (!suppressClick) return;
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                suppressClick = false;
+                clearTimeout(clickResetTimer);
               },
               true,
             );
 
-            updateSlider();
+            // ------------------------------
+            // 반응형 대응
+            // ------------------------------
 
-            // 0.8초마다 자동 슬라이드
-            let autoSlide;
-
-            function startAutoSlide() {
-              clearInterval(autoSlide);
-
-              autoSlide = setInterval(() => {
-                const maxIndex = Math.max(0, totalCount - getVisibleCount());
-
-                if (maxIndex === 0) return;
-
-                currentIndex = currentIndex >= maxIndex ? 0 : currentIndex + 1;
-
-                updateSlider();
-              }, 3000);
-            }
-
-            // 자동 슬라이드 시작
-            startAutoSlide();
-
-            // 마우스를 올리면 정지
-            const viewport = document.querySelector(".work-slider__viewport");
-
-            viewport.addEventListener("mouseenter", () => {
-              clearInterval(autoSlide);
+            window.addEventListener("resize", () => {
+              updateSlider();
+              restartAutoSlide();
             });
-
-            // 마우스가 벗어나면 재개
-            viewport.addEventListener("mouseleave", () => {
-              startAutoSlide();
-            });
-          })
-          .catch((error) => {
+          } catch (error) {
             console.error("작품 데이터를 불러오지 못했습니다.", error);
-          });
+          }
+        }
       </script>
       <style>
+        /* ==============================
+     작품 섹션
+  ============================== */
+
+        .latest-works {
+          width: min(1400px, calc(100% - 80px));
+          margin-inline: auto;
+          padding-block: 100px;
+        }
+
+        /* ==============================
+     슬라이더 레이아웃
+  ============================== */
+
+        .work-slider {
+          position: relative;
+          width: 100%;
+        }
+
         .work-slider__viewport {
+          width: 100%;
+          overflow: hidden;
+          border: 1px solid #111;
           cursor: grab;
           user-select: none;
-          overflow: hidden;
+          -webkit-user-select: none;
         }
 
         .work-slider__viewport:active {
@@ -354,69 +526,151 @@
         }
 
         .work-list {
+          display: flex;
+          gap: 0;
+          transition: transform 0.45s ease;
+          will-change: transform;
           touch-action: pan-y;
         }
 
-        .work-list a {
-          -webkit-user-drag: none;
-          user-select: none;
-        }
+        /* ==============================
+     작품 카드
+  ============================== */
 
-        .work-list img {
-          -webkit-user-drag: none;
-          pointer-events: none;
-        }
-
-        /* 슬라이더 전체 */
-        .work-slider {
+        .work-card {
           position: relative;
-          width: 100%;
-        }
-
-        /* 보이는 영역 */
-        .work-slider__viewport {
-          width: 100%;
-          overflow: hidden;
-          border: 1px solid #111;
-        }
-
-        /* 작품 목록 */
-        .work-list {
-          display: flex;
-          transition: transform 0.45s ease;
-          will-change: transform;
-        }
-
-        /* 작품 카드: 한 화면에 3개 */
-        .work-list .work-card {
-          flex: 0 0 calc((100% - 48px) / 3);
+          flex: 0 0 calc(100% / 3);
           min-width: 0;
           box-sizing: border-box;
           border-right: 1px solid #111;
         }
 
-        /* 좌우 버튼 */
+        .work-card__link {
+          position: relative;
+          isolation: isolate;
+          display: flex;
+          flex-direction: column;
+          min-height: 420px;
+          padding: 30px;
+          overflow: hidden;
+          color: inherit;
+          text-decoration: none;
+          -webkit-user-drag: none;
+          transition:
+            background-color 0.3s ease,
+            color 0.3s ease;
+        }
+
+        .work-card__link:hover {
+          background-color: #111;
+          color: #f7f6f2;
+        }
+
+        .work-card__background {
+          position: absolute;
+          z-index: -1;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          opacity: 0.15;
+          pointer-events: none;
+          -webkit-user-drag: none;
+        }
+
+        /* 작품 정보 */
+
+        .work-card__meta {
+          display: flex;
+          align-items: baseline;
+          justify-content: space-between;
+          gap: 16px;
+          font-size: 11px;
+          letter-spacing: 0.02em;
+        }
+
+        .work-card__publication {
+          min-width: 0;
+        }
+
+        .work-card__type {
+          flex-shrink: 0;
+          margin-left: auto;
+          padding: 2px 10px;
+          border-radius: 25px;
+          background-color: #739b73;
+          color: #fff;
+          font-size: 12px;
+          white-space: nowrap;
+        }
+
+        /* 작품 제목 */
+
+        .work-card__title {
+          margin-top: auto;
+          font-family: "Noto Serif KR", Georgia, serif;
+          font-size: clamp(28px, 3vw, 46px);
+          font-weight: 400;
+          line-height: 1.25;
+          letter-spacing: -0.05em;
+          overflow-wrap: anywhere;
+        }
+
+        /* 작품 요약 */
+
+        .work-card__excerpt {
+          display: -webkit-box;
+          min-height: calc(1.6em * 2);
+          margin-top: 25px;
+          overflow: hidden;
+          font-family: "Noto Serif KR", Georgia, serif;
+          font-size: 14px;
+          line-height: 1.6;
+          opacity: 0.65;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+        }
+
+        /* ==============================
+     좌우 이동 버튼
+  ============================== */
+
         .work-slider__btn {
           position: absolute;
           top: 50%;
-          transform: translateY(-50%);
+          z-index: 2;
+          display: grid;
           width: 50px;
           height: 50px;
+          padding: 0;
+          place-items: center;
+          transform: translateY(-50%);
           border: 1px solid #ddd;
           border-radius: 50%;
-          background: #fff;
+          background-color: #fff;
           color: #333;
+          font-size: 20px;
           cursor: pointer;
-          z-index: 2;
           transition:
-            background 0.2s ease,
-            color 0.2s ease;
+            border-color 0.2s ease,
+            background-color 0.2s ease,
+            color 0.2s ease,
+            opacity 0.2s ease;
         }
 
-        .work-slider__btn:hover {
-          background: #739b73;
-          color: #fff;
+        .work-slider__btn:hover:not(:disabled) {
           border-color: #739b73;
+          background-color: #739b73;
+          color: #fff;
+        }
+
+        .work-slider__btn:disabled {
+          cursor: default;
+        }
+
+        .work-slider__btn:focus-visible {
+          outline: 2px solid #739b73;
+          outline-offset: 3px;
         }
 
         .work-slider__btn--prev {
@@ -427,37 +681,51 @@
           right: -1rem;
         }
 
-        /* 모바일: 한 번에 1개 */
+        /* ==============================
+     모바일
+  ============================== */
+
         @media (max-width: 768px) {
-          .work-list {
-            gap: 16px;
+          .latest-works {
+            width: calc(100% - 40px);
+            padding-block: 60px;
           }
 
-          .work-list .work-card {
+          .work-card {
             flex-basis: 100%;
           }
+
+          .work-card__link {
+            min-height: 380px;
+            padding: 24px;
+          }
+
+          .work-card__title {
+            font-size: clamp(28px, 8vw, 40px);
+          }
+
+          .work-slider__btn {
+            width: 40px;
+            height: 40px;
+          }
+
+          .work-slider__btn--prev {
+            left: -12px;
+          }
+
+          .work-slider__btn--next {
+            right: -12px;
+          }
         }
 
-        .work-slider__viewport {
-          cursor: grab;
-          user-select: none;
-        }
+        /* 모션 최소화 설정을 사용하는 경우 */
 
-        .work-slider__viewport:active {
-          cursor: grabbing;
-        }
-
-        .work-list {
-          touch-action: pan-y;
-        }
-
-        .work-list a {
-          -webkit-user-drag: none;
-        }
-
-        .work-list img {
-          -webkit-user-drag: none;
-          pointer-events: none;
+        @media (prefers-reduced-motion: reduce) {
+          .work-list,
+          .work-card__link,
+          .work-slider__btn {
+            transition: none;
+          }
         }
       </style>
 
@@ -492,6 +760,106 @@
           </div>
         </div>
       </section>
+      <style>
+        .about {
+          border-top: 1px solid #111;
+          border-bottom: 1px solid #111;
+          position: relative;
+          background-color: #f0ffe9;
+        }
+        .about_bg {
+          background-image: url("https://images.unsplash.com/photo-1578059456805-cd4809a05d70?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          overflow: hidden;
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: cover;
+          opacity: 0.25;
+          background-attachment: fixed;
+        }
+
+        .about__inner {
+          position: relative;
+          z-index: 99;
+          width: min(1400px, calc(100% - 80px));
+          margin: 0 auto;
+          padding: 1.5rem 0;
+
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          align-items: center;
+
+          column-gap: 5rem;
+        }
+
+        .about__heading {
+          max-width: 600px;
+        }
+
+        .about__heading .tell {
+          text-align: right;
+          margin-top: 0.5rem;
+        }
+
+        .about__heading .tell p {
+          font-size: 1rem;
+          letter-spacing: 0.12em;
+        }
+
+        .about__heading h2 {
+          font-family: "Noto Serif KR", Georgia, serif;
+          font-size: clamp(60px, 8vw, 120px);
+          font-weight: 400;
+          line-height: 1;
+          letter-spacing: -0.08em;
+        }
+
+        .about__content {
+          max-width: 480px;
+          height: 100%;
+
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          font-family: "Noto Serif KR", serif;
+          font-size: 18px;
+          line-height: 2;
+
+          background-color: #ffffff6b;
+          border-radius: 0.5rem;
+          margin: 1rem;
+          padding: 1.5rem;
+        }
+
+        .about__content p {
+          font-size: 1rem;
+          line-height: 1.5rem;
+        }
+
+        .about__content a {
+          display: inline-block;
+
+          margin-top: 50px;
+          padding-bottom: 5px;
+
+          border-bottom: 1px solid #111;
+
+          font-family: "Pretendard", sans-serif;
+          font-size: 11px;
+          letter-spacing: 0.08em;
+        }
+        .about__content p a {
+          margin: 0;
+          padding: 0;
+          border-bottom: none;
+          font-family: inherit;
+          font-size: inherit;
+          letter-spacing: inherit;
+        }
+      </style>
 
       <!-- 인터뷰 -->
       <section id="interview" class="interview">
@@ -501,81 +869,58 @@
         </div>
 
         <ul class="interview-list" id="interview-list"></ul>
-
-        <!-- <ul class="interview-list">
-          <li class="interview-item">
-            <a
-              href="https://www.instagram.com/p/DafECsdD13J/?utm_source=ig_web_copy_link&mdxt=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA=="
-              target="_self"
-            >
-              <span class="interview-item__date">2025.7.6</span>
-              <span class="interview-item__category">함께해요</span>
-              <strong class="interview-item__title"
-                >이번주 북톡에서 이은주 작가님이랑 더 오래 놀아요!</strong
-              >
-            </a>
-          </li>
-          <li class="interview-item">
-            <a
-              href="https://www.instagram.com/p/DaS5oB-D3dY/?utm_source=ig_web_copy_link&vrfl=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA=="
-              target="_self"
-            >
-              <span class="interview-item__date">2025.7.3</span>
-              <span class="interview-item__category">함께해요</span>
-              <strong class="interview-item__title"
-                >이번주 북톡에서 이은주 작가님이랑 같이 놀 독자 구해요!</strong
-              >
-            </a>
-          </li>
-          <li class="interview-item">
-            <a
-              href="https://eund00.github.io/beAffiliatedWith_251206/"
-              target="_self"
-            >
-              <span class="interview-item__date">2025.12.6</span>
-              <span class="interview-item__category">함께해요</span>
-              <strong class="interview-item__title"
-                >노골적으로 부속하고 있습니다. : ㅁ (미음)</strong
-              >
-            </a>
-          </li>
-          <li class="interview-item">
-            <a
-              href="https://www.instagram.com/p/DRL2yzckhqU/?utm_source=ig_web_copy_link&dlrf=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA=="
-              target="_self"
-            >
-              <span class="interview-item__date">2025.11.28</span>
-              <span class="interview-item__category">들어봐요</span>
-              <strong class="interview-item__title">이은주 시인 낭독회</strong>
-            </a>
-          </li>
-          <li class="interview-item">
-            <a
-              href="https://deungdan.com/product/%EC%8B%9C-%EC%9D%B4%EC%9D%80%EC%A3%BC-%EC%9E%91%EA%B0%80-%EB%8B%B9%EC%8B%A0%EC%9D%98-%EC%96%B8%EC%96%B4%EB%A5%BC-%ED%94%BC%EC%9B%8C%EB%83%85%EB%8B%88%EB%8B%A4/61/category/1/display/8/?icid=MAIN.product_listmain_7"
-              target="_self"
-            >
-              <span class="interview-item__date">2025.11.4</span>
-              <span class="interview-item__category">돈벌어요</span>
-              <strong class="interview-item__title"
-                >(시) 이은주 작가 "당신의 언어를 피워냅니다"</strong
-              >
-            </a>
-          </li>
-          <li class="interview-item">
-            <a
-              href="https://www.msiin.co.kr/news/articleView.html?idxno=530"
-              target="_black"
-            >
-              <span class="interview-item__date">2023.10.30</span>
-              <span class="interview-item__category">집중해요</span>
-              <strong class="interview-item__title"
-                >제1회 《포엠피플》 신인문학상 「솜뭉치」 외 4편을 응모한 이은주
-                씨 선정</strong
-              >
-            </a>
-          </li>
-        </ul> -->
       </section>
+      <style>
+        .interview {
+          width: min(1400px, calc(100% - 80px));
+          margin: 0 auto;
+          padding: 150px 0;
+        }
+
+        .interview-list {
+          border-top: 1px solid #111;
+        }
+
+        .interview-item {
+          border-bottom: 1px solid #111;
+          padding-right: 1rem;
+        }
+
+        .interview-item a {
+          display: flex;
+          align-items: center;
+          column-gap: 5%;
+          padding: 20px 0;
+          transition: 0.3s ease;
+        }
+
+        .interview-item a:hover {
+          padding-left: 15px;
+        }
+
+        .interview-item a .interview-item__category {
+          min-width: 100px;
+          background-color: rgba(186, 238, 66, 0.308);
+          text-align: center;
+          border-radius: 25px;
+          color: #004b00;
+        }
+
+        .interview-item__date {
+          font-size: 11px;
+          opacity: 0.6;
+        }
+
+        .interview-item__title {
+          font-family: "Noto Serif KR", serif;
+          font-size: 20px;
+          font-weight: 400;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+      </style>
     </main>
 
     <footer class="footer">
