@@ -34,9 +34,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>읽어봐요 : 은듀닷컴</title>
-    <link rel="icon" type="image/png" href="./img/favicon.png" />
+    <link rel="icon" type="image/png" href="../img/favicon.png" />
 
-    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="../index.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -54,8 +54,7 @@
       }
       .work-detail {
         width: min(1100px, calc(100% - 80px));
-        margin: 0 auto;
-        padding: 150px 0;
+        margin: 80px auto 0;
       }
 
       .work__header {
@@ -138,7 +137,6 @@
 
       .work-detail {
         max-width: 550px;
-        padding: 5rem 0;
       }
       .work-detail__poem {
         white-space: pre-line;
@@ -166,11 +164,21 @@
       .work-detail__footer {
         display: inline-block;
         margin-top: 5rem;
-        background: #739b7394;
+        background: #739b73;
         color: #fff;
-        padding: 0.5rem 1rem;
         border-radius: 10px;
         font-size: 0.8rem;
+        transition:
+          background 0.3s ease,
+          color 0.3s ease;
+      }
+      .work-detail__footer a {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+      }
+      .work-detail__footer:hover {
+        background: #739b733d;
+        color: #739b73;
       }
     </style>
   </head>
@@ -239,7 +247,7 @@
       const params = new URLSearchParams(window.location.search);
       const workId = params.get("id");
 
-      fetch("works.json")
+      fetch("../works/works.json")
         .then((response) => response.json())
         .then((works) => {
           const work = works.find((item) => item.id === workId);

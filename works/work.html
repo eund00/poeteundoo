@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-6X0BDHRPZX"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-6X0BDHRPZX");
+    </script>
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-TRR38Z77");
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="Keywords"
+      content="포엠피플 이은주시인 은듀닷컴 서울예대 문예창작 문창과 신작시 이은주 시인"
+    />
+    <meta name="Description" content="안녕하세요. 시 쓰는 이은주입니다." />
+    <meta http-equiv="Subject" content="개인 창작물 포트폴리오" />
+    <meta http-equiv="Title" content="놀러와요 : 은듀닷컴" />
+    <meta http-equiv="Author" content="이은주" />
+    <title>놀러와요 : 은듀닷컴</title>
+    <link rel="icon" type="image/png" href="../img/favicon.png" />
+
+    <link rel="stylesheet" href="../index.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dongle&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-TRR38Z77"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <header class="header">
+      <div class="header__inner">
+        <h1 class="logo">
+          <a href="/">은듀닷컴</a>
+        </h1>
+
+        <!-- <nav class="gnb">
+          <ul class="gnb__list">
+            <li class="gnb__item">
+              <a href="#work">Works</a>
+            </li>
+            <li class="gnb__item">
+              <a href="#about">About</a>
+            </li>
+            <li class="gnb__item">
+              <a href="#interview">Interview</a>
+            </li>
+            <li class="gnb__item">
+              <a href="diary-before.html">Diary</a>
+            </li>
+          </ul>
+        </nav> -->
+      </div>
+    </header>
+
+    <main>
+      <!-- 최근 작품 -->
+      <section id="work" class="latest-works">
+        <div class="section-header">
+          <p
+            class="section-header__label"
+            style="font-size: 0.8rem; border: 1px solid #111; padding: 1rem"
+          >
+            keypoint : 글을 쓸 때마다 집이 높아져요-!
+          </p>
+          <h2 class="section-header__title">발표작 모아보기</h2>
+        </div>
+
+        <!-- <div class="work-deco"></div>
+        <style>
+          .work-deco {
+            width: 100%;
+            height: 25vw;
+            clip-path: polygon(50% 0, 100% 100%, 0 100%);
+            background: url(https://images.unsplash.com/photo-1458682625221-3a45f8a844c7?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D);
+            opacity: 0.5;
+          }
+        </style> -->
+        <svg class="work-deco" viewBox="0 0 100 50" preserveAspectRatio="none">
+          <defs>
+            <clipPath id="triangle">
+              <polygon points="50,0 100,50 0,50" />
+            </clipPath>
+          </defs>
+
+          <image
+            href="https://images.unsplash.com/photo-1458682625221-3a45f8a844c7?q=80&w=1074&auto=format&fit=crop"
+            width="100"
+            height="50"
+            preserveAspectRatio="xMidYMid slice"
+            clip-path="url(#triangle)"
+            opacity="0.5"
+          />
+
+          <polygon
+            points="50,0 100,50 0,50"
+            fill="none"
+            stroke="#1111119c"
+            stroke-width="0.8"
+            vector-effect="non-scaling-stroke"
+          />
+        </svg>
+        <style>
+          .work-deco {
+            display: block;
+            width: 100%;
+            height: 25vw;
+          }
+        </style>
+        <div class="work-list" id="work-list"></div>
+      </section>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", initWorkList);
+
+        async function initWorkList() {
+          const workList = document.getElementById("work-list");
+
+          if (!workList) return;
+
+          try {
+            const response = await fetch("works.json");
+
+            if (!response.ok) {
+              throw new Error(`작품 데이터 요청 실패: ${response.status}`);
+            }
+
+            const works = await response.json();
+
+            // 최신 작품부터 표시
+            const sortedWorks = [...works].reverse();
+
+            if (!sortedWorks.length) return;
+
+            renderWorks(sortedWorks);
+
+            // 작품 렌더링
+            function renderWorks(works) {
+              const imageNumbers = Array.from(
+                { length: works.length },
+                (_, index) => index + 1,
+              );
+
+              // 배경 이미지 번호 무작위 배정
+              for (let i = imageNumbers.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+
+                [imageNumbers[i], imageNumbers[j]] = [
+                  imageNumbers[j],
+                  imageNumbers[i],
+                ];
+              }
+
+              const fragment = document.createDocumentFragment();
+
+              works.forEach((work, index) => {
+                const card = document.createElement("article");
+                card.className = "work-card";
+
+                const link = document.createElement("a");
+                link.className = "work-card__link";
+                link.href = `work-detail.html?id=${encodeURIComponent(work.id)}`;
+
+                // 배경 이미지
+                const background = document.createElement("img");
+                background.className = "work-card__background";
+                background.src = `../img/img_bg (${imageNumbers[index]}).jpeg`;
+                background.alt = "";
+                background.draggable = false;
+
+                // 작품 정보
+                const meta = document.createElement("div");
+                meta.className = "work-card__meta";
+
+                const publication = document.createElement("div");
+                publication.className = "work-card__publication";
+
+                const year = document.createElement("span");
+                year.textContent = work.year ?? "";
+
+                const separator = document.createElement("span");
+                separator.textContent = " · ";
+                separator.setAttribute("aria-hidden", "true");
+
+                const publicationName = document.createElement("span");
+                publicationName.textContent = work.publication ?? "";
+
+                publication.append(year, separator, publicationName);
+
+                const type = document.createElement("span");
+                type.className = "work-card__type";
+                type.textContent = work.kind ?? "";
+
+                meta.append(publication, type);
+
+                // 작품 제목
+                const title = document.createElement("h3");
+                title.className = "work-card__title";
+                title.textContent = work.title ?? "";
+
+                // 작품 요약
+                const excerpt = document.createElement("p");
+                excerpt.className = "work-card__excerpt";
+                excerpt.textContent = work.subtitle ?? "";
+
+                link.append(background, meta, title, excerpt);
+                card.appendChild(link);
+                fragment.appendChild(card);
+              });
+
+              workList.replaceChildren(fragment);
+            }
+          } catch (error) {
+            console.error("작품 데이터를 불러오지 못했습니다.", error);
+          }
+        }
+      </script>
+
+      <style>
+        /* ==============================
+     작품 섹션
+  ============================== */
+
+        .latest-works {
+          width: min(1400px, calc(100% - 80px));
+          margin: 100px auto 0;
+          padding: 0;
+        }
+
+        /* ==============================
+     작품 그리드
+  ============================== */
+
+        .work-list {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          border-left: 1px solid #111;
+        }
+
+        /* ==============================
+     작품 카드
+  ============================== */
+
+        .work-card {
+          position: relative;
+          min-width: 0;
+          border-right: 1px solid #111;
+          border-bottom: 1px solid #111;
+        }
+
+        .work-card__link {
+          position: relative;
+          isolation: isolate;
+          display: flex;
+          flex-direction: column;
+          min-height: 420px;
+          padding: 30px;
+          overflow: hidden;
+          color: inherit;
+          text-decoration: none;
+          transition:
+            background-color 0.3s ease,
+            color 0.3s ease;
+        }
+
+        .work-card__link:hover {
+          background-color: #111;
+          color: #f7f6f2;
+        }
+
+        .work-card__background {
+          position: absolute;
+          z-index: -1;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          opacity: 0.15;
+          pointer-events: none;
+          -webkit-user-drag: none;
+        }
+
+        /* ==============================
+     작품 정보
+  ============================== */
+
+        .work-card__meta {
+          display: flex;
+          align-items: baseline;
+          justify-content: space-between;
+          gap: 16px;
+          font-size: 11px;
+          letter-spacing: 0.02em;
+        }
+
+        .work-card__publication {
+          min-width: 0;
+          overflow-wrap: anywhere;
+        }
+
+        .work-card__type {
+          flex-shrink: 0;
+          margin-left: auto;
+          padding: 2px 10px;
+          border-radius: 25px;
+          background-color: #739b73;
+          color: #fff;
+          font-size: 12px;
+          white-space: nowrap;
+        }
+
+        /* ==============================
+     작품 제목
+  ============================== */
+
+        .work-card__title {
+          margin-top: auto;
+          font-family: "Noto Serif KR", Georgia, serif;
+          font-size: clamp(28px, 3vw, 46px);
+          font-weight: 400;
+          line-height: 1.25;
+          letter-spacing: -0.05em;
+          overflow-wrap: anywhere;
+        }
+
+        /* ==============================
+     작품 요약
+  ============================== */
+
+        .work-card__excerpt {
+          display: -webkit-box;
+          min-height: calc(1.6em * 2);
+          margin-top: 25px;
+          overflow: hidden;
+          font-family: "Noto Serif KR", Georgia, serif;
+          font-size: 14px;
+          line-height: 1.6;
+          opacity: 0.65;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+        }
+
+        /* ==============================
+     태블릿
+  ============================== */
+
+        @media (max-width: 1024px) {
+          .work-list {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+
+          .work-card__link {
+            min-height: 380px;
+            padding: 24px;
+          }
+        }
+
+        /* ==============================
+     모바일
+  ============================== */
+
+        @media (max-width: 600px) {
+          .latest-works {
+            width: calc(100% - 40px);
+            margin-top: 60px;
+          }
+
+          .work-list {
+            grid-template-columns: 1fr;
+          }
+
+          .work-card__link {
+            min-height: 340px;
+            padding: 24px;
+          }
+
+          .work-card__title {
+            font-size: clamp(28px, 8vw, 40px);
+          }
+        }
+
+        /* ==============================
+     모션 최소화 설정
+  ============================== */
+
+        @media (prefers-reduced-motion: reduce) {
+          .work-card__link {
+            transition: none;
+          }
+        }
+      </style>
+    </main>
+
+    <footer class="footer">
+      <div class="footer__inner">
+        <p class="footer__name">LEE EUN JOO</p>
+
+        <p class="footer__copyright">© 2026 Lee Eun Joo</p>
+      </div>
+    </footer>
+  </body>
+</html>

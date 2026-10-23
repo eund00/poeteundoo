@@ -70,7 +70,7 @@
         <nav class="gnb">
           <ul class="gnb__list">
             <li class="gnb__item">
-              <a href="#work">Works</a>
+              <a href="works/work.html">Works</a>
             </li>
             <li class="gnb__item">
               <a href="#about">About</a>
@@ -155,7 +155,9 @@
       <section id="work" class="latest-works">
         <div class="section-header">
           <p class="section-header__label">LATEST WORKS</p>
-          <h2 class="section-header__title">발표작</h2>
+          <h2 class="section-header__title">
+            <a href="works/work.html">모두 보러가기</a>
+          </h2>
         </div>
 
         <div class="work-slider">
@@ -207,7 +209,7 @@
           let clickResetTimer = null;
 
           try {
-            const response = await fetch("./works.json");
+            const response = await fetch("works/works.json");
 
             if (!response.ok) {
               throw new Error(`작품 데이터 요청 실패: ${response.status}`);
@@ -251,7 +253,7 @@
 
                 const link = document.createElement("a");
                 link.className = "work-card__link";
-                link.href = `./work.html?id=${encodeURIComponent(work.id)}`;
+                link.href = `works/work-detail.html?id=${encodeURIComponent(work.id)}`;
 
                 const background = document.createElement("img");
                 background.className = "work-card__background";
@@ -499,8 +501,8 @@
 
         .latest-works {
           width: min(1400px, calc(100% - 80px));
-          margin-inline: auto;
-          padding-block: 100px;
+          margin: 0 auto;
+          margin-top: 100px;
         }
 
         /* ==============================
@@ -689,6 +691,7 @@
           .latest-works {
             width: calc(100% - 40px);
             padding-block: 60px;
+            margin-top: 0;
           }
 
           .work-card {
@@ -715,6 +718,15 @@
 
           .work-slider__btn--next {
             right: -12px;
+          }
+
+          .about {
+            margin-top: 0 !important;
+          }
+
+          .about__inner {
+            grid-template-columns: 1fr !important;
+            gap: 1.5rem !important;
           }
         }
 
@@ -762,6 +774,7 @@
       </section>
       <style>
         .about {
+          margin-top: 100px;
           border-top: 1px solid #111;
           border-bottom: 1px solid #111;
           position: relative;
@@ -873,8 +886,7 @@
       <style>
         .interview {
           width: min(1400px, calc(100% - 80px));
-          margin: 0 auto;
-          padding: 150px 0;
+          margin: 100px auto 0;
         }
 
         .interview-list {
@@ -921,6 +933,54 @@
           overflow: hidden;
         }
       </style>
+      <script>
+        fetch("./interviews/interviews.json")
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("인터뷰 데이터를 불러오지 못했습니다.");
+            }
+            return response.json();
+          })
+          .then((interviews) => {
+            const interviewList = document.getElementById("interview-list");
+
+            // 날짜 기준 최신순 정렬
+            interviews.sort((a, b) => {
+              const dateA = new Date(a.date.replaceAll(".", "-"));
+              const dateB = new Date(b.date.replaceAll(".", "-"));
+              return dateB - dateA;
+            });
+
+            interviews.forEach((interview) => {
+              const li = document.createElement("li");
+              li.className = "interview-item";
+
+              const a = document.createElement("a");
+              a.href = interview.url;
+              a.target = "_blank";
+              a.rel = "noopener noreferrer";
+
+              const date = document.createElement("span");
+              date.className = "interview-item__date";
+              date.textContent = interview.date;
+
+              const category = document.createElement("span");
+              category.className = "interview-item__category";
+              category.textContent = interview.category;
+
+              const title = document.createElement("strong");
+              title.className = "interview-item__title";
+              title.textContent = interview.title;
+
+              a.append(date, category, title);
+              li.appendChild(a);
+              interviewList.appendChild(li);
+            });
+          })
+          .catch((error) => {
+            console.error("인터뷰 목록 오류:", error);
+          });
+      </script>
     </main>
 
     <footer class="footer">
@@ -932,5 +992,3 @@
     </footer>
   </body>
 </html>
-<script src="js/interviews.js"></script>
-ㅇ
