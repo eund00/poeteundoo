@@ -242,7 +242,7 @@ main {
   }
 
   .work-card a {
-    min-height: 360px;
+    min-height: 150px;
     padding: 25px;
   }
 
