@@ -54,7 +54,7 @@ select {
   position: relative;
   width: 100%;
   border-bottom: 1px solid #111;
-  background: #f7f6f2;
+  background: #f7f6f2 !important;
 }
 
 .header__inner {
