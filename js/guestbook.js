@@ -104,14 +104,22 @@
       return;
     }
 
-    visible.forEach((comment) => {
-      listEl.appendChild(renderComment(comment, false));
-      comments
-        .filter((c) => c.parentId === comment.id)
-        .forEach((reply) => {
-          listEl.appendChild(renderComment(reply, true));
-        });
-    });
+    // 최신 댓글이 위로 오도록 정렬
+    visible
+      .sort(
+        (a, b) =>
+          new Date(b.updatedAt || b.createdAt) -
+          new Date(a.updatedAt || a.createdAt),
+      )
+      .forEach((comment) => {
+        listEl.appendChild(renderComment(comment, false));
+
+        comments
+          .filter((c) => c.parentId === comment.id)
+          .forEach((reply) => {
+            listEl.appendChild(renderComment(reply, true));
+          });
+      });
   }
 
   function renderComment(comment, isReply) {
