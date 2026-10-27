@@ -321,7 +321,7 @@ main {
 .guestbook__rightWrap {
   display: flex;
   flex-direction: row-reverse;
-  column-gap: 10px;
+  column-gap: 25px;
   align-items: flex-end;
 }
 .guestbook__eyebrow {
@@ -340,30 +340,34 @@ main {
 }
 .guestbook__intro {
   position: relative;
-  color: #fff;
+  color: #333;
   font-size: 12px;
-  border: 1px solid #ccc;
   padding: 6px 10px;
   border-radius: 10px;
   line-height: 1.2;
-  background-color: #73aa24;
+  border: 1px solid #ccc;
+  bottom: 15px;
+  /* background-color: #73aa24; */
+}
+.guestbook__intro::after {
+  content: "";
+  position: absolute;
+  bottom: 15px;
+  right: -23px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
 }
 .guestbook__intro::before {
   content: "";
   position: absolute;
-  bottom: 15px;
-  right: -8px;
-  width: 0;
-  height: 0;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 8px solid #73aa24;
-}
-
-.guestbook__rightWrap {
-  display: flex;
-  /* flex-direction: column; */
-  /* align-items: center; */
+  bottom: 19px;
+  right: -14px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
 }
 
 /* 거북이가 오른쪽에서 천천히 걸어오기 */
