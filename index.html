@@ -107,7 +107,8 @@
       </section>
       <style>
         .hero {
-          /* min-height: 720px; */
+          position: relative;
+
           padding: 30px 0;
           display: flex;
           align-items: center;
@@ -115,7 +116,25 @@
           border-bottom: 1px solid #111;
         }
 
+        .hero::before{
+          content: "";
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+          background-size: cover;
+          background-attachment: fixed;
+          opacity: 0.2;
+          background-image: url(https://images.unsplash.com/photo-1791709342797-d065f0dc070d?q=80&w=627&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D);
+          background-position-y: bottom;
+          background-position-x: center;
+          filter: drop-shadow(2px 4px 26px green);
+        }
+
         .hero__inner {
+          position: relative;
+          z-index: 1;
           width: min(1400px, calc(100% - 80px));
           margin: 0 auto;
         }
@@ -145,7 +164,7 @@
 
           color: #ccc;
           background-color: #333;
-          padding: 5px 10px;
+          padding: 5px 10px;git
 
           padding-bottom: 6px;
 
@@ -169,7 +188,7 @@
         <div class="section-header">
           <p class="section-header__label">LATEST WORKS</p>
           <h2 class="section-header__title">
-            <a href="works/work.html">모두 보러가기</a>
+            <a href="works/work.html">전체 보기</a>
           </h2>
         </div>
 
@@ -564,6 +583,7 @@
           position: relative;
           isolation: isolate;
           display: flex;
+          height: 100%;
           flex-direction: column;
           min-height: 420px;
           padding: 30px;
