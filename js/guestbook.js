@@ -305,7 +305,7 @@
           new Date(a.updatedAt || a.createdAt),
       );
 
-    countEl.textContent = `${comments.length}개의 이야기`;
+    countEl.textContent = `${comments.length}개의 댓글`;
 
     if (!visible.length) {
       const empty = document.createElement("p");

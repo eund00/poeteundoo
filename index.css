@@ -314,11 +314,19 @@ main {
 }
 .guestbook__header {
   margin-bottom: 34px;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
 }
 .guestbook__eyebrow {
   margin: 0 0 8px;
   font-size: 12px;
   letter-spacing: 0.14em;
+
+  font:
+    400 clamp(28px, 4vw, 42px) / 1.2 "Noto Serif KR",
+    Georgia,
+    serif;
 }
 .guestbook__title {
   margin: 0;
