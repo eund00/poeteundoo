@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-6X0BDHRPZX"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-6X0BDHRPZX");
+    </script>
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-TRR38Z77");
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="Keywords"
+      content="포엠피플 이은주시인 은듀닷컴 서울예대 문예창작 문창과 신작시 이은주 시인"
+    />
+    <meta name="Description" content="안녕하세요. 시 쓰는 이은주입니다." />
+    <meta http-equiv="Subject" content="개인 창작물 포트폴리오" />
+    <meta http-equiv="Title" content="놀러와요 : 은듀닷컴" />
+    <meta http-equiv="Author" content="이은주" />
+    <title>놀러와요 : 은듀닷컴</title>
+    <link rel="icon" type="image/png" href="img/favicon.png" />
+
+    <link rel="stylesheet" href="index.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dongle&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-TRR38Z77"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <header class="header">
+      <div class="header__inner">
+        <h1 class="logo">
+          <a href="/">은듀닷컴</a>
+        </h1>
+
+        <nav class="gnb">
+          <ul class="gnb__list">
+            <li class="gnb__item">
+              <a href="works/work.html">Works</a>
+            </li>
+            <li class="gnb__item">
+              <a href="#about">About</a>
+            </li>
+            <li class="gnb__item">
+              <a href="#interview">Interview</a>
+            </li>
+            <li class="gnb__item">
+              <a href="diary-before.html">Diary</a>
+            </li>
+            <li class="gnb__item">
+              <a href="guestbook.html">Guestbook</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <!-- 은듀닷컴 방명록: index.html의 </main> 바로 위에 삽입 -->
+    <section class="guestbook" id="guestbook">
+      <div class="guestbook__header">
+        <p class="guestbook__eyebrow">GUESTBOOK</p>
+        <h2 class="guestbook__title">방명록</h2>
+        <p class="guestbook__intro">선플 부탁드려요.</p>
+      </div>
+
+      <form class="guestbook__form" id="guestbook-form">
+        <input type="hidden" id="guestbook-parent-id" value="" />
+        <div class="guestbook__fields">
+          <label
+            >닉네임
+            <input
+              id="guestbook-nickname"
+              maxlength="24"
+              required
+              autocomplete="nickname"
+              placeholder="닉네임"
+            />
+          </label>
+          <label
+            >비밀번호
+            <input
+              id="guestbook-password"
+              type="password"
+              minlength="4"
+              maxlength="100"
+              required
+              autocomplete="new-password"
+              placeholder="수정·삭제할 때 사용"
+            />
+          </label>
+        </div>
+        <label class="guestbook__message-label" for="guestbook-content"
+          >남길 말</label
+        >
+        <textarea
+          id="guestbook-content"
+          maxlength="1000"
+          rows="4"
+          required
+          placeholder="다정한 말도, 짧은 안부도 좋아요."
+        ></textarea>
+        <label class="guestbook__private">
+          <input id="guestbook-private" type="checkbox" />
+          <span>비밀 댓글로 남기기</span>
+        </label>
+        <div class="guestbook__form-bottom">
+          <p class="guestbook__hint">
+            비밀번호는 저장된 댓글을 수정하거나 삭제할 때 필요해요.
+          </p>
+          <button type="submit" class="guestbook__submit" id="guestbook-submit">
+            댓글 남기기
+          </button>
+        </div>
+        <button
+          type="button"
+          class="guestbook__cancel"
+          id="guestbook-cancel"
+          hidden
+        >
+          답글 작성 취소
+        </button>
+        <p
+          class="guestbook__status"
+          id="guestbook-status"
+          role="status"
+          aria-live="polite"
+        ></p>
+      </form>
+
+      <div class="guestbook__list-header">
+        <h3>댓글목록</h3>
+        <span id="guestbook-count">불러오는 중…</span>
+      </div>
+      <div class="guestbook__list" id="guestbook-list" aria-live="polite">
+        <p class="guestbook__loading">방명록을 불러오는 중입니다.</p>
+      </div>
+    </section>
+
+    <!-- Apps Script 웹 앱 URL을 guestbook.js의 API_URL에 설정하세요. -->
+    <script src="/js/guestbook.js" defer></script>
+
+    <footer class="footer">
+      <div class="footer__inner">
+        <p class="footer__name">LEE EUN JOO</p>
+
+        <p class="footer__copyright">© 2026 Lee Eun Joo</p>
+      </div>
+    </footer>
+  </body>
+</html>
