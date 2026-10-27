@@ -3,7 +3,7 @@
 
   // 배포 후 받은 Apps Script 웹 앱 URL로 교체하세요. 반드시 /exec 로 끝나는 URL.
   const API_URL =
-    "https://script.google.com/macros/s/AKfycbzAUYP7J0NMpaAeHnY84scmnias1gg9vwuU3qFRDMoEqEcTDN0CTxE3UEP-CUwPac_6/exec";
+    "https://script.google.com/macros/s/AKfycbwX2Tp28v4pFi-PFnSrYMoL5HJ3ee-PA0Ap0cF6Jn_oxR88Jgetzk3410hT5LCFKEVH/exec";
 
   const $ = (id) => document.getElementById(id);
   const form = $("guestbook-form");
