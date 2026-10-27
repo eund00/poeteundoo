@@ -614,8 +614,7 @@ main {
   text-decoration: underline;
   font-size: 12px;
 }
-.guestbook__empty,
-.guestbook__loading {
+.guestbook__empty {
   padding: 22px 0;
   color: #888;
   font-size: 14px;
@@ -640,5 +639,62 @@ main {
   .guestbook__item--reply {
     margin-left: 12px;
     padding-left: 12px;
+  }
+}
+
+.guestbook__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 22px 0;
+  color: #888;
+  font-size: 14px;
+  background: transparent;
+}
+
+/* 점 세 개 */
+.guestbook__dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.guestbook__dots span {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #888;
+  opacity: 0.2;
+  animation: guestbookDotPulse 1.2s infinite ease-in-out;
+}
+
+/* 순서대로 켜지도록 지연 시간 적용 */
+.guestbook__dots span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.guestbook__dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.guestbook__dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes guestbookDotPulse {
+  0%,
+  60%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+
+  30% {
+    opacity: 1;
+    transform: scale(1.2);
   }
 }

@@ -392,7 +392,8 @@
   async function load() {
     if (!apiReady()) return;
 
-    listEl.textContent = "방명록을 불러오는 중입니다.";
+    listEl.innerHTML =
+      '<div class="guestbook__loading"> <span class="guestbook__loading-text"></span> <span class="guestbook__dots" aria-hidden="true"> <span></span> <span></span> <span></span> </span> </div>';
 
     try {
       const result = await jsonp({ action: "list" });
