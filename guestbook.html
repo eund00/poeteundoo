@@ -180,5 +180,223 @@
         <p class="footer__copyright">© 2026 Lee Eun Joo</p>
       </div>
     </footer>
+
+    <!-- 은듀닷컴 커스텀 모달 -->
+    <div id="guestbook-modal" class="gb-modal" hidden>
+      <section
+        class="gb-modal__box"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="gb-modal-title"
+      >
+        <button
+          type="button"
+          class="gb-modal__close"
+          id="gb-modal-close"
+          aria-label="닫기"
+        >
+          ×
+        </button>
+
+        <!-- <p class="gb-modal__eyebrow">EUNDOO GUESTBOOK</p> -->
+        <h2 id="gb-modal-title">알림</h2>
+        <div id="gb-modal-message" class="gb-modal__message"></div>
+
+        <form id="gb-modal-form">
+          <input
+            id="gb-modal-input"
+            class="gb-modal__input"
+            type="text"
+            autocomplete="off"
+            hidden
+          />
+          <textarea
+            id="gb-modal-textarea"
+            class="gb-modal__input gb-modal__textarea"
+            rows="5"
+            hidden
+          ></textarea>
+
+          <div id="gb-modal-error" class="gb-modal__error" hidden></div>
+
+          <div class="gb-modal__actions" id="gb-modal-actions">
+            <button
+              type="button"
+              class="gb-modal__button gb-modal__button--sub"
+              id="gb-modal-cancel"
+            >
+              취소
+            </button>
+            <button
+              type="submit"
+              class="gb-modal__button gb-modal__button--main"
+              id="gb-modal-submit"
+            >
+              확인
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
+    <style>
+      /* 은듀닷컴 커스텀 모달 */
+      .gb-modal[hidden],
+      .gb-modal [hidden] {
+        display: none !important;
+      }
+
+      .gb-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgb(25 30 25 / 45%);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+      }
+
+      .gb-modal__box {
+        position: relative;
+        padding: 1rem 1.5rem;
+        border: 1px solid #ddd;
+        background-color: #fff;
+        animation: gb-modal-appear 0.2s ease-out;
+        max-width: 350px;
+        width: calc(100vw - 20px);
+      }
+
+      .gb-modal__close {
+        position: absolute;
+        top: 13px;
+        right: 16px;
+        border: 0;
+        background: transparent;
+        color: #777;
+        font-size: 27px;
+        cursor: pointer;
+      }
+
+      .gb-modal__eyebrow {
+        margin: 0 0 12px;
+        color: #739b73;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+      }
+
+      .gb-modal__box h2 {
+        margin: 0 0 16px;
+        color: #30372f;
+        font-size: 1rem;
+        font-weight: 650;
+      }
+
+      .gb-modal__message {
+        margin-bottom: 20px;
+        color: #62675f;
+        font-size: 14px;
+        line-height: 1.8;
+        overflow-wrap: anywhere;
+        white-space: pre-wrap;
+      }
+
+      .gb-modal__input {
+        box-sizing: border-box;
+        width: 100%;
+        margin-top: 7px;
+        padding: 12px 13px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        background: #fff;
+        color: #222;
+        font: inherit;
+        font-size: 14px;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+
+      .gb-modal__input:focus {
+        border-color: #739b73;
+        box-shadow: 0 0 0 3px rgb(115 155 115 / 13%);
+      }
+
+      .gb-modal__textarea {
+        resize: vertical;
+        min-height: 120px;
+        line-height: 1.7;
+      }
+
+      .gb-modal__error {
+        margin: 0 0 12px;
+        color: #c04e4e;
+        font-size: 12px;
+        line-height: 1.6;
+      }
+
+      .gb-modal__actions {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 20px;
+      }
+
+      .gb-modal__button {
+        min-height: 42px;
+        padding: 10px 18px;
+        border: 0;
+        font: inherit;
+        font-size: 13px;
+        cursor: pointer;
+        transition:
+          opacity 0.2s,
+          transform 0.2s;
+      }
+
+      .gb-modal__button:hover {
+        opacity: 0.85;
+      }
+
+      .gb-modal__button:active {
+        transform: scale(0.98);
+      }
+
+      .gb-modal__button--main {
+        background: #739b73;
+        color: white;
+      }
+
+      .gb-modal__button--sub {
+        background: #f0f1ec;
+        color: #555b52;
+      }
+
+      @keyframes gb-modal-appear {
+        from {
+          opacity: 0;
+          transform: translateY(8px) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .gb-modal__button {
+          flex: 1;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .gb-modal__box {
+          animation: none;
+        }
+      }
+    </style>
   </body>
 </html>

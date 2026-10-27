@@ -44,6 +44,7 @@ input,
 textarea,
 select {
   font: inherit;
+  outline: none;
 }
 
 /* ==================================================
@@ -446,9 +447,8 @@ main {
 }
 .guestbook__item {
   padding: 0.6rem 1.5rem;
-  border: 1px solid #ddd !important;
+  border: 1px solid #ddd;
   background-color: #fff;
-  border: 1px solid #5b7657;
 }
 .guestbook__item--reply {
   margin-left: 30px !important;
