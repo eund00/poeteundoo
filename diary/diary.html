@@ -415,6 +415,349 @@
           font-size: 14px;
         }
       }
+
+      /* ========================================
+   은듀닷컴 Diary : 오래된 인터넷 일기장
+======================================== */
+
+      /* 바랜 종이 같은 배경 */
+      body {
+        background-color: #f7f6ef;
+        background-image: radial-gradient(#d9dfcf 0.7px, transparent 0.7px);
+        background-size: 18px 18px;
+      }
+
+      /* 페이지 */
+      .diary-page {
+        max-width: 950px;
+        padding: 38px 30px 30px;
+        background: rgba(255, 255, 250, 0.88);
+        border-left: 1px solid #e8e6d9;
+        border-right: 1px solid #e8e6d9;
+        min-height: 100vh;
+      }
+
+      /* 상단 로고 */
+      .header {
+        background: #f0f1e8;
+        border-bottom: 1px dashed #c5cdb9;
+      }
+
+      .header__inner {
+        max-width: 1010px;
+        margin: 0 auto;
+        padding: 0 30px;
+      }
+
+      /* 제목 */
+      .diary-heading {
+        position: relative;
+        margin-bottom: 42px;
+        padding: 24px 22px 22px;
+        border: 1px solid #dce0d1;
+        background: #f8f8ef;
+        box-shadow: 3px 3px 0 #e8eadf;
+      }
+
+      .diary-heading::after {
+        content: "✿  MY LITTLE DIARY  ✿";
+        display: block;
+        margin-top: 13px;
+        color: #8b9b7d;
+        font-family: Georgia, serif;
+        font-size: 10px;
+        letter-spacing: 0.18em;
+      }
+
+      .diary-heading h1 {
+        font-size: clamp(40px, 7vw, 60px);
+        color: #495744;
+        letter-spacing: -0.06em;
+      }
+
+      .diary-intro {
+        margin-top: 10px;
+        color: #8b887b;
+        font-size: 13px;
+      }
+
+      /* 검색 영역 */
+      .diary-tools {
+        padding: 12px 4px 16px;
+        border-bottom: 1px dashed #bdc9b0;
+      }
+
+      .diary-count {
+        color: #829078;
+        font-family: Georgia, serif;
+        letter-spacing: 0.05em;
+      }
+
+      .diary-search {
+        border: 1px solid #e2e4d9;
+        border-radius: 2px;
+        background: #fbfbf6;
+        color: #555b4f;
+        transition: border-color 0.2s;
+      }
+
+      .diary-search:focus {
+        border-color: #9cac8d;
+      }
+
+      /* 카테고리 버튼 */
+      .diary-categories {
+        gap: 7px;
+        margin: 20px 0;
+      }
+
+      .diary-category {
+        padding: 5px 12px;
+        border: 1px solid #dfe3d7;
+        border-radius: 2px;
+        background: #fbfbf6;
+        color: #858779;
+        transition: all 0.2s;
+      }
+
+      .diary-category:hover {
+        border-color: #a6b59a;
+        color: #53674d;
+      }
+
+      .diary-category.active {
+        border-color: #7e9472;
+        background: #7e9472;
+        color: #fff;
+      }
+
+      /* 게시글 목록 */
+      .diary-list {
+        border-top: 1px solid #aebba3;
+        background: rgba(255, 255, 250, 0.55);
+      }
+
+      .diary-item {
+        position: relative;
+        grid-template-columns: 95px minmax(0, 1fr);
+        gap: 18px;
+        padding: 25px 12px;
+        border-bottom: 1px dashed #d9ddcf;
+        transition:
+          background 0.2s,
+          padding 0.2s;
+      }
+
+      .diary-item:hover {
+        padding-left: 17px;
+        background: #f3f5eb;
+      }
+
+      .diary-date {
+        color: #9b9b8b;
+        font-family: Georgia, serif;
+        font-size: 12px;
+      }
+
+      .diary-item-category {
+        color: #839576;
+        font-size: 11px;
+      }
+
+      .diary-item span.category {
+        margin-right: 8px;
+        opacity: 1;
+      }
+
+      .diary-item h2 {
+        color: #4a5045;
+        font-size: 17px;
+        font-weight: 500;
+      }
+
+      .diary-preview {
+        color: #929084;
+        font-size: 12px;
+      }
+
+      /* 페이지 번호 */
+      .diary-pagination {
+        margin-top: 30px;
+      }
+
+      .diary-page-button {
+        min-width: 32px;
+        height: 32px;
+        border: 1px solid #e5e6dc;
+        border-radius: 2px;
+        color: #888b7d;
+      }
+
+      .diary-page-button.active {
+        border-color: #819576;
+        background: #819576;
+        color: #fff;
+      }
+
+      /* 상세 글: 오래된 편지지 */
+      .diary-detail {
+        border: 1px solid #d9d9c9;
+        background: #fffef8;
+        box-shadow: 4px 4px 0 #e9e9de;
+      }
+
+      .diary-detail-title {
+        padding: 28px 26px 20px;
+        background-color: #f3f3e8;
+      }
+
+      .diary-detail-title::before {
+        background-position: center;
+        opacity: 0.18;
+      }
+
+      .diary-detail-category {
+        color: #819276;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+      }
+
+      .diary-detail h1 {
+        margin: 12px 0 20px;
+        color: #495744;
+        font-weight: 400;
+        line-height: 1.45;
+      }
+
+      .diary-detail-date {
+        color: #999687;
+        font-family: Georgia, serif;
+      }
+
+      /* 본문은 따뜻한 종이색 */
+      .diary-detail-content {
+        padding: 30px 28px;
+        border-top: 1px dashed #d6d8ca;
+        background-color: #fffdf5;
+        color: #4b4a42;
+        font-size: 15px;
+        line-height: 2.2;
+      }
+
+      /* 본문 이미지 */
+      .diary-detail-content img {
+        max-width: 100%;
+        height: auto;
+        border: 1px solid #e6e2d5;
+        padding: 4px;
+        background: #fff;
+      }
+
+      /* 이전 / 다음 / 목록 버튼 */
+      .diary-detail-nav {
+        bottom: -62px;
+      }
+
+      .diary-nav-button,
+      .diary-back {
+        min-width: 42px;
+        border: 1px solid #d5dccb;
+        border-radius: 2px;
+        background: #f7f8ef;
+        color: #68785e;
+        box-shadow: 2px 2px 0 #e7e9de;
+        transition: all 0.2s;
+      }
+
+      .diary-nav-button:hover:not(:disabled),
+      .diary-back:hover {
+        border-color: #91a286;
+        background: #e9eee2;
+        color: #43563c;
+      }
+
+      .diary-nav-button:disabled {
+        background: #f4f3ec;
+        color: #c6c5ba;
+        box-shadow: none;
+      }
+
+      .diary-back {
+        background: #819576;
+        color: #fff;
+        border-color: #819576;
+      }
+
+      /* 푸터 */
+      .diary-footer {
+        margin-top: 95px;
+        padding-top: 18px;
+        border-top: 1px dashed #d5d9cb;
+        color: #a4a391;
+        font-family: Georgia, serif;
+        letter-spacing: 0.04em;
+      }
+
+      /* 모바일 */
+      @media (max-width: 600px) {
+        .diary-page {
+          margin: 0;
+          padding: 28px 18px 25px;
+          border: 0;
+        }
+
+        .header__inner {
+          padding: 0 20px;
+        }
+
+        .diary-heading {
+          margin-bottom: 32px;
+          padding: 20px 16px;
+        }
+
+        .diary-tools {
+          gap: 12px;
+        }
+
+        .diary-search {
+          width: 65%;
+        }
+
+        .diary-item {
+          gap: 7px;
+          padding: 20px 8px;
+        }
+
+        .diary-item:hover {
+          padding-left: 12px;
+        }
+
+        .diary-line {
+          flex-wrap: wrap;
+          row-gap: 5px;
+        }
+
+        .diary-item h2 {
+          font-size: 16px;
+        }
+
+        .diary-preview {
+          flex-basis: 100%;
+        }
+
+        .diary-detail-title {
+          padding: 23px 18px 18px;
+        }
+
+        .diary-detail-content {
+          padding: 24px 18px;
+          font-size: 14px;
+        }
+
+        .diary-detail-nav {
+          bottom: -58px;
+        }
+      }
     </style>
   </head>
 
