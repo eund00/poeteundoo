@@ -318,11 +318,13 @@ main {
   flex-direction: row-reverse;
   justify-content: space-between;
 }
+.guestbook__rightWrap {
+  display: flex;
+  flex-direction: row-reverse;
+  column-gap: 10px;
+  align-items: flex-end;
+}
 .guestbook__eyebrow {
-  margin: 0 0 8px;
-  font-size: 12px;
-  letter-spacing: 0.14em;
-
   font:
     400 clamp(28px, 4vw, 42px) / 1.2 "Noto Serif KR",
     Georgia,
@@ -337,10 +339,111 @@ main {
   letter-spacing: -0.06em;
 }
 .guestbook__intro {
-  margin: 12px 0 0;
-  color: #777;
-  font-size: 15px;
+  position: relative;
+  color: #fff;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  border-radius: 10px;
+  line-height: 1.2;
+  background-color: #73aa24;
 }
+.guestbook__intro::before {
+  content: "";
+  position: absolute;
+  bottom: 15px;
+  right: -8px;
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 8px solid #73aa24;
+}
+
+.guestbook__rightWrap {
+  display: flex;
+  /* flex-direction: column; */
+  /* align-items: center; */
+}
+
+/* 거북이가 오른쪽에서 천천히 걸어오기 */
+.guestbook__eyebrow {
+  display: inline-block;
+  transform-origin: center bottom;
+  animation: turtleWalk 2.4s cubic-bezier(0.25, 0.7, 0.3, 1) both;
+}
+
+/* 말풍선은 처음에 숨기기 */
+.guestbook__intro {
+  position: relative;
+  opacity: 0;
+  transform: translateY(8px) scale(0.92);
+  transform-origin: top center;
+  animation: bubbleAppear 0.65s ease-out 2s both;
+}
+
+/* 거북이의 느릿느릿한 걸음 */
+@keyframes turtleWalk {
+  0% {
+    opacity: 0;
+    transform: translateX(65px) rotate(8deg);
+  }
+
+  15% {
+    opacity: 1;
+    transform: translateX(52px) rotate(-5deg);
+  }
+
+  35% {
+    transform: translateX(35px) rotate(5deg);
+  }
+
+  55% {
+    transform: translateX(20px) rotate(-4deg);
+  }
+
+  75% {
+    transform: translateX(7px) rotate(3deg);
+  }
+
+  90% {
+    transform: translateX(-2px) rotate(-2deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0) rotate(0);
+  }
+}
+
+/* 말풍선이 뽀용 나타나기 */
+@keyframes bubbleAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.92);
+  }
+
+  70% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.03);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 움직임 최소화 설정을 사용하는 방문자 배려 */
+@media (prefers-reduced-motion: reduce) {
+  .guestbook__eyebrow,
+  .guestbook__intro {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .guestbook__form {
   padding: 20px 10px;
   border: 1px solid #ddd;
