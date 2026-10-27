@@ -38,8 +38,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>다이어리 : 은듀닷컴</title>
-    <link rel="icon" type="image/png" href="./img/favicon.png" />
-    <link rel="stylesheet" href="index.css" />
+    <link rel="icon" type="image/png" href="../img/favicon.png" />
+    <link rel="stylesheet" href="../index.css" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -139,11 +139,6 @@
         background: #cccccc20;
         font-size: 13px;
       }
-
-      .diary-search:focus {
-        border-color: #333;
-      }
-
       /* 카테고리 */
       .diary-categories {
         display: flex;
@@ -274,52 +269,111 @@
 
       /* 상세 글 */
       .diary-detail {
-        padding: 15px 0;
+        position: relative;
+        border: 1px solid #ccc;
       }
 
       .diary-detail-category {
         color: #999;
-        font-size: 12px;
+        font-size: 15px;
       }
 
       .diary-detail h1 {
-        font-family: "Chiron Hei HK", sans-serif;
-        margin: 12px 0;
         font-size: clamp(26px, 5vw, 38px);
-        font-weight: 500;
-        letter-spacing: -0.05em;
-        line-height: 1.4;
-        word-break: keep-all;
+        color: #333;
+        font-weight: lighter;
       }
 
       .diary-detail-date {
-        color: #999;
+        color: #111;
         font-size: 12px;
+        display: block;
+        text-align: right;
+      }
+
+      .diary-detail-title {
+        position: relative;
+        isolation: isolate;
+        padding: 1rem 1.5rem;
+      }
+      .diary-detail-title::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url("https://images.unsplash.com/photo-1653723470659-3071c310b06f?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D");
+        background-size: cover;
+        background-position: center;
+        opacity: 0.3; /* 배경 투명도: 0~1 */
+        z-index: -1;
       }
 
       .diary-detail-content {
         font-family: "Chiron Hei HK", sans-serif;
-
-        margin-top: 48px;
-        padding-top: 35px;
         border-top: 1px solid #eaeaea;
         font-size: 15px;
         line-height: 2.1;
         white-space: pre-wrap;
         overflow-wrap: anywhere;
+        padding: 1.5rem;
+        background-color: #faf7f0;
       }
 
       .diary-detail-content p {
         margin: 0 0 1.5em;
       }
+      .diary-detail-content img {
+        width: 100%;
+      }
 
+      /* 게시글 이동 버튼 영역 */
+      .diary-detail-nav {
+        position: absolute;
+        left: 0;
+        bottom: -65px;
+        width: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      /* 목록으로 버튼 */
       .diary-back {
-        margin-top: 5rem;
-        padding: 0;
-        border: 0;
-        background: none;
-        color: #999;
-        font-size: 0.8rem;
+        flex-shrink: 0;
+        border: 1px solid #222;
+        border-radius: 3px;
+        background: #222;
+        color: #fff;
+        padding: 10px 16px;
+        cursor: pointer;
+        font: inherit;
+        font-size: 13px;
+      }
+
+      /* 이전 / 다음 게시글 버튼 */
+      .diary-nav-button {
+        border: 1px solid #e5e5e5;
+        border-radius: 3px;
+        background: #222;
+        color: #fff;
+        padding: 10px 12px;
+        cursor: pointer;
+        font: inherit;
+        font-size: 13px;
+        transition:
+          background 0.2s,
+          color 0.2s;
+      }
+
+      .diary-nav-button:hover:not(:disabled) {
+        background: #f5f5f5;
+        color: #222;
+      }
+
+      .diary-nav-button:disabled {
+        cursor: default;
+        opacity: 0.3;
       }
 
       /* 푸터 */
@@ -358,7 +412,6 @@
         }
 
         .diary-detail-content {
-          margin-top: 35px;
           font-size: 14px;
         }
       }
@@ -388,7 +441,7 @@
     <main class="diary-page">
       <header class="diary-heading">
         <h1><span class="element">💗</span> Diary</h1>
-        <p class="diary-intro">사부작사부작 . . . 뭔가 적긴하는 중</p>
+        <p class="diary-intro">비밀 일기장에 들어온 걸 환영해!</p>
       </header>
 
       <style>
@@ -631,27 +684,64 @@
         }
 
         detailEl.innerHTML = `
-          <div class="diary-detail-category">
-            ${escapeHTML(post.category)}
+          <div class="diary-detail-title">
+            <div class="diary-detail-category">
+              ${escapeHTML(post.category)}
+            </div>
+
+            <h1>${escapeHTML(post.title)}</h1>
+
+            <time
+              class="diary-detail-date"
+              datetime="${escapeHTML(post.date)}"
+            >${formatDate(post.date)}</time>
           </div>
-
-          <h1>${escapeHTML(post.title)}</h1>
-
-          <time
-            class="diary-detail-date"
-            datetime="${escapeHTML(post.date)}"
-          >${formatDate(post.date)}</time>
 
           <div class="diary-detail-content" id="diary-content">
             불러오는 중...
           </div>
 
-          <button
-            type="button"
-            class="diary-back"
-            id="diary-back"
-          >← 목록으로</button>
+          <div class="diary-detail-nav">
+            <button
+              type="button"
+              class="diary-nav-button"
+              data-detail-nav="prev"
+              aria-label="이전 게시글"
+            >←</button>
+
+            <button
+              type="button"
+              class="diary-back"
+              id="diary-back"
+            >☰</button>
+
+            <button
+              type="button"
+              class="diary-nav-button"
+              data-detail-nav="next"
+              aria-label="다음 게시글"
+            >→</button>
+          </div>
         `;
+
+        // 게시글 이동 버튼 상태 설정
+        const sortedPosts = getSortedPosts();
+        const currentIndex = sortedPosts.findIndex(
+          (item) => String(item.id) === String(id),
+        );
+
+        const prevButton = detailEl.querySelector('[data-detail-nav="prev"]');
+        const nextButton = detailEl.querySelector('[data-detail-nav="next"]');
+
+        // 최신 날짜순 기준: 이전 게시글은 더 오래된 글
+        if (prevButton) {
+          prevButton.disabled =
+            currentIndex === -1 || currentIndex >= sortedPosts.length - 1;
+        }
+
+        if (nextButton) {
+          nextButton.disabled = currentIndex <= 0;
+        }
 
         try {
           const response = await fetch(`./${post.contentFile}`);
@@ -739,11 +829,45 @@
         renderDetail(id);
       });
 
-      /* 상세 글에서 목록으로 */
+      /* 상세 글에서 목록으로 / 이전·다음 게시글 이동 */
       detailEl.addEventListener("click", (event) => {
+        // 목록으로
         if (event.target.closest("#diary-back")) {
           showList();
+          return;
         }
+
+        // 이전 / 다음 게시글
+        const navButton = event.target.closest("[data-detail-nav]");
+
+        if (!navButton || navButton.disabled) return;
+
+        const currentId = new URLSearchParams(location.search).get("id");
+        const sortedPosts = getSortedPosts();
+
+        const currentIndex = sortedPosts.findIndex(
+          (post) => String(post.id) === String(currentId),
+        );
+
+        if (currentIndex === -1) return;
+
+        const direction = navButton.dataset.detailNav;
+
+        // 최신 날짜순 배열에서 이전 글은 아래쪽, 다음 글은 위쪽
+        const targetIndex =
+          direction === "prev" ? currentIndex + 1 : currentIndex - 1;
+
+        const targetPost = sortedPosts[targetIndex];
+
+        if (!targetPost) return;
+
+        history.pushState(
+          { diaryDetail: true },
+          "",
+          `?id=${encodeURIComponent(targetPost.id)}`,
+        );
+
+        renderDetail(targetPost.id);
       });
 
       /* 브라우저 뒤로 가기 / 앞으로 가기 */

@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-6X0BDHRPZX"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-6X0BDHRPZX");
+    </script>
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-TRR38Z77");
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>지킬거야? : 은듀닷컴</title>
+    <link rel="icon" type="image/png" href="../img/favicon.png" />
+
+    <link rel="stylesheet" href="../index.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dongle&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="modal">
+      <div class="modal-in">
+        <div class="modal-titlebar">
+          <span class="modal-title"> 💌 은듀닷컴 - 알림 </span>
+          <button
+            type="button"
+            class="modal-close"
+            aria-label="닫기"
+            id="modal-close"
+          >
+            ×
+          </button>
+        </div>
+
+        <div class="modal-content">
+          <span id="modal-icon" class="modal-icon">💌</span>
+          <p id="modal-text">
+            이 곳은 내 다이어리야.
+            <br />
+            비밀을 지켜야 해.
+          </p>
+
+          <div class="modal-buttons">
+            <button id="modal-yes">응, 알겠어.</button>
+            <button id="modal-no">싫어, 내가 왜?</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .modal {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(43, 51, 39, 0.48);
+        z-index: 999;
+        font-family: inherit;
+      }
+
+      .modal-in {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        width: 86%;
+        max-width: 420px;
+        padding: 0;
+
+        background: #f5f0e6;
+        border: 2px solid #739b73;
+        outline: 1px solid #fdfbf5;
+        box-shadow:
+          4px 4px 0 rgba(36, 48, 33, 0.22),
+          0 12px 35px rgba(0, 0, 0, 0.12);
+
+        z-index: 1000;
+        box-sizing: border-box;
+      }
+
+      /* 윈도우 스타일 제목 표시줄 */
+      .modal-titlebar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+
+        min-height: 34px;
+        padding: 4px 5px 4px 10px;
+        box-sizing: border-box;
+
+        background: #739b73;
+        color: #fffdf5;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+
+      .modal-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      /* 우측 상단 닫기 버튼 */
+      .modal-close {
+        flex: 0 0 25px;
+        width: 25px;
+        height: 24px;
+        padding: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border: 1px solid #f5f0e6;
+        border-radius: 0;
+        background: #f5f0e6;
+        color: #455c43;
+
+        font-family: Arial, sans-serif;
+        font-size: 21px;
+        line-height: 1;
+        cursor: pointer;
+
+        box-shadow: inset -1px -1px 0 #9eaa94;
+      }
+
+      .modal-close:hover {
+        background: #e8e0d3;
+      }
+
+      .modal-close:active {
+        box-shadow: inset 1px 1px 0 #9eaa94;
+      }
+
+      /* 팝업 내용 */
+      .modal-content {
+        padding: 28px 22px 24px;
+        text-align: center;
+      }
+
+      .modal-icon {
+        display: inline-block;
+        font-size: 2rem;
+        margin-bottom: 5px;
+      }
+
+      #modal-text {
+        margin: 10px 0 0;
+        color: #39362f;
+        font-size: 15px;
+        line-height: 1.8;
+      }
+
+      /* 버튼 영역 */
+      .modal-buttons {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 22px;
+      }
+
+      .modal-buttons button {
+        padding: 9px 15px;
+        border: 1px solid #739b73;
+        border-radius: 0;
+
+        background: #fbf8f0;
+        color: #455c43;
+
+        font-family: inherit;
+        font-size: 13px;
+        cursor: pointer;
+
+        box-shadow: 2px 2px 0 #d5d9cb;
+        transition: background 0.15s ease;
+      }
+
+      .modal-buttons button:hover {
+        background: #e6eddf;
+      }
+
+      .modal-buttons button:active {
+        transform: translate(1px, 1px);
+        box-shadow: 1px 1px 0 #d5d9cb;
+      }
+
+      @media (max-width: 420px) {
+        .modal-content {
+          padding: 24px 16px 20px;
+        }
+
+        .modal-buttons {
+          gap: 8px;
+        }
+      }
+    </style>
+    <script>
+      document.getElementById("modal-close").addEventListener("click", () => {
+        window.location.href = "../index.html";
+      });
+
+      const modal = document.querySelector(".modal");
+      const yesBtn = document.querySelector("#modal-yes");
+      const noBtn = document.querySelector("#modal-no");
+      const modalIcon = document.querySelector("#modal-icon");
+      const modalText = document.querySelector("#modal-text");
+
+      yesBtn.addEventListener("click", () => {
+        location.href = "diary.html";
+      });
+
+      noBtn.addEventListener("click", () => {
+        modalIcon.textContent = "💔";
+        modalText.innerHTML =
+          '<span style="color: red; font-size: 20px">너무해!!</span>';
+
+        yesBtn.style.display = "none";
+        noBtn.style.display = "none";
+
+        setTimeout(() => {
+          location.href =
+            "https://www.google.com/search?q=%EC%96%91%EC%8B%AC&sca_esv=9b409f63e8a1ac33&hl=ko&sxsrf=APpeQntzNC26xx-9Z34WQr8KIGNSwkiwOA%3A1792042301838&source=hp&ei=PWXQapzMMO3i2roP2PeumQ4&iflsig=ABILxe8AAAAAatBzTcoLRDuBxij2WR002SR1CeAI5Zc7&ved=0ahUKEwjc3sjmpbuXAxVtsVYBHdi7K-MQ4dUDCCg&uact=5&oq=%EC%96%91%EC%8B%AC&gs_lp=Egdnd3Mtd2l6IgbslpHsi6wyBRAAGIAEMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgAQyBRAAGIAESM8MUABYpwtwAHgAkAEAmAFhoAGsBKoBATa4AQPIAQD4AQGYAgOgAqYCwgILEC4YgAQYsQMYgwHCAgsQABiABBixAxiDAcICBBAAGAPCAggQLhiABBixA8ICBRAuGIAEmAMAkgcDMi4xoAe_N7IHAzIuMbgHpgLCBwUwLjIuMcgHBYAIAQ&sclient=gws-wiz";
+        }, 1500);
+      });
+    </script>
+  </body>
+</html>
