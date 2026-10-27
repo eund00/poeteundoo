@@ -86,6 +86,90 @@
       </div>
     </header>
 
+    <!-- 은듀닷컴 방명록: index.html의 </main> 바로 위에 삽입 -->
+    <section class="guestbook" id="guestbook">
+      <div class="guestbook__header">
+        <p class="guestbook__eyebrow">GUESTBOOK</p>
+        <h2 class="guestbook__title">방명록</h2>
+        <p class="guestbook__intro">잠시 머물다 가는 마음을 남겨 주세요.</p>
+      </div>
+
+      <form class="guestbook__form" id="guestbook-form">
+        <input type="hidden" id="guestbook-parent-id" value="" />
+        <div class="guestbook__fields">
+          <label
+            >닉네임
+            <input
+              id="guestbook-nickname"
+              maxlength="24"
+              required
+              autocomplete="nickname"
+              placeholder="닉네임"
+            />
+          </label>
+          <label
+            >비밀번호
+            <input
+              id="guestbook-password"
+              type="password"
+              minlength="4"
+              maxlength="100"
+              required
+              autocomplete="new-password"
+              placeholder="수정·삭제할 때 사용"
+            />
+          </label>
+        </div>
+        <label class="guestbook__message-label" for="guestbook-content"
+          >남길 말</label
+        >
+        <textarea
+          id="guestbook-content"
+          maxlength="1000"
+          rows="4"
+          required
+          placeholder="다정한 말도, 짧은 안부도 좋아요."
+        ></textarea>
+        <label class="guestbook__private">
+          <input id="guestbook-private" type="checkbox" />
+          <span>비밀 댓글로 남기기</span>
+        </label>
+        <div class="guestbook__form-bottom">
+          <p class="guestbook__hint">
+            비밀번호는 저장된 댓글을 수정하거나 삭제할 때 필요해요.
+          </p>
+          <button type="submit" class="guestbook__submit" id="guestbook-submit">
+            댓글 남기기
+          </button>
+        </div>
+        <button
+          type="button"
+          class="guestbook__cancel"
+          id="guestbook-cancel"
+          hidden
+        >
+          답글 작성 취소
+        </button>
+        <p
+          class="guestbook__status"
+          id="guestbook-status"
+          role="status"
+          aria-live="polite"
+        ></p>
+      </form>
+
+      <div class="guestbook__list-header">
+        <h3>남겨진 이야기</h3>
+        <span id="guestbook-count">불러오는 중…</span>
+      </div>
+      <div class="guestbook__list" id="guestbook-list" aria-live="polite">
+        <p class="guestbook__loading">방명록을 불러오는 중입니다.</p>
+      </div>
+    </section>
+
+    <!-- Apps Script 웹 앱 URL을 guestbook.js의 API_URL에 설정하세요. -->
+    <script src="/js/guestbook.js" defer></script>
+
     <main>
       <!-- 메인 -->
       <section class="hero">

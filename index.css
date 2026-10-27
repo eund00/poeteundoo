@@ -305,3 +305,212 @@ main {
     font-size: 0.8rem;
   }
 }
+
+/* 은듀닷컴 방명록 */
+.guestbook {
+  width: min(1100px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: clamp(56px, 8vw, 110px) 0;
+  border-bottom: 1px solid #111;
+  color: #222;
+}
+.guestbook__header {
+  margin-bottom: 34px;
+}
+.guestbook__eyebrow {
+  margin: 0 0 8px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+}
+.guestbook__title {
+  margin: 0;
+  font:
+    400 clamp(28px, 4vw, 42px)/1.2 "Noto Serif KR",
+    Georgia,
+    serif;
+  letter-spacing: -0.06em;
+}
+.guestbook__intro {
+  margin: 12px 0 0;
+  color: #777;
+  font-size: 15px;
+}
+.guestbook__form {
+  padding: 24px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+.guestbook__fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.guestbook__form label {
+  display: block;
+  font-size: 13px;
+}
+.guestbook__fields input,
+.guestbook__form textarea {
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 7px;
+  padding: 12px 13px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  background: #fff;
+  color: #222;
+  font: inherit;
+  font-size: 14px;
+}
+.guestbook__message-label {
+  margin-top: 18px;
+}
+.guestbook__form textarea {
+  display: block;
+  min-height: 112px;
+  resize: vertical;
+  line-height: 1.7;
+}
+.guestbook__private {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  margin-top: 13px;
+  color: #666;
+}
+.guestbook__private input {
+  margin: 0;
+}
+.guestbook__form-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+}
+.guestbook__hint {
+  margin: 0;
+  color: #888;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.guestbook__submit,
+.guestbook__action {
+  border: 1px solid #222;
+  border-radius: 3px;
+  background: #222;
+  color: #fff;
+  padding: 10px 16px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+}
+.guestbook__submit:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+.guestbook__cancel {
+  margin-top: 12px;
+  border: 0;
+  padding: 0;
+  background: none;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.guestbook__status {
+  min-height: 1em;
+  margin: 12px 0 0;
+  color: #5b7657;
+  font-size: 13px;
+}
+.guestbook__list-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 34px 0 12px;
+}
+.guestbook__list-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+#guestbook-count {
+  color: #888;
+  font-size: 12px;
+}
+.guestbook__item {
+  padding: 20px 0;
+  border-bottom: 1px solid #e8e8e8;
+}
+.guestbook__item--reply {
+  margin: 12px 0 0 22px;
+  padding: 14px 0 0 18px;
+  border-left: 1px solid #ddd;
+  border-bottom: 0;
+}
+.guestbook__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  color: #777;
+  font-size: 12px;
+}
+.guestbook__name {
+  color: #222;
+  font-size: 14px;
+  font-weight: 600;
+}
+.guestbook__private-badge {
+  color: #7a6a51;
+}
+.guestbook__content {
+  margin: 10px 0 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.8;
+  font-size: 14px;
+}
+.guestbook__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+}
+.guestbook__action {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #777;
+  text-decoration: underline;
+  font-size: 12px;
+}
+.guestbook__empty,
+.guestbook__loading {
+  padding: 22px 0;
+  color: #888;
+  font-size: 14px;
+}
+@media (max-width: 600px) {
+  .guestbook {
+    width: calc(100% - 36px);
+  }
+  .guestbook__form {
+    padding: 16px;
+  }
+  .guestbook__fields {
+    grid-template-columns: 1fr;
+  }
+  .guestbook__form-bottom {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .guestbook__submit {
+    align-self: flex-end;
+  }
+  .guestbook__item--reply {
+    margin-left: 12px;
+    padding-left: 12px;
+  }
+}
