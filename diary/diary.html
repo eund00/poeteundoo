@@ -1015,6 +1015,11 @@
       async function renderDetail(id) {
         const post = diaryPosts.find((item) => String(item.id) === String(id));
 
+        // 브라우저 탭 제목 변경
+        document.title = post
+          ? `${post.title} : 은듀닷컴`
+          : "다이어리 : 은듀닷컴";
+
         listView.hidden = true;
         detailEl.hidden = false;
         window.scrollTo(0, 0);
@@ -1115,10 +1120,12 @@
         }
       }
 
-      /* 목록으로 돌아가기 */
       function showList(updateHistory = true) {
         detailEl.hidden = true;
         listView.hidden = false;
+
+        // 브라우저 탭 제목을 원래대로 복구
+        document.title = "다이어리 : 은듀닷컴";
 
         if (updateHistory) {
           history.pushState({}, "", location.pathname);
