@@ -38,8 +38,7 @@
     // 아이템 정보 추출
     const number = markdown.match(/^-\s*번호:\s*(.+)$/m)?.[1]?.trim() || "";
 
-    const date =
-      markdown.match(/^-\s*이별 예정일:\s*(.+)$/m)?.[1]?.trim() || "미정";
+    const date = markdown.match(/^-\s*🧩:\s*(.+)$/m)?.[1]?.trim() || "미정";
 
     const status = markdown.match(/^-\s*상태:\s*(.+)$/m)?.[1]?.trim() || "";
 
@@ -47,7 +46,7 @@
     const description = markdown
       .replace(/^#\s+.+$/m, "")
       .replace(/!\[[^\]]*\]\([^)]+\)/g, "")
-      .replace(/^-\s*(번호|이별 예정일|상태):\s*.+$/gm, "")
+      .replace(/^-\s*(번호|🧩|상태):\s*.+$/gm, "")
       .trim();
 
     return {
@@ -80,7 +79,7 @@
           <span>${escapeHTML(item.number)}</span>
           <h3>${escapeHTML(item.title)}</h3>
           <p>${escapeHTML(item.description).replace(/\n/g, "<br>")}</p>
-          <small>이별 예정일 : ${escapeHTML(item.date)}</small>
+          <small>🧩 : ${escapeHTML(item.date)}</small>
         </div>
       </article>
     `;
