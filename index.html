@@ -208,7 +208,7 @@
         <div class="section-header">
           <p class="section-header__label">LATEST WORKS</p>
           <h2 class="section-header__title">
-            <a href="works/work.html">전체 보기</a>
+            <a href="works/work.html">모아보기</a>
           </h2>
         </div>
 
@@ -245,7 +245,7 @@
         <div class="section-header">
           <p class="section-header__label">ITEM MEMORY PARK</p>
           <h2 class="section-header__title">
-            <!-- <a href="memory-park/index.html">공원 입장하기</a> -->
+            <a href="memory-park/index.html">입장하기</a>
           </h2>
         </div>
 
@@ -315,6 +315,67 @@
           </div>
         </div>
       </section>
+
+      <!-- 텔레비전 -->
+      <div class="television">
+        <div class="television-inner">
+          <span class="television__antenna"></span>
+
+          <div class="television-screen">
+            <div id="youtube-player">
+              <iframe
+                width="560"
+                height="315"
+                src="https://youtu.be/kyIChB8CgnA?si=npuY82OKsZb50N8n"
+                title="YouTube video player"
+                frameborder="0"
+                allow="
+                  accelerometer;
+                  autoplay;
+                  clipboard-write;
+                  encrypted-media;
+                  gyroscope;
+                  picture-in-picture;
+                  web-share;
+                "
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+
+          <div class="television__right">
+            <p class="television__channel"></p>
+            <div class="television-controler">
+              <div class="controler__buttons">
+                <button
+                  type="button"
+                  class="controler__power"
+                  id="tv-play-pause"
+                  aria-label="일시정지"
+                >
+                  ⏸
+                </button>
+                <button
+                  type="button"
+                  id="channel-down"
+                  aria-label="채널 내리기"
+                >
+                  ▼
+                </button>
+                <button type="button" id="channel-up" aria-label="채널 올리기">
+                  ▲
+                </button>
+              </div>
+              <div class="controler__buttons tv-volume">
+                <button type="button" id="volume-down">－</button>
+                <button type="button" id="volume-up">＋</button>
+                <button type="button" id="volume-mute">🔇</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- 인터뷰 -->
       <section id="interview" class="interview">

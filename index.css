@@ -740,7 +740,6 @@ body.menu-open {
 @media (max-width: 900px) {
   .header__inner,
   .hero__inner,
-  .latest-works,
   .about__inner,
   .interview,
   .footer__inner {
@@ -749,10 +748,6 @@ body.menu-open {
 
   .header__inner {
     height: 70px;
-  }
-
-  .latest-works {
-    padding: 100px 0;
   }
 
   .about__inner {

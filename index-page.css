@@ -758,6 +758,7 @@
     width: calc(100% - 40px);
     margin-top: 0;
     padding-block: 60px;
+    padding-bottom: 0;
   }
 
   .work-card__link {
@@ -802,5 +803,252 @@
 
   .memory-card__info p {
     font-size: 0.85rem;
+  }
+}
+
+/* ========================================
+   TELEVISION
+======================================== */
+
+.television {
+  margin-top: 50px;
+  padding: 55px 16px 30px;
+}
+
+/* ========================================
+   TV BODY
+======================================== */
+
+.television-inner {
+  position: relative;
+  isolation: isolate;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  width: 100%;
+  max-width: 750px;
+  box-sizing: border-box;
+
+  margin: 0 auto;
+  padding: 2rem 2.5rem;
+
+  border: 1px solid #111;
+  border-radius: 25px;
+  background: #fff;
+}
+
+/* ========================================
+   TV LEGS
+======================================== */
+
+.television-inner::before,
+.television-inner::after {
+  content: "";
+  position: absolute;
+  bottom: -22px;
+  z-index: -1;
+
+  width: 12px;
+  height: 25px;
+
+  background: #739b73;
+  border: 1px solid #111;
+  border-radius: 2px 2px 5px 5px;
+}
+
+.television-inner::before {
+  left: 18%;
+  transform: rotate(15deg);
+}
+
+.television-inner::after {
+  right: 18%;
+  transform: rotate(-15deg);
+}
+
+/* ========================================
+   ANTENNA
+======================================== */
+
+.television__antenna {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+
+  width: 1px;
+  height: 40px;
+
+  transform: translateX(-50%);
+}
+
+.television__antenna::before,
+.television__antenna::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+
+  width: 1px;
+  height: 42px;
+
+  background: #333;
+  transform-origin: bottom center;
+}
+
+.television__antenna::before {
+  transform: translateX(-50%) rotate(-35deg);
+}
+
+.television__antenna::after {
+  transform: translateX(-50%) rotate(35deg);
+}
+
+/* ========================================
+   SCREEN
+======================================== */
+
+.television-screen {
+  flex: 0 1 560px;
+  min-width: 0;
+  width: 560px;
+
+  aspect-ratio: 16 / 9;
+
+  overflow: hidden;
+  border: 1px solid #111;
+  border-radius: 15px;
+}
+
+.television-screen iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ========================================
+   CONTROLLER
+======================================== */
+
+.television__right {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+}
+
+.television__channel {
+  width: 140px;
+  padding: 5px 10px;
+  box-sizing: border-box;
+
+  border: 1px solid #739b73;
+  border-radius: 5px;
+
+  color: #739b73;
+  text-align: center;
+}
+
+.television-controler {
+  flex: 0 0 48px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+
+.television-controler button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+  padding: 0;
+
+  border: 1px solid #739b73;
+  border-radius: 50%;
+
+  background: transparent;
+  color: #739b73;
+
+  font-size: 16px;
+  cursor: pointer;
+
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.television-controler button:hover {
+  background: #739b73;
+  color: white;
+}
+
+.controler__buttons {
+  display: flex;
+  gap: 6px;
+}
+
+/* ========================================
+   POWER BUTTON
+======================================== */
+
+.controler__power {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.controler__power:hover {
+  transform: scale(1.1);
+}
+
+.controler__power:active {
+  transform: scale(0.9);
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 600px) {
+  .television {
+    padding: 45px 16px 25px;
+  }
+
+  .television-inner {
+    flex-direction: column;
+    gap: 20px;
+    padding: 1.5rem;
+    border-radius: 20px;
+  }
+
+  .television-screen {
+    flex: none;
+    width: 100%;
+  }
+
+  .television__right {
+    justify-content: space-between;
+    width: 100%;
+    gap: 30px;
+  }
+
+  .television__channel {
+    width: 70%;
+    margin: 0 auto;
+  }
+
+  .television-controler {
+    flex: none;
+    flex-direction: row;
+  }
+
+  .controler__buttons {
+    flex-direction: row;
   }
 }
