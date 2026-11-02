@@ -67,27 +67,65 @@
           <a href="/">은듀닷컴</a>
         </h1>
 
+        <!-- PC 메뉴 -->
         <nav class="gnb">
           <ul class="gnb__list">
             <li class="gnb__item">
-              <a href="work.html">Works</a>
-            </li>
-            <!-- <li class="gnb__item">
-              <a href="#about">About</a>
+              <a href="/works/work.html">Works</a>
             </li>
             <li class="gnb__item">
-              <a href="#interview">Interview</a>
-            </li> -->
-            <li class="gnb__item">
-              <a href="../diary/diary-before.html">Diary</a>
+              <a href="/diary/diary-before.html">Diary</a>
             </li>
             <li class="gnb__item">
-              <a href="../guestbook/guestbook.html">Guestbook</a>
+              <a href="/guestbook/guestbook.html">Guestbook</a>
             </li>
           </ul>
         </nav>
+
+        <!-- 태블릿 / 모바일 햄버거 -->
+        <button
+          class="menu-toggle"
+          id="menu-toggle"
+          type="button"
+          aria-label="메뉴 열기"
+          aria-expanded="false"
+          aria-controls="sidebar"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </div>
     </header>
+
+    <!-- 사이드바 배경 -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- 사이드바 -->
+    <aside class="sidebar" id="sidebar" aria-hidden="true">
+      <div class="sidebar__header">
+        <span>MENU</span>
+        <button
+          class="sidebar__close"
+          id="sidebar-close"
+          type="button"
+          aria-label="메뉴 닫기"
+        >
+          ×
+        </button>
+      </div>
+
+      <nav class="sidebar__nav">
+        <a href="/works/work.html"><span>01</span>Works</a>
+        <a href="/diary/diary-before.html"><span>02</span>Diary</a>
+        <a href="/guestbook/guestbook.html"><span>03</span>Guestbook</a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <p>시 팔아 얻은 집.</p>
+        <span>© 2026 LEE EUN JOO</span>
+      </div>
+    </aside>
 
     <main>
       <!-- 최근 작품 -->

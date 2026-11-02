@@ -89,33 +89,186 @@
       ></iframe
     ></noscript>
     <!-- End Google Tag Manager (noscript) -->
+
+    <!-- 떠다니는 유령 -->
+    <div class="ghost-container" aria-hidden="true">
+      <span class="ghost">🎃</span>
+      <span class="ghost">👻</span>
+      <span class="ghost">✨</span>
+      <span class="ghost">🎃</span>
+      <span class="ghost">👻</span>
+      <span class="ghost">✨</span>
+    </div>
+    <style>
+      /* ==============================
+   떠다니는 유령
+============================== */
+
+      .ghost-container {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      .ghost {
+        position: absolute;
+        display: block;
+
+        font-size: 35px;
+        opacity: 0.25;
+        filter: blur(1px);
+
+        animation: ghost-float 18s ease-in-out infinite alternate;
+      }
+
+      /* 각 유령의 위치와 움직임 */
+
+      .ghost:nth-child(1) {
+        top: 15%;
+        left: 10%;
+        animation-duration: 20s;
+      }
+
+      .ghost:nth-child(2) {
+        top: 40%;
+        left: 75%;
+        font-size: 25px;
+        animation-duration: 25s;
+        animation-delay: -5s;
+      }
+
+      .ghost:nth-child(3) {
+        top: 70%;
+        left: 20%;
+        font-size: 20px;
+        animation-duration: 17s;
+        animation-delay: -8s;
+      }
+
+      .ghost:nth-child(4) {
+        top: 85%;
+        left: 85%;
+        font-size: 45px;
+        animation-duration: 23s;
+        animation-delay: -12s;
+      }
+
+      .ghost:nth-child(5) {
+        top: 55%;
+        left: 45%;
+        font-size: 22px;
+        animation-duration: 19s;
+        animation-delay: -3s;
+      }
+
+      .ghost:nth-child(6) {
+        top: 10%;
+        left: 90%;
+        font-size: 18px;
+        animation-duration: 27s;
+        animation-delay: -15s;
+      }
+
+      /* 둥실둥실 움직임 */
+
+      @keyframes ghost-float {
+        0% {
+          transform: translate(0, 0) rotate(-15deg);
+        }
+
+        25% {
+          transform: translate(40px, -50px) rotate(10deg);
+        }
+
+        50% {
+          transform: translate(-30px, 30px) rotate(-10deg);
+        }
+
+        75% {
+          transform: translate(60px, 20px) rotate(15deg);
+        }
+
+        100% {
+          transform: translate(-20px, -60px) rotate(-5deg);
+        }
+      }
+
+      /* 모션 최소화 설정 */
+
+      @media (prefers-reduced-motion: reduce) {
+        .ghost {
+          animation: none;
+        }
+      }
+    </style>
+
     <header class="header">
       <div class="header__inner">
         <h1 class="logo">
           <a href="/">은듀닷컴</a>
         </h1>
 
+        <!-- PC 메뉴 -->
         <nav class="gnb">
           <ul class="gnb__list">
             <li class="gnb__item">
-              <a href="works/work.html">Works</a>
-            </li>
-            <!-- <li class="gnb__item">
-              <a href="#about">About</a>
+              <a href="/works/work.html">Works</a>
             </li>
             <li class="gnb__item">
-              <a href="#interview">Interview</a>
-            </li> -->
-            <li class="gnb__item">
-              <a href="diary/diary-before.html">Diary</a>
+              <a href="/diary/diary-before.html">Diary</a>
             </li>
             <li class="gnb__item">
-              <a href="guestbook/guestbook.html">Guestbook</a>
+              <a href="/guestbook/guestbook.html">Guestbook</a>
             </li>
           </ul>
         </nav>
+
+        <!-- 태블릿 / 모바일 햄버거 -->
+        <button
+          class="menu-toggle"
+          id="menu-toggle"
+          type="button"
+          aria-label="메뉴 열기"
+          aria-expanded="false"
+          aria-controls="sidebar"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </div>
     </header>
+
+    <!-- 사이드바 배경 -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- 사이드바 -->
+    <aside class="sidebar" id="sidebar" aria-hidden="true">
+      <div class="sidebar__header">
+        <span>MENU</span>
+        <button
+          class="sidebar__close"
+          id="sidebar-close"
+          type="button"
+          aria-label="메뉴 닫기"
+        >
+          ×
+        </button>
+      </div>
+
+      <nav class="sidebar__nav">
+        <a href="/works/work.html"><span>01</span>Works</a>
+        <a href="/diary/diary-before.html"><span>02</span>Diary</a>
+        <a href="/guestbook/guestbook.html"><span>03</span>Guestbook</a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <p>시 팔아 얻은 집.</p>
+        <span>© 2026 LEE EUN JOO</span>
+      </div>
+    </aside>
 
     <main>
       <!-- 메인 -->
@@ -1066,5 +1219,7 @@
         <p class="footer__copyright">© 2026 Lee Eun Joo</p>
       </div>
     </footer>
+
+    <script src="index.js" type="module"></script>
   </body>
 </html>
