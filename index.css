@@ -1,5 +1,5 @@
 /* ==================================================
-   RESET
+   1. RESET
 ================================================== */
 
 *,
@@ -14,8 +14,8 @@ html {
 
 body {
   margin: 0;
-  font-family: "Pretendard", "Noto Sans KR", sans-serif;
   color: #111;
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
   line-height: 1.6;
 }
 
@@ -43,11 +43,14 @@ input,
 textarea,
 select {
   font: inherit;
+}
+
+button {
   outline: none;
 }
 
 /* ==================================================
-   HEADER
+   2. HEADER
 ================================================== */
 
 .header {
@@ -110,7 +113,7 @@ select {
 }
 
 /* ==================================================
-   COMMON
+   3. COMMON
 ================================================== */
 
 main {
@@ -138,7 +141,7 @@ main {
 }
 
 /* ==================================================
-   FOOTER
+   4. FOOTER
 ================================================== */
 
 .footer {
@@ -149,8 +152,8 @@ main {
 
 .footer__inner {
   display: flex;
-  justify-content: space-between;
   align-items: flex-end;
+  justify-content: space-between;
   width: min(1400px, calc(100% - 80px));
   margin: 0 auto;
 }
@@ -166,7 +169,7 @@ main {
 }
 
 /* ==================================================
-   GUESTBOOK
+   5. GUESTBOOK
    방명록
 ================================================== */
 
@@ -188,8 +191,8 @@ main {
 .guestbook__rightWrap {
   display: flex;
   flex-direction: row-reverse;
-  column-gap: 25px;
   align-items: flex-end;
+  column-gap: 25px;
 }
 
 .guestbook__eyebrow,
@@ -247,17 +250,6 @@ main {
   animation: turtleWalk 2.4s cubic-bezier(0.25, 0.7, 0.3, 1) both;
 }
 
-/* 말풍선 등장 애니메이션 */
-
-.guestbook__intro {
-  opacity: 0;
-  transform: translateY(8px) scale(0.92);
-  transform-origin: top center;
-  animation: bubbleAppear 0.65s ease-out 2s both;
-}
-
-/* 거북이의 느릿느릿한 걸음 */
-
 @keyframes turtleWalk {
   0% {
     opacity: 0;
@@ -291,7 +283,14 @@ main {
   }
 }
 
-/* 말풍선이 뽀용 나타나기 */
+/* 말풍선 등장 애니메이션 */
+
+.guestbook__intro {
+  opacity: 0;
+  transform: translateY(8px) scale(0.92);
+  transform-origin: top center;
+  animation: bubbleAppear 0.65s ease-out 2s both;
+}
 
 @keyframes bubbleAppear {
   0% {
@@ -311,7 +310,7 @@ main {
 }
 
 /* ==================================================
-   GUESTBOOK FORM
+   6. GUESTBOOK FORM
    방명록 작성 폼
 ================================================== */
 
@@ -376,7 +375,7 @@ main {
 .guestbook__form-bottom {
   display: flex;
   align-items: center;
-  justify-content: end;
+  justify-content: flex-end;
   margin-top: 18px;
 }
 
@@ -421,7 +420,7 @@ main {
 }
 
 /* ==================================================
-   GUESTBOOK LIST
+   7. GUESTBOOK LIST
    방명록 목록
 ================================================== */
 
@@ -499,8 +498,8 @@ main {
   margin: 10px 0 0;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  line-height: 1.8;
   font-size: 14px;
+  line-height: 1.8;
 }
 
 /* 수정 및 삭제 버튼 */
@@ -528,7 +527,7 @@ main {
 }
 
 /* ==================================================
-   GUESTBOOK LOADING
+   8. GUESTBOOK LOADING
    로딩 애니메이션
 ================================================== */
 
@@ -543,8 +542,6 @@ main {
   color: #888;
   font-size: 14px;
 }
-
-/* 점 세 개 */
 
 .guestbook__dots {
   display: flex;
@@ -590,7 +587,7 @@ main {
 }
 
 /* ==================================================
-   HAMBURGER MENU
+   9. HAMBURGER MENU
    햄버거 버튼
 ================================================== */
 
@@ -616,7 +613,7 @@ main {
 }
 
 /* ==================================================
-   SIDEBAR
+   10. SIDEBAR
    사이드바
 ================================================== */
 
@@ -644,8 +641,8 @@ main {
 
 .sidebar__header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   padding-bottom: 20px;
   border-bottom: 1px solid #111;
   font-size: 12px;
@@ -734,7 +731,7 @@ body.menu-open {
 }
 
 /* ==================================================
-   RESPONSIVE
+   11. RESPONSIVE
    반응형 설정
 ================================================== */
 
@@ -756,10 +753,6 @@ body.menu-open {
 
   .latest-works {
     padding: 100px 0;
-  }
-
-  .work-list {
-    grid-template-columns: repeat(2, 1fr);
   }
 
   .about__inner {
@@ -795,19 +788,35 @@ body.menu-open {
     width: calc(100% - 40px);
   }
 
+  /* 인터뷰 */
+
+  .interview-item a {
+    display: block !important;
+    padding: 20px 0;
+  }
+
   .interview-item a .interview-item__category {
     margin-left: 10px;
     padding: 5px 10px;
     font-size: 14px;
   }
 
+  .interview-item__title {
+    margin-top: 15px;
+    font-size: 16px;
+  }
+
+  /* 히어로 */
+
   .hero__link {
     margin-top: 50px;
   }
 
   .hero__title {
-    font-size: 3rem;
+    font-size: 2rem;
   }
+
+  /* 섹션 제목 */
 
   .section-header {
     display: block;
@@ -818,14 +827,7 @@ body.menu-open {
     margin-top: 15px;
   }
 
-  .work-list {
-    grid-template-columns: 1fr;
-  }
-
-  .work-card a {
-    min-height: 150px;
-    padding: 25px;
-  }
+  /* 작가 소개 */
 
   .about__inner {
     display: block;
@@ -837,15 +839,7 @@ body.menu-open {
     font-size: 16px;
   }
 
-  .interview-item a {
-    display: block !important;
-    padding: 20px 0;
-  }
-
-  .interview-item__title {
-    margin-top: 15px;
-    font-size: 16px;
-  }
+  /* 작품 상세 */
 
   .work-detail {
     width: calc(100% - 40px);
@@ -868,6 +862,8 @@ body.menu-open {
   .work__credits {
     grid-template-columns: 1fr;
   }
+
+  /* 푸터 */
 
   .footer__inner {
     display: block;
@@ -901,7 +897,7 @@ body.menu-open {
   }
 
   .guestbook__item--reply {
-    margin-left: 12px;
+    margin-left: 12px !important;
     padding-left: 12px;
   }
 }
@@ -919,11 +915,15 @@ body.menu-open {
 }
 
 /* ==================================================
-   ACCESSIBILITY
+   12. ACCESSIBILITY
    움직임 최소화 설정
 ================================================== */
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   .guestbook__eyebrow,
   .guestbook__intro {
     animation: none;

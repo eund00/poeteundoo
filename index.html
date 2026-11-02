@@ -49,6 +49,12 @@
     <link rel="stylesheet" href="index.css" />
     <link rel="stylesheet" href="index-page.css" />
 
+    <!-- Swiper CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+
     <!-- Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -198,7 +204,7 @@
           </h2>
         </div>
 
-        <div class="work-slider">
+        <div class="work-slider swiper" id="work-swiper">
           <button
             class="work-slider__btn work-slider__btn--prev"
             id="work-prev"
@@ -217,9 +223,7 @@
             &#8594;
           </button>
 
-          <div class="work-slider__viewport">
-            <div class="work-list" id="work-list"></div>
-          </div>
+          <div class="work-list swiper-wrapper" id="work-list"></div>
         </div>
       </section>
 
@@ -232,7 +236,7 @@
           </h2>
         </div>
 
-        <div class="memory-slider">
+        <div class="memory-slider swiper" id="memory-swiper">
           <button
             class="memory-slider__btn memory-slider__btn--prev"
             id="memory-prev"
@@ -251,22 +255,19 @@
             &#8594;
           </button>
 
-          <div class="memory-slider__viewport">
-            <div class="memory-list" id="memory-list">
-              <!-- 첫 번째 아이템 -->
-              <article class="memory-card">
-                <div class="memory-card__image">
-                  <img src="" alt="" />
-                </div>
+          <div class="memory-list swiper-wrapper" id="memory-list">
+            <article class="memory-card swiper-slide">
+              <div class="memory-card__image">
+                <img src="" alt="" />
+              </div>
 
-                <div class="memory-card__info">
-                  <span>ITEM 001</span>
-                  <h3>오래된 테스트</h3>
-                  <p>테스트테스트</p>
-                  <small>흠흠 : 미정</small>
-                </div>
-              </article>
-            </div>
+              <div class="memory-card__info">
+                <span>ITEM 001</span>
+                <h3>오래된 테스트</h3>
+                <p>테스트테스트</p>
+                <small>흠흠 : 미정</small>
+              </div>
+            </article>
           </div>
         </div>
 
@@ -324,6 +325,14 @@
     </footer>
 
     <!-- JavaScript -->
+    <script src="index-page.js" defer></script>
+    <script src="memory-park/memory.js" defer></script>
+    <script src="index.js" type="module"></script>
+
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <!-- 기존 JS -->
     <script src="index-page.js" defer></script>
     <script src="memory-park/memory.js" defer></script>
     <script src="index.js" type="module"></script>

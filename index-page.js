@@ -1,30 +1,23 @@
 /* ========================================
-   1. 작품 슬라이더
+   INDEX PAGE
+   Swiper.js 통합 버전
 ======================================== */
 
-document.addEventListener("DOMContentLoaded", initWorkSlider);
+document.addEventListener("DOMContentLoaded", () => {
+  initWorkSlider();
+  initMemoryParkSlider();
+  initInterviewList();
+});
+
+/* ========================================
+   1. LATEST WORKS
+======================================== */
 
 async function initWorkSlider() {
+  const swiperElement = document.getElementById("work-swiper");
   const workList = document.getElementById("work-list");
-  const viewport = document.querySelector(".work-slider__viewport");
-  const prevButton = document.getElementById("work-prev");
-  const nextButton = document.getElementById("work-next");
 
-  if (!workList || !viewport || !prevButton || !nextButton) return;
-
-  const AUTO_DELAY = 3000;
-  const DRAG_THRESHOLD = 6;
-  const SWIPE_THRESHOLD = 50;
-
-  let currentIndex = 0;
-  let autoSlide = null;
-  let isDragging = false;
-  let dragMoved = false;
-  let startX = 0;
-  let startTranslate = 0;
-  let activePointerId = null;
-  let suppressClick = false;
-  let clickResetTimer = null;
+  if (!swiperElement || !workList) return;
 
   try {
     const response = await fetch("works/works.json");
@@ -41,282 +34,144 @@ async function initWorkSlider() {
     if (!sortedWorks.length) return;
 
     renderWorks(sortedWorks);
-    updateSlider();
-    startAutoSlide();
 
-    /* 작품 렌더링 */
-
-    function renderWorks(works) {
-      const imageNumbers = Array.from(
-        { length: works.length },
-        (_, index) => index + 1,
-      );
-
-      // 배경 이미지 번호 무작위 배정
-      for (let i = imageNumbers.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-
-        [imageNumbers[i], imageNumbers[j]] = [imageNumbers[j], imageNumbers[i]];
-      }
-
-      const fragment = document.createDocumentFragment();
-
-      works.forEach((work, index) => {
-        const card = document.createElement("article");
-        card.className = "work-card";
-
-        const link = document.createElement("a");
-        link.className = "work-card__link";
-        link.href = `works/work-detail.html?id=${encodeURIComponent(work.id)}`;
-
-        const background = document.createElement("img");
-        background.className = "work-card__background";
-        background.src = `img/img_bg (${imageNumbers[index]}).jpeg`;
-        background.alt = "";
-        background.draggable = false;
-
-        const meta = document.createElement("div");
-        meta.className = "work-card__meta";
-
-        const publication = document.createElement("div");
-        publication.className = "work-card__publication";
-
-        const year = document.createElement("span");
-        year.textContent = work.year ?? "";
-
-        const separator = document.createElement("span");
-        separator.textContent = " · ";
-        separator.setAttribute("aria-hidden", "true");
-
-        const publicationName = document.createElement("span");
-        publicationName.textContent = work.publication ?? "";
-
-        publication.append(year, separator, publicationName);
-
-        const type = document.createElement("span");
-        type.className = "work-card__type";
-        type.textContent = work.kind ?? "";
-
-        meta.append(publication, type);
-
-        const title = document.createElement("h3");
-        title.className = "work-card__title";
-        title.textContent = work.title ?? "";
-
-        const excerpt = document.createElement("p");
-        excerpt.className = "work-card__excerpt";
-        excerpt.textContent = work.subtitle ?? "";
-
-        link.append(background, meta, title, excerpt);
-        card.appendChild(link);
-        fragment.appendChild(card);
-      });
-
-      workList.replaceChildren(fragment);
-    }
-
-    /* 슬라이더 계산 및 이동 */
-
-    function getVisibleCount() {
-      if (window.innerWidth <= 600) return 2;
-      if (window.innerWidth <= 900) return 3;
-      if (window.innerWidth <= 1260) return 4;
-
-      return 5;
-    }
-
-    function getMaxIndex() {
-      return Math.max(0, workList.children.length - getVisibleCount());
-    }
-
-    function getStep() {
-      const card = workList.querySelector(".work-card");
-
-      if (!card) return 0;
-
-      const gap = parseFloat(getComputedStyle(workList).gap) || 0;
-
-      return card.getBoundingClientRect().width + gap;
-    }
-
-    function updateSlider(animate = true) {
-      const maxIndex = getMaxIndex();
-      const step = getStep();
-
-      currentIndex = Math.max(0, Math.min(currentIndex, maxIndex));
-
-      workList.style.transition = animate ? "" : "none";
-
-      workList.style.transform = `translate3d(${-currentIndex * step}px, 0, 0)`;
-
-      prevButton.disabled = currentIndex === 0;
-      nextButton.disabled = currentIndex >= maxIndex;
-
-      prevButton.setAttribute("aria-disabled", String(prevButton.disabled));
-
-      nextButton.setAttribute("aria-disabled", String(nextButton.disabled));
-    }
-
-    function moveSlider(direction) {
-      currentIndex = Math.max(
-        0,
-        Math.min(getMaxIndex(), currentIndex + direction),
-      );
-
-      updateSlider();
-      restartAutoSlide();
-    }
-
-    prevButton.addEventListener("click", () => {
-      moveSlider(-1);
-    });
-
-    nextButton.addEventListener("click", () => {
-      moveSlider(1);
-    });
-
-    /* 자동 슬라이드 */
-
-    function stopAutoSlide() {
-      clearInterval(autoSlide);
-      autoSlide = null;
-    }
-
-    function startAutoSlide() {
-      stopAutoSlide();
-
-      if (getMaxIndex() === 0) return;
-
-      autoSlide = setInterval(() => {
-        if (isDragging || viewport.matches(":hover")) return;
-
-        currentIndex = currentIndex >= getMaxIndex() ? 0 : currentIndex + 1;
-
-        updateSlider();
-      }, AUTO_DELAY);
-    }
-
-    function restartAutoSlide() {
-      startAutoSlide();
-    }
-
-    viewport.addEventListener("mouseenter", stopAutoSlide);
-    viewport.addEventListener("mouseleave", startAutoSlide);
-
-    /* 마우스 드래그 및 터치 스와이프 */
-
-    workList.addEventListener("pointerdown", (event) => {
-      if (event.pointerType === "mouse" && event.button !== 0) return;
-
-      isDragging = true;
-      dragMoved = false;
-      startX = event.clientX;
-      startTranslate = currentIndex * getStep();
-      activePointerId = event.pointerId;
-
-      stopAutoSlide();
-      workList.style.transition = "none";
-    });
-
-    // 포인터가 카드 바깥으로 나가도 드래그 추적
-    window.addEventListener("pointermove", (event) => {
-      if (!isDragging || event.pointerId !== activePointerId) return;
-
-      const diff = event.clientX - startX;
-
-      if (Math.abs(diff) > DRAG_THRESHOLD) {
-        dragMoved = true;
-      }
-
-      if (!dragMoved) return;
-
-      const maxTranslate = getMaxIndex() * getStep();
-
-      const translate = Math.max(
-        0,
-        Math.min(maxTranslate, startTranslate - diff),
-      );
-
-      workList.style.transform = `translate3d(${-translate}px, 0, 0)`;
-    });
-
-    function finishDrag(event, cancelled = false) {
-      if (!isDragging || event.pointerId !== activePointerId) return;
-
-      const diff = event.clientX - startX;
-
-      isDragging = false;
-      activePointerId = null;
-
-      if (dragMoved) {
-        if (!cancelled && Math.abs(diff) >= SWIPE_THRESHOLD) {
-          currentIndex = Math.max(
-            0,
-            Math.min(getMaxIndex(), currentIndex + (diff < 0 ? 1 : -1)),
-          );
-        }
-
-        // 드래그 직후 발생하는 링크 클릭 방지
-        suppressClick = true;
-        clearTimeout(clickResetTimer);
-
-        clickResetTimer = setTimeout(() => {
-          suppressClick = false;
-        }, 400);
-      }
-
-      updateSlider();
-      startAutoSlide();
-    }
-
-    window.addEventListener("pointerup", (event) => {
-      finishDrag(event);
-    });
-
-    window.addEventListener("pointercancel", (event) => {
-      finishDrag(event, true);
-    });
-
-    workList.addEventListener(
-      "click",
-      (event) => {
-        if (!suppressClick) return;
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        suppressClick = false;
-        clearTimeout(clickResetTimer);
+    // Swiper 초기화
+    new Swiper(swiperElement, {
+      slidesPerView: 3,
+      slidesPerGroup: 1,
+      spaceBetween: 0,
+      speed: 500,
+
+      grabCursor: true,
+      watchOverflow: true,
+      rewind: true,
+
+      // 자동 슬라이드
+      autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true,
       },
-      true,
-    );
 
-    /* 반응형 대응 */
+      // 좌우 버튼
+      navigation: {
+        prevEl: "#work-prev",
+        nextEl: "#work-next",
+      },
 
-    window.addEventListener("resize", () => {
-      updateSlider();
-      restartAutoSlide();
+      // 반응형
+      breakpoints: {
+        0: {
+          slidesPerView: 1,
+        },
+
+        601: {
+          slidesPerView: 2,
+        },
+
+        901: {
+          slidesPerView: 3,
+        },
+
+        1261: {
+          slidesPerView: 4,
+        },
+      },
     });
   } catch (error) {
     console.error("작품 데이터를 불러오지 못했습니다.", error);
   }
+
+  /* 작품 카드 생성 */
+
+  function renderWorks(works) {
+    const imageNumbers = Array.from(
+      { length: works.length },
+      (_, index) => index + 1,
+    );
+
+    // 배경 이미지 번호 무작위 배정
+    for (let i = imageNumbers.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+
+      [imageNumbers[i], imageNumbers[j]] = [imageNumbers[j], imageNumbers[i]];
+    }
+
+    const fragment = document.createDocumentFragment();
+
+    works.forEach((work, index) => {
+      const card = document.createElement("article");
+      card.className = "work-card swiper-slide";
+
+      const link = document.createElement("a");
+      link.className = "work-card__link";
+      link.href = `works/work-detail.html?id=${encodeURIComponent(work.id)}`;
+
+      const background = document.createElement("img");
+      background.className = "work-card__background";
+      background.src = `img/img_bg (${imageNumbers[index]}).jpeg`;
+      background.alt = "";
+      background.draggable = false;
+
+      const meta = document.createElement("div");
+      meta.className = "work-card__meta";
+
+      const publication = document.createElement("div");
+      publication.className = "work-card__publication";
+
+      const year = document.createElement("span");
+      year.textContent = work.year ?? "";
+
+      const separator = document.createElement("span");
+      separator.textContent = " · ";
+      separator.setAttribute("aria-hidden", "true");
+
+      const publicationName = document.createElement("span");
+      publicationName.textContent = work.publication ?? "";
+
+      publication.append(year, separator, publicationName);
+
+      const type = document.createElement("span");
+      type.className = "work-card__type";
+      type.textContent = work.kind ?? "";
+
+      meta.append(publication, type);
+
+      const title = document.createElement("h3");
+      title.className = "work-card__title";
+      title.textContent = work.title ?? "";
+
+      const excerpt = document.createElement("p");
+      excerpt.className = "work-card__excerpt";
+      excerpt.textContent = work.subtitle ?? "";
+
+      link.append(background, meta, title, excerpt);
+      card.appendChild(link);
+
+      fragment.appendChild(card);
+    });
+
+    workList.replaceChildren(fragment);
+  }
 }
 
 /* ========================================
-   2. 인터뷰 목록
+   2. INTERVIEW
 ======================================== */
 
-fetch("./interviews/interviews.json")
-  .then((response) => {
+async function initInterviewList() {
+  const interviewList = document.getElementById("interview-list");
+
+  if (!interviewList) return;
+
+  try {
+    const response = await fetch("./interviews/interviews.json");
+
     if (!response.ok) {
       throw new Error("인터뷰 데이터를 불러오지 못했습니다.");
     }
 
-    return response.json();
-  })
-
-  .then((interviews) => {
-    const interviewList = document.getElementById("interview-list");
+    const interviews = await response.json();
 
     // 날짜 기준 최신순 정렬
     interviews.sort((a, b) => {
@@ -325,6 +180,8 @@ fetch("./interviews/interviews.json")
 
       return dateB - dateA;
     });
+
+    const fragment = document.createDocumentFragment();
 
     interviews.forEach((interview) => {
       const li = document.createElement("li");
@@ -349,104 +206,76 @@ fetch("./interviews/interviews.json")
 
       a.append(date, category, title);
       li.appendChild(a);
-      interviewList.appendChild(li);
+
+      fragment.appendChild(li);
     });
-  })
 
-  .catch((error) => {
+    interviewList.replaceChildren(fragment);
+  } catch (error) {
     console.error("인터뷰 목록 오류:", error);
-  });
-
-/* =================================
-   ITEM MEMORY PARK SLIDER
-================================= */
-
-function initMemoryParkSlider() {
-  const list = document.getElementById("memory-list");
-  const prev = document.getElementById("memory-prev");
-  const next = document.getElementById("memory-next");
-
-  if (!list || !prev || !next) return;
-
-  let currentIndex = 0;
-
-  // 화면에 표시할 카드 개수
-  function getVisibleCount() {
-    return window.innerWidth <= 768 ? 1 : 2;
   }
-
-  // 현재 카드 목록 가져오기
-  function getCards() {
-    return Array.from(list.children).filter((card) =>
-      card.classList.contains("memory-card"),
-    );
-  }
-
-  // 최대 이동 가능 인덱스
-  function getMaxIndex() {
-    return Math.max(0, getCards().length - getVisibleCount());
-  }
-
-  // 카드 한 칸의 이동 거리
-  function getStep() {
-    const cards = getCards();
-
-    if (!cards.length) return 0;
-
-    const cardWidth = cards[0].getBoundingClientRect().width;
-    const gap = parseFloat(getComputedStyle(list).gap) || 0;
-
-    return cardWidth + gap;
-  }
-
-  // 슬라이더 업데이트
-  function updateSlider() {
-    const cards = getCards();
-    const maxIndex = getMaxIndex();
-
-    currentIndex = Math.max(0, Math.min(currentIndex, maxIndex));
-
-    const step = getStep();
-
-    list.style.transform = `translateX(-${currentIndex * step}px)`;
-
-    // 버튼 활성화 및 비활성화
-    prev.disabled = currentIndex === 0;
-    next.disabled = currentIndex >= maxIndex;
-  }
-
-  // 이전 버튼
-  prev.addEventListener("click", () => {
-    currentIndex = Math.max(0, currentIndex - 1);
-    updateSlider();
-  });
-
-  // 다음 버튼
-  next.addEventListener("click", () => {
-    currentIndex = Math.min(getMaxIndex(), currentIndex + 1);
-
-    updateSlider();
-  });
-
-  // 화면 크기 변경
-  window.addEventListener("resize", updateSlider);
-
-  // 카드가 새로 추가되거나 변경될 때 자동 반영
-  const observer = new MutationObserver(() => {
-    updateSlider();
-  });
-
-  observer.observe(list, {
-    childList: true,
-  });
-
-  // 최초 실행
-  updateSlider();
 }
 
-// HTML 로딩 완료 후 실행
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initMemoryParkSlider);
-} else {
-  initMemoryParkSlider();
+/* ========================================
+   3. ITEM MEMORY PARK
+======================================== */
+
+function initMemoryParkSlider() {
+  const swiperElement = document.getElementById("memory-swiper");
+  const memoryList = document.getElementById("memory-list");
+
+  if (!swiperElement || !memoryList) return;
+
+  // 현재 존재하는 카드에 Swiper 클래스 적용
+  function prepareSlides() {
+    Array.from(memoryList.children).forEach((card) => {
+      card.classList.add("swiper-slide");
+    });
+  }
+
+  prepareSlides();
+
+  // Swiper 초기화
+  window.memorySwiper = new Swiper(swiperElement, {
+    slidesPerView: 5,
+    slidesPerGroup: 1,
+    spaceBetween: 16,
+    speed: 500,
+
+    grabCursor: true,
+    watchOverflow: true,
+
+    navigation: {
+      prevEl: "#memory-prev",
+      nextEl: "#memory-next",
+    },
+
+    breakpoints: {
+      0: {
+        slidesPerView: 2,
+      },
+
+      601: {
+        slidesPerView: 3,
+      },
+
+      901: {
+        slidesPerView: 4,
+      },
+
+      1261: {
+        slidesPerView: 5,
+      },
+    },
+  });
+
+  // 메모리 데이터가 나중에 불러와지는 경우 대응
+  const observer = new MutationObserver(() => {
+    prepareSlides();
+    memorySwiper.update();
+  });
+
+  observer.observe(memoryList, {
+    childList: true,
+  });
 }

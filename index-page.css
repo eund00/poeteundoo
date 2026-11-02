@@ -93,24 +93,24 @@
 
 .hero {
   position: relative;
-  padding: 30px 0;
   display: flex;
   align-items: center;
+  padding: 30px 0;
   border-bottom: 1px solid #111;
 }
 
 .hero::before {
   content: "";
-  width: 100%;
-  height: 100%;
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://images.unsplash.com/photo-1791709342797-d065f0dc070d?q=80&w=627&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D");
+  background-position: center bottom;
   background-size: cover;
   background-attachment: fixed;
   opacity: 0.2;
-  background-image: url("https://images.unsplash.com/photo-1791709342797-d065f0dc070d?q=80&w=627&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D");
-  background-position: center bottom;
   filter: drop-shadow(2px 4px 26px green);
 }
 
@@ -131,7 +131,7 @@
 .hero__title {
   max-width: 900px;
   font-family: "Noto Serif KR", Georgia, serif;
-  font-size: clamp(32px, 4vw, 30px);
+  font-size: clamp(30px, 4vw, 42px);
   font-weight: 400;
   line-height: 1.5;
   letter-spacing: -0.07em;
@@ -140,10 +140,10 @@
 .hero__link {
   display: inline-block;
   margin-top: 10px;
-  color: #ccc;
-  background-color: #333;
   padding: 5px 10px 6px;
   border-bottom: 1px solid #111;
+  background-color: #333;
+  color: #ccc;
   font-size: 12px;
   letter-spacing: 0.08em;
   transition:
@@ -161,44 +161,32 @@
 
 .latest-works {
   width: min(1400px, calc(100% - 80px));
-  margin: 0 auto;
-  margin-top: 100px;
+  margin: 100px auto 0;
 }
 
-/* 슬라이더 레이아웃 */
+/* Swiper 기본 영역 */
 
 .work-slider {
   position: relative;
-  width: 100%;
-}
-
-.work-slider__viewport {
   width: 100%;
   overflow: hidden;
   border: 1px solid #111;
   cursor: grab;
   user-select: none;
   -webkit-user-select: none;
-}
-
-.work-slider__viewport:active {
-  cursor: grabbing;
-}
-
-.work-list {
-  display: flex;
-  gap: 0;
-  transition: transform 0.45s ease;
-  will-change: transform;
   touch-action: pan-y;
+}
+
+.work-slider:active {
+  cursor: grabbing;
 }
 
 /* 작품 카드 */
 
 .work-card {
   position: relative;
-  flex: 0 0 calc(100% / 3);
   min-width: 0;
+  height: auto;
   box-sizing: border-box;
   border-right: 1px solid #111;
 }
@@ -207,8 +195,8 @@
   position: relative;
   isolation: isolate;
   display: flex;
-  height: 100%;
   flex-direction: column;
+  height: 100%;
   min-height: 420px;
   padding: 30px;
   overflow: hidden;
@@ -268,7 +256,7 @@
 .work-card__title {
   margin-top: auto;
   font-family: "Noto Serif KR", Georgia, serif;
-  font-size: clamp(28px, 3vw, 46px);
+  font-size: clamp(28px, 3vw, 30px);
   font-weight: 400;
   line-height: 1.25;
   letter-spacing: -0.05em;
@@ -290,23 +278,21 @@
   -webkit-line-clamp: 2;
 }
 
-/* 좌우 이동 버튼 */
+/* 작품 슬라이더 버튼 */
 
-.work-slider__btn {
+.work-slider__btn,
+.memory-slider__btn {
   position: absolute;
   top: 50%;
-  z-index: 2;
+  z-index: 5;
   display: grid;
-  width: 50px;
-  height: 50px;
-  padding: 0;
   place-items: center;
+  padding: 0;
   transform: translateY(-50%);
   border: 1px solid #ddd;
   border-radius: 50%;
   background-color: #fff;
   color: #333;
-  font-size: 20px;
   cursor: pointer;
   transition:
     border-color 0.2s ease,
@@ -315,27 +301,37 @@
     opacity 0.2s ease;
 }
 
-.work-slider__btn:hover:not(:disabled) {
+.work-slider__btn {
+  width: 50px;
+  height: 50px;
+  font-size: 20px;
+}
+
+.work-slider__btn:hover:not(:disabled),
+.memory-slider__btn:hover:not(:disabled) {
   border-color: #739b73;
   background-color: #739b73;
   color: #fff;
 }
 
-.work-slider__btn:disabled {
+.work-slider__btn:disabled,
+.memory-slider__btn:disabled {
+  opacity: 0.35;
   cursor: default;
 }
 
-.work-slider__btn:focus-visible {
+.work-slider__btn:focus-visible,
+.memory-slider__btn:focus-visible {
   outline: 2px solid #739b73;
   outline-offset: 3px;
 }
 
 .work-slider__btn--prev {
-  left: -1rem;
+  left: 10px;
 }
 
 .work-slider__btn--next {
-  right: -1rem;
+  right: 10px;
 }
 
 /* ========================================
@@ -343,36 +339,36 @@
 ======================================== */
 
 .about {
+  position: relative;
   margin-top: 100px;
   border-top: 1px solid #111;
   border-bottom: 1px solid #111;
-  position: relative;
   background-color: #f0ffe9;
 }
 
 .about_bg {
-  background-image: url("https://images.unsplash.com/photo-1578059456805-cd4809a05d70?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  position: absolute;
   width: 100%;
   height: 100%;
-  position: absolute;
   overflow: hidden;
+  background-image: url("https://images.unsplash.com/photo-1578059456805-cd4809a05d70?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  opacity: 0.25;
   background-attachment: fixed;
+  opacity: 0.25;
 }
 
 .about__inner {
   position: relative;
   z-index: 99;
-  width: min(1400px, calc(100% - 80px));
-  margin: 0 auto;
-  padding: 1.5rem 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
   column-gap: 5rem;
+  width: min(1400px, calc(100% - 80px));
+  margin: 0 auto;
+  padding: 1.5rem 0;
 }
 
 .about__heading {
@@ -380,8 +376,8 @@
 }
 
 .about__heading .tell {
-  text-align: right;
   margin-top: 0.5rem;
+  text-align: right;
 }
 
 .about__heading .tell p {
@@ -398,18 +394,18 @@
 }
 
 .about__content {
-  max-width: 480px;
-  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  max-width: 480px;
+  height: 100%;
+  margin: 1rem;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  background-color: #ffffff6b;
   font-family: "Noto Serif KR", serif;
   font-size: 18px;
   line-height: 2;
-  background-color: #ffffff6b;
-  border-radius: 0.5rem;
-  margin: 1rem;
-  padding: 1.5rem;
 }
 
 .about__content p {
@@ -450,8 +446,8 @@
 }
 
 .interview-item {
-  border-bottom: 1px solid #111;
   padding-right: 1rem;
+  border-bottom: 1px solid #111;
 }
 
 .interview-item a {
@@ -468,10 +464,10 @@
 
 .interview-item a .interview-item__category {
   min-width: 100px;
-  background-color: rgba(186, 238, 66, 0.308);
-  text-align: center;
   border-radius: 25px;
+  background-color: rgba(186, 238, 66, 0.308);
   color: #004b00;
+  text-align: center;
 }
 
 .interview-item__date {
@@ -480,44 +476,131 @@
 }
 
 .interview-item__title {
+  display: -webkit-box;
+  overflow: hidden;
   font-family: "Noto Serif KR", serif;
   font-size: 20px;
   font-weight: 400;
-  display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 /* ========================================
-   6. 반응형
+   6. ITEM MEMORY PARK
+======================================== */
+
+.memory-park {
+  width: min(1400px, calc(100% - 80px));
+  margin: 5rem auto;
+}
+
+/* Swiper 기본 영역 */
+
+.memory-slider {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* 메모리 카드 */
+
+.memory-card {
+  min-width: 0;
+  height: auto;
+  box-sizing: border-box;
+}
+
+/* 이미지 */
+
+.memory-card__image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background-color: #e9e5da;
+}
+
+.memory-card__image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.memory-card:hover .memory-card__image img {
+  transform: scale(1.04);
+}
+
+/* 카드 정보 */
+
+.memory-card__info {
+  padding: 1rem;
+}
+
+.memory-card__info > span {
+  display: block;
+  margin-bottom: 6px;
+  color: #739b73;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+}
+
+.memory-card__info h3 {
+  margin: 0 0 6px;
+  font-size: 1.2rem;
+}
+
+.memory-card__info p {
+  margin: 0 0 8px;
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+
+.memory-card__info small {
+  display: block;
+  margin-top: 1rem;
+  color: #888;
+}
+
+/* 메모리 슬라이더 버튼 */
+
+.memory-slider__btn {
+  width: 40px;
+  height: 40px;
+  font-size: 1.1rem;
+}
+
+.memory-slider__btn--prev {
+  left: 10px;
+}
+
+.memory-slider__btn--next {
+  right: 10px;
+}
+
+/* 메모리 파크 하단 문구 */
+
+.memory-park__caption {
+  margin-top: 1.5rem;
+  color: #888;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+/* ========================================
+   7. 반응형
 ======================================== */
 
 @media (max-width: 768px) {
-  .interview {
-    width: min(1400px, calc(100% - 40px)) !important;
-  }
-
-  .interview-item__title {
-    font-size: 1rem !important;
-  }
-
-  .about__inner {
-    width: min(1400px, calc(100% - 40px)) !important;
-  }
-
   .hero__inner {
     width: min(1400px, calc(100% - 40px));
   }
 
   .latest-works {
     width: calc(100% - 40px);
-    padding-block: 60px;
     margin-top: 0;
-  }
-
-  .work-card {
-    flex-basis: 100%;
+    padding-block: 60px;
   }
 
   .work-card__link {
@@ -526,7 +609,7 @@
   }
 
   .work-card__title {
-    font-size: clamp(28px, 8vw, 40px);
+    font-size: clamp(28px, 8vw, 30px);
   }
 
   .work-slider__btn {
@@ -534,326 +617,26 @@
     height: 40px;
   }
 
-  .work-slider__btn--prev {
-    left: -12px;
-  }
-
-  .work-slider__btn--next {
-    right: -12px;
-  }
-
   .about {
-    margin-top: 0 !important;
+    margin-top: 0;
   }
 
   .about__inner {
-    grid-template-columns: 1fr !important;
-    gap: 1.5rem !important;
-  }
-}
-
-/* ========================================
-   7. 모션 최소화 설정
-======================================== */
-
-@media (prefers-reduced-motion: reduce) {
-  .ghost {
-    animation: none;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    width: min(1400px, calc(100% - 40px));
   }
 
-  .work-list,
-  .work-card__link,
-  .work-slider__btn {
-    transition: none;
-  }
-}
-
-/* =================================
-   ITEM MEMORY PARK
-================================= */
-
-.memory-park {
-  width: min(1400px, calc(100% - 80px));
-  margin: 5rem auto;
-}
-
-.memory-slider {
-  position: relative;
-  width: 100%;
-}
-
-.memory-slider__viewport {
-  overflow: hidden;
-  width: 100%;
-}
-
-.memory-list {
-  display: flex;
-  gap: 1.5rem;
-  transition: transform 0.5s ease;
-  will-change: transform;
-}
-
-.memory-card {
-  flex: 0 0 calc((100% - 64px) / 5);
-  min-width: 0;
-  box-sizing: border-box;
-  flex-shrink: 0;
-}
-
-.memory-card__image {
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  overflow: hidden;
-  background: #e9e5da;
-}
-
-.memory-card__image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.5s ease;
-}
-
-.memory-card:hover .memory-card__image img {
-  transform: scale(1.04);
-}
-
-.memory-card__info {
-  padding: 1.5rem;
-}
-
-.memory-card__info > span {
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
-  color: #739b73;
-}
-
-.memory-card__info h3 {
-  margin: 0.7rem 0;
-  font-size: 1.5rem;
-}
-
-.memory-card__info p {
-  line-height: 1.8;
-  font-size: 0.95rem;
-  color: #666;
-}
-
-.memory-card__info small {
-  display: block;
-  margin-top: 1.2rem;
-  color: #888;
-}
-
-.memory-slider__btn {
-  position: absolute;
-  top: 50%;
-  z-index: 2;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  border: 1px solid #ddd;
-  border-radius: 50%;
-  background: #fff;
-  cursor: pointer;
-  font-size: 1.1rem;
-}
-
-.memory-slider__btn--prev {
-  left: -20px;
-}
-
-.memory-slider__btn--next {
-  right: -20px;
-}
-
-.memory-park__caption {
-  margin-top: 1.5rem;
-  text-align: center;
-  color: #888;
-  font-size: 0.95rem;
-}
-
-@media (max-width: 768px) {
-  .memory-card {
-    flex: 0 0 85%;
+  .interview {
+    width: min(1400px, calc(100% - 40px));
   }
 
-  .memory-slider__btn--prev {
-    left: 5px;
+  .interview-item__title {
+    font-size: 1rem;
   }
 
-  .memory-slider__btn--next {
-    right: 5px;
-  }
-}
-
-/* 메모리 파크 슬라이더 */
-.memory-slider {
-  position: relative;
-  width: 100%;
-}
-
-.memory-slider__viewport {
-  width: 100%;
-  overflow: hidden;
-}
-
-.memory-list {
-  display: flex;
-  gap: 16px;
-  transition: transform 0.4s ease;
-  will-change: transform;
-}
-
-.memory-card {
-  flex: 0 0 calc((100% - 64px) / 5);
-  min-width: 0;
-  box-sizing: border-box;
-}
-
-/* 이미지 */
-.memory-card__image {
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
-}
-
-.memory-card__image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* 태블릿 */
-@media (max-width: 1260px) {
-  .memory-card {
-    flex: 0 0 calc((100% - 48px) / 4);
-  }
-}
-
-/* 작은 화면 */
-@media (max-width: 900px) {
-  .memory-card {
-    flex: 0 0 calc((100% - 32px) / 3);
-  }
-}
-
-@media (max-width: 600px) {
-  .memory-card {
-    flex: 0 0 calc((100% - 16px) / 2);
-  }
-}
-
-/* =========================
-   ITEM MEMORY PARK
-========================= */
-
-.memory-slider {
-  position: relative;
-  width: 100%;
-}
-
-.memory-slider__viewport {
-  width: 100%;
-  overflow: hidden;
-}
-
-.memory-list {
-  display: flex;
-  gap: 16px;
-  transition: transform 0.4s ease;
-  will-change: transform;
-}
-
-.memory-card {
-  flex: 0 0 calc((100% - 64px) / 5);
-  min-width: 0;
-  box-sizing: border-box;
-}
-
-/* 이미지 */
-.memory-card__image {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  overflow: hidden;
-}
-
-.memory-card__image img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* 카드 정보 */
-.memory-card__info {
-  padding: 1rem;
-}
-
-.memory-card__info span {
-  display: block;
-  font-size: 0.75rem;
-  margin-bottom: 6px;
-}
-
-.memory-card__info h3 {
-  margin: 0 0 6px;
-}
-
-.memory-card__info p {
-  margin: 0 0 8px;
-}
-
-.memory-card__info small {
-  display: block;
-}
-
-/* 이전 / 다음 버튼 */
-.memory-slider__btn {
-  position: absolute;
-  top: 50%;
-  z-index: 5;
-  transform: translateY(-50%);
-  cursor: pointer;
-}
-
-.memory-slider__btn--prev {
-  left: -20px;
-}
-
-.memory-slider__btn--next {
-  right: -20px;
-}
-
-/* 태블릿 */
-@media (max-width: 1260px) {
-  .memory-card {
-    flex-basis: calc((100% - 48px) / 4);
-  }
-}
-
-/* 소형 태블릿 */
-@media (max-width: 900px) {
-  .memory-card {
-    flex-basis: calc((100% - 32px) / 3);
-  }
-
-  .memory-slider__btn--prev {
-    left: 5px;
-  }
-
-  .memory-slider__btn--next {
-    right: 5px;
-  }
-}
-
-/* 모바일 */
-@media (max-width: 600px) {
-  .memory-card {
-    flex-basis: calc((100% - 16px) / 2);
+  .memory-park {
+    width: calc(100% - 40px);
   }
 
   .memory-card__info h3 {
@@ -862,5 +645,22 @@
 
   .memory-card__info p {
     font-size: 0.85rem;
+  }
+}
+
+/* ========================================
+   8. 모션 최소화 설정
+======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .ghost {
+    animation: none;
+  }
+
+  .work-card__link,
+  .work-slider__btn,
+  .memory-slider__btn,
+  .memory-card__image img {
+    transition: none;
   }
 }
