@@ -595,11 +595,10 @@
 }
 
 .memory-card {
-  flex: 0 0 calc(50% - 0.75rem);
+  flex: 0 0 calc((100% - 64px) / 5);
   min-width: 0;
-  background: #f5f2e9;
-  border-radius: 12px;
-  overflow: hidden;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .memory-card__image {

@@ -118,7 +118,11 @@ async function initWorkSlider() {
     /* 슬라이더 계산 및 이동 */
 
     function getVisibleCount() {
-      return window.innerWidth <= 768 ? 1 : 3;
+      if (window.innerWidth <= 600) return 2;
+      if (window.innerWidth <= 900) return 3;
+      if (window.innerWidth <= 1260) return 4;
+
+      return 5;
     }
 
     function getMaxIndex() {
@@ -357,49 +361,92 @@ fetch("./interviews/interviews.json")
    ITEM MEMORY PARK SLIDER
 ================================= */
 
-(() => {
+function initMemoryParkSlider() {
   const list = document.getElementById("memory-list");
   const prev = document.getElementById("memory-prev");
   const next = document.getElementById("memory-next");
 
   if (!list || !prev || !next) return;
 
-  const cards = Array.from(list.children);
-
-  if (cards.length === 0) return;
-
   let currentIndex = 0;
 
+  // 화면에 표시할 카드 개수
   function getVisibleCount() {
     return window.innerWidth <= 768 ? 1 : 2;
   }
 
-  function updateSlider() {
-    const visibleCount = getVisibleCount();
-    const maxIndex = Math.max(0, cards.length - visibleCount);
+  // 현재 카드 목록 가져오기
+  function getCards() {
+    return Array.from(list.children).filter((card) =>
+      card.classList.contains("memory-card"),
+    );
+  }
 
-    currentIndex = Math.min(currentIndex, maxIndex);
+  // 최대 이동 가능 인덱스
+  function getMaxIndex() {
+    return Math.max(0, getCards().length - getVisibleCount());
+  }
+
+  // 카드 한 칸의 이동 거리
+  function getStep() {
+    const cards = getCards();
+
+    if (!cards.length) return 0;
 
     const cardWidth = cards[0].getBoundingClientRect().width;
     const gap = parseFloat(getComputedStyle(list).gap) || 0;
 
-    list.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
+    return cardWidth + gap;
+  }
 
+  // 슬라이더 업데이트
+  function updateSlider() {
+    const cards = getCards();
+    const maxIndex = getMaxIndex();
+
+    currentIndex = Math.max(0, Math.min(currentIndex, maxIndex));
+
+    const step = getStep();
+
+    list.style.transform = `translateX(-${currentIndex * step}px)`;
+
+    // 버튼 활성화 및 비활성화
     prev.disabled = currentIndex === 0;
     next.disabled = currentIndex >= maxIndex;
   }
 
+  // 이전 버튼
   prev.addEventListener("click", () => {
-    currentIndex--;
+    currentIndex = Math.max(0, currentIndex - 1);
     updateSlider();
   });
 
+  // 다음 버튼
   next.addEventListener("click", () => {
-    currentIndex++;
+    currentIndex = Math.min(getMaxIndex(), currentIndex + 1);
+
     updateSlider();
   });
 
+  // 화면 크기 변경
   window.addEventListener("resize", updateSlider);
 
+  // 카드가 새로 추가되거나 변경될 때 자동 반영
+  const observer = new MutationObserver(() => {
+    updateSlider();
+  });
+
+  observer.observe(list, {
+    childList: true,
+  });
+
+  // 최초 실행
   updateSlider();
-})();
+}
+
+// HTML 로딩 완료 후 실행
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initMemoryParkSlider);
+} else {
+  initMemoryParkSlider();
+}
