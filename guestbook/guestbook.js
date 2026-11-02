@@ -18,16 +18,19 @@
 
   let comments = [];
 
+  // 상태 메시지
   function setStatus(message, isError = false) {
     statusEl.textContent = message;
     statusEl.style.color = isError ? "#a33" : "#5b7657";
   }
 
+  // API 주소 확인
   function apiReady() {
     if (API_URL.includes("PASTE_YOUR")) {
       setStatus("방명록 API 주소를 설정해 주세요.", true);
       return false;
     }
+
     return true;
   }
 
@@ -35,6 +38,7 @@
   function jsonp(params) {
     return new Promise((resolve, reject) => {
       const callback = "guestbookCb_" + Math.random().toString(36).slice(2);
+
       const script = document.createElement("script");
       const url = new URL(API_URL);
 
@@ -62,7 +66,10 @@
       }
 
       window[callback] = (data) => finish(null, data);
-      script.onerror = () => finish(new Error("방명록을 불러오지 못했습니다."));
+
+      script.onerror = () => {
+        finish(new Error("방명록을 불러오지 못했습니다."));
+      };
 
       script.src = url.toString();
       document.head.appendChild(script);
@@ -95,8 +102,7 @@
   }
 
   // ==================================================
-  // 은듀닷컴 공통 커스텀 모달
-  // guestbook.html에 모달 HTML이 있어야 합니다.
+  // 커스텀 모달
   // ==================================================
 
   const guestbookDialog = (() => {
@@ -132,8 +138,7 @@
       );
 
       return async (options = {}) => {
-        const text = options.message || options.title || "알림";
-        console.error(text);
+        console.error(options.message || options.title || "알림");
         return null;
       };
     }
@@ -159,7 +164,6 @@
     }
 
     function open(options = {}) {
-      // 열려 있는 모달이 있다면 먼저 종료합니다.
       if (resolveDialog) {
         finish(null);
       }
@@ -172,8 +176,6 @@
         placeholder = "",
         confirmText = "확인",
         cancelText = "취소",
-        privateText = "비밀 댓글",
-        publicText = "공개 댓글",
         required = false,
       } = options;
 
@@ -191,6 +193,7 @@
       textarea.placeholder = placeholder;
 
       input.type = type === "password" ? "password" : "text";
+
       input.autocomplete = type === "password" ? "current-password" : "off";
 
       input.required = required && (type === "input" || type === "password");
@@ -198,19 +201,17 @@
       textarea.required = required && type === "textarea";
 
       input.hidden = type !== "input" && type !== "password";
-
       textarea.hidden = type !== "textarea";
 
       error.hidden = true;
       error.textContent = "";
 
-      const isChoice = type === "choice";
       const isMessage = type === "message";
 
       cancelButton.hidden = isMessage;
-      cancelButton.textContent = isChoice ? publicText : cancelText;
+      cancelButton.textContent = cancelText;
 
-      submitButton.textContent = isChoice ? privateText : confirmText;
+      submitButton.textContent = confirmText;
 
       actions.style.justifyContent = isMessage ? "center" : "flex-end";
 
@@ -237,11 +238,6 @@
     dialogForm.addEventListener("submit", (event) => {
       event.preventDefault();
 
-      if (currentType === "choice") {
-        finish(true);
-        return;
-      }
-
       if (currentType === "input" || currentType === "password") {
         finish(input.value);
         return;
@@ -256,7 +252,7 @@
     });
 
     cancelButton.addEventListener("click", () => {
-      finish(currentType === "choice" ? false : null);
+      finish(null);
     });
 
     closeButton.addEventListener("click", () => {
@@ -341,39 +337,28 @@
     const name = document.createElement("span");
     name.className = "guestbook__name";
     name.textContent = comment.nickname || "익명";
+
     meta.appendChild(name);
 
     const date = document.createElement("time");
     date.textContent = dateLabel(comment.updatedAt || comment.createdAt);
+
     meta.appendChild(date);
-
-    if (comment.isPrivate) {
-      const badge = document.createElement("span");
-
-      badge.className = "guestbook__private-badge";
-      badge.textContent = "🔒 비밀 댓글";
-
-      meta.appendChild(badge);
-    }
 
     const content = document.createElement("p");
     content.className = "guestbook__content";
 
-    content.textContent = comment.isPrivate
-      ? "비밀 댓글입니다. 작성자는 비밀번호로 내용을 확인할 수 있습니다."
-      : comment.content;
+    if (comment.isPrivate === true || comment.isPrivate === "true") {
+      content.textContent = "🔒 비밀 댓글입니다.";
+    } else {
+      content.textContent = comment.content || "";
+    }
 
     const actions = document.createElement("div");
     actions.className = "guestbook__actions";
 
     if (!isReply) {
       actions.appendChild(makeButton("답글", replyTo, comment.id));
-    }
-
-    if (comment.isPrivate) {
-      actions.appendChild(
-        makeButton("비밀 댓글 확인", viewPrivate, comment.id),
-      );
     }
 
     actions.appendChild(makeButton("수정", editComment, comment.id));
@@ -393,7 +378,7 @@
     if (!apiReady()) return;
 
     listEl.innerHTML =
-      '<div class="guestbook__loading"> <span class="guestbook__loading-text"></span> <span class="guestbook__dots" aria-hidden="true"> <span></span> <span></span> <span></span> </span> </div>';
+      '<div class="guestbook__loading"><span class="guestbook__loading-text"></span><span class="guestbook__dots" aria-hidden="true"><span></span><span></span><span></span></span></div>';
 
     try {
       const result = await jsonp({ action: "list" });
@@ -436,7 +421,6 @@
     $("guestbook-parent-id").value = "";
     $("guestbook-content").value = "";
     $("guestbook-password").value = "";
-    $("guestbook-private").checked = false;
 
     submitBtn.textContent = "댓글 남기기";
     cancelBtn.hidden = true;
@@ -455,7 +439,6 @@
     const password = $("guestbook-password").value;
     const content = $("guestbook-content").value.trim();
     const parentId = $("guestbook-parent-id").value;
-    const isPrivate = $("guestbook-private").checked;
 
     if (!nickname || !content) {
       setStatus("닉네임과 내용을 입력해 주세요.", true);
@@ -477,13 +460,13 @@
         password,
         content,
         parentId,
-        isPrivate,
       });
 
       setStatus("등록 요청을 보냈습니다. 잠시 후 목록을 새로고침합니다.");
 
       form.reset();
       $("guestbook-parent-id").value = "";
+
       cancelBtn.hidden = true;
       submitBtn.textContent = "댓글 남기기";
 
@@ -494,47 +477,6 @@
       submitBtn.disabled = false;
     }
   });
-
-  // ==================================================
-  // 비밀 댓글 확인
-  // ==================================================
-
-  async function viewPrivate(id) {
-    const password = await guestbookDialog({
-      title: "댓글 보기",
-      message: "비밀번호를 입력해 주세요.",
-      type: "password",
-      placeholder: "비밀번호 입력",
-      confirmText: "댓글 확인",
-      required: true,
-    });
-
-    if (password === null) return;
-
-    try {
-      const result = await jsonp({
-        action: "verifyPrivate",
-        id,
-        password,
-      });
-
-      if (!result || !result.ok) {
-        throw new Error(result?.error || "비밀 댓글을 확인하지 못했습니다.");
-      }
-
-      await guestbookDialog({
-        title: `${result.nickname || "익명"} 曰`,
-        message: result.content || "",
-        type: "message",
-      });
-    } catch (error) {
-      await guestbookDialog({
-        title: "확인할 수 없어요",
-        message: error.message || "비밀 댓글을 확인하지 못했습니다.",
-        type: "message",
-      });
-    }
-  }
 
   // ==================================================
   // 댓글 수정
@@ -555,40 +497,13 @@
     const comment = comments.find((item) => item.id === id);
     if (!comment) return;
 
-    let oldContent = comment.content || "";
-
-    // 비밀 댓글은 비밀번호 검증 후 내용을 가져옵니다.
-    if (comment.isPrivate) {
-      try {
-        const result = await jsonp({
-          action: "verifyPrivate",
-          id,
-          password,
-        });
-
-        if (!result || !result.ok) {
-          throw new Error(result?.error || "비밀번호가 맞지 않습니다.");
-        }
-
-        oldContent = result.content || "";
-      } catch (error) {
-        await guestbookDialog({
-          title: "비밀번호 확인 실패",
-          message: error.message || "비밀번호를 확인하지 못했습니다.",
-          type: "message",
-        });
-
-        return;
-      }
-    }
-
     const content = await guestbookDialog({
       title: "댓글 수정하기",
       message: "수정할 내용을 입력해 주세요.",
       type: "textarea",
-      value: oldContent,
+      value: comment.content || "",
       placeholder: "댓글 내용을 입력해 주세요.",
-      confirmText: "다음",
+      confirmText: "수정하기",
       required: true,
     });
 
@@ -604,16 +519,6 @@
       return;
     }
 
-    const isPrivate = await guestbookDialog({
-      title: "댓글 공개 설정",
-      message: "이 댓글을 어떤 방식으로 저장할까요?",
-      type: "choice",
-      privateText: "비밀 댓글",
-      publicText: "공개 댓글",
-    });
-
-    if (isPrivate === null) return;
-
     setStatus("수정 요청을 보내는 중입니다.");
 
     try {
@@ -622,7 +527,6 @@
         id,
         password,
         content: content.trim(),
-        isPrivate,
       });
 
       setStatus("수정 요청을 보냈습니다. 반영 여부를 확인하는 중입니다.");
@@ -659,12 +563,12 @@
     const confirmed = await guestbookDialog({
       title: "정말 삭제할까요?",
       message: "삭제한 댓글은 복구할 수 없습니다.",
-      type: "choice",
-      privateText: "삭제하기",
-      publicText: "취소",
+      type: "input",
+      placeholder: "삭제를 진행하려면 확인 버튼을 눌러 주세요.",
+      confirmText: "삭제하기",
     });
 
-    if (confirmed !== true) return;
+    if (confirmed === null) return;
 
     setStatus("삭제 요청을 보내는 중입니다.");
 

@@ -1,240 +1,251 @@
 <!doctype html>
 <html lang="ko">
   <head>
+    <!-- Marked.js -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- Google tag (gtag.js) -->
+
+    <!-- Google Analytics -->
     <script
       async
       src="https://www.googletagmanager.com/gtag/js?id=G-6X0BDHRPZX"
     ></script>
     <script>
       window.dataLayer = window.dataLayer || [];
+
       function gtag() {
         dataLayer.push(arguments);
       }
-      gtag("js", new Date());
 
+      gtag("js", new Date());
       gtag("config", "G-6X0BDHRPZX");
     </script>
+
     <!-- Google Tag Manager -->
     <script>
       (function (w, d, s, l, i) {
         w[l] = w[l] || [];
-        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != "dataLayer" ? "&l=" + l : "";
+        w[l].push({
+          "gtm.start": new Date().getTime(),
+          event: "gtm.js",
+        });
+
+        var f = d.getElementsByTagName(s)[0];
+        var j = d.createElement(s);
+        var dl = l !== "dataLayer" ? "&l=" + l : "";
+
         j.async = true;
         j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+
         f.parentNode.insertBefore(j, f);
       })(window, document, "script", "dataLayer", "GTM-TRR38Z77");
     </script>
-    <!-- End Google Tag Manager -->
+
+    <!-- 기본 설정 -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>읽어봐요 : 은듀닷컴</title>
+
+    <!-- 파비콘 -->
     <link rel="icon" type="image/png" href="../img/favicon.png" />
 
+    <!-- CSS -->
     <link rel="stylesheet" href="../index.css" />
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
     <link
       href="https://fonts.googleapis.com/css2?family=Dongle&display=swap"
       rel="stylesheet"
     />
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500&display=swap");
 
-      #work-title {
-        font-family: "Noto Serif KR", serif;
-      }
-      #work-content {
-        font-family: "Noto Serif KR", serif;
-      }
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- 페이지 스타일 -->
+    <style>
+      /* ==============================
+         작품 상세 페이지
+      ============================== */
+
       .work-detail {
-        width: min(1100px, calc(100% - 80px));
+        width: min(550px, calc(100% - 80px));
         margin: 80px auto 0;
       }
 
-      .work__header {
-        padding-bottom: 70px;
+      /* ==============================
+         작품 헤더
+      ============================== */
+
+      .work-detail__header {
+        padding-bottom: 30px;
         border-bottom: 1px solid #111;
       }
 
-      .work__category {
-        margin-bottom: 30px;
-
-        font-size: 10px;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-      }
-
-      .work__title {
-        font-family: "Noto Serif KR", Georgia, serif;
-        font-size: clamp(50px, 7vw, 100px);
-        font-weight: 400;
-        line-height: 1.15;
-        letter-spacing: -0.07em;
-      }
-
-      .work__meta {
-        display: flex;
-        gap: 25px;
-
-        margin-top: 40px;
-
+      .work-detail__meta {
         font-size: 12px;
+        text-align: right;
         opacity: 0.6;
       }
 
-      .work__body {
-        padding: 100px 0;
+      .work-detail__title {
+        margin: 3rem 0 1rem;
+        font-family: "Noto Serif KR", serif;
+        font-size: clamp(30px, 6vw, 50px);
+        font-weight: 400;
+        line-height: 1.4;
+        letter-spacing: -0.05em;
       }
 
-      .work__text {
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
+      /* ==============================
+         작품 본문
+      ============================== */
 
+      .work-detail__content {
+        margin-top: 2rem;
+      }
+
+      .work-detail__poem {
         font-family: "Noto Serif KR", serif;
         font-size: 17px;
         line-height: 2.4;
         letter-spacing: -0.02em;
+        text-align: justify;
+        white-space: pre-line;
+        overflow-wrap: anywhere;
       }
 
-      .work__text p {
+      .work-detail__poem p {
         margin-bottom: 1em;
       }
 
-      .work__footer {
-        padding-top: 40px;
-        border-top: 1px solid #111;
-      }
+      /* ==============================
+         작품 링크 및 이미지
+      ============================== */
 
-      .work__credits {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 30px;
-      }
-
-      .work__credits div {
-        display: grid;
-        grid-template-columns: 120px 1fr;
-      }
-
-      .work__credits dt {
-        font-size: 10px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        opacity: 0.5;
-      }
-
-      .work__credits dd {
-        margin: 0;
-        font-size: 12px;
-      }
-
-      .work-detail {
-        max-width: 550px;
-      }
-      .work-detail__poem {
-        white-space: pre-line;
-        text-align: justify;
-        overflow-wrap: anywhere;
-      }
-      .work-detail__meta {
-        text-align: right;
-      }
-      .work-detail__title {
-        margin: 3rem 0 1rem;
-      }
-      .work-detail__content {
-        margin-top: 2rem;
-      }
       #work-link {
-        margin-top: 3.5rem;
         display: flex;
-        justify-content: end;
+        justify-content: flex-end;
+        margin-top: 3.5rem;
       }
+
       #work-link img {
-        border: 1px solid #000;
         max-height: 230px;
+        border: 1px solid #000;
       }
+
+      /* ==============================
+         뒤로가기
+      ============================== */
+
       .work-detail__footer {
         display: inline-block;
         margin-top: 5rem;
-        background: #739b73;
-        color: #fff;
-        border-radius: 10px;
-        font-size: 0.8rem;
-        transition:
-          background 0.3s ease,
-          color 0.3s ease;
+        border: 0.5px solid #666;
+        background: #fbf8f0;
+        color: #455c43;
+        font-family: inherit;
+        font-size: 13px;
+        cursor: pointer;
+        transition: background 0.15s ease;
       }
+
       .work-detail__footer a {
         display: inline-block;
         padding: 0.5rem 1rem;
       }
+
       .work-detail__footer:hover {
-        background: #739b733d;
+        background-color: #739b733d;
         color: #739b73;
+      }
+
+      /* ==============================
+         모바일
+      ============================== */
+
+      @media (max-width: 600px) {
+        .work-detail {
+          width: calc(100% - 40px);
+          margin-top: 60px;
+        }
+
+        .work-detail__poem {
+          font-size: 16px;
+          line-height: 2.2;
+        }
+      }
+
+      /* ==============================
+         모션 최소화 설정
+      ============================== */
+
+      @media (prefers-reduced-motion: reduce) {
+        .work-detail__footer {
+          transition: none;
+        }
       }
     </style>
   </head>
 
   <body>
     <!-- Google Tag Manager (noscript) -->
-    <noscript
-      ><iframe
+    <noscript>
+      <iframe
         src="https://www.googletagmanager.com/ns.html?id=GTM-TRR38Z77"
         height="0"
         width="0"
         style="display: none; visibility: hidden"
-      ></iframe
-    ></noscript>
-    <!-- End Google Tag Manager (noscript) -->
+      ></iframe>
+    </noscript>
+
+    <!-- ==============================
+         HEADER
+    ============================== -->
+
     <header class="header">
       <div class="header__inner">
         <h1 class="logo">
           <a href="/">은듀닷컴</a>
         </h1>
-
-        <!-- <nav class="gnb">
-          <ul class="gnb__list">
-            <li><a href="/works">Works</a></li>
-            <li><a href="/about">About</a></li>
-            <li><a href="/interview">Interview</a></li>
-            <li><a href="/archive">Archive</a></li>
-          </ul>
-        </nav> -->
       </div>
     </header>
 
+    <!-- ==============================
+         MAIN
+    ============================== -->
+
     <main class="work-detail">
+      <!-- 작품 제목 및 정보 -->
       <div class="work-detail__header">
         <p class="work-detail__meta" id="work-meta"></p>
 
         <h2 class="work-detail__title" id="work-title"></h2>
       </div>
 
+      <!-- 작품 본문 -->
       <div class="work-detail__content">
         <div class="work-detail__poem" id="work-content"></div>
       </div>
 
-      <a
-        id="work-link"
-        target="_blank"
-        href="
-      "
-      >
-        <img id="work-img" class="bg_img" />
+      <!-- 작품 관련 링크 -->
+      <a id="work-link" target="_blank" rel="noopener noreferrer" href="#">
+        <img id="work-img" class="bg_img" alt="작품 관련 이미지" />
       </a>
 
+      <!-- 뒤로가기 -->
       <div class="work-detail__footer">
         <a href="javascript:history.back();">← 뒤로가기</a>
       </div>
     </main>
+
+    <!-- ==============================
+         FOOTER
+    ============================== -->
 
     <footer class="footer">
       <div class="footer__inner">
@@ -243,56 +254,87 @@
       </div>
     </footer>
 
+    <!-- ==============================
+         JAVASCRIPT
+    ============================== -->
+
     <script>
+      // URL에서 작품 ID 가져오기
       const params = new URLSearchParams(window.location.search);
       const workId = params.get("id");
 
-      fetch("../works/works.json")
-        .then((response) => response.json())
-        .then((works) => {
+      // 작품 데이터 불러오기
+      async function initWorkDetail() {
+        try {
+          const response = await fetch("../works/works.json");
+
+          if (!response.ok) {
+            throw new Error("작품 데이터를 불러오지 못했습니다.");
+          }
+
+          const works = await response.json();
+
+          // URL의 ID와 일치하는 작품 찾기
           const work = works.find((item) => item.id === workId);
 
+          // 작품이 없는 경우
           if (!work) {
             document.querySelector(".work-detail").innerHTML =
               "<p>작품을 찾을 수 없습니다.</p>";
+
             return;
           }
 
+          // 브라우저 탭 제목 변경
           document.title = `읽어봐요 : ${work.title}`;
 
+          // 작품 정보 표시
           document.querySelector("#work-meta").textContent =
-            `${work.year} · ${work.publication}`;
+            `${work.year ?? ""} · ${work.publication ?? ""}`;
 
-          document.querySelector("#work-title").textContent = work.title;
+          document.querySelector("#work-title").textContent = work.title ?? "";
 
           // 마크다운 파일 불러오기
-          return fetch(work.contentFile)
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error("마크다운 파일을 불러오지 못했습니다.");
-              }
-              return response.text();
-            })
-            .then((markdown) => {
-              document.querySelector("#work-content").innerHTML =
-                marked.parse(markdown);
-            })
-            .then(() => {
-              const workLink = document.querySelector("#work-link");
+          const contentResponse = await fetch(work.contentFile);
 
-              if (!work.link || work.link === "undefined") {
-                workLink.style.display = "none";
-              } else {
-                workLink.style.display = "";
-                workLink.setAttribute("href", work.link);
-              }
+          if (!contentResponse.ok) {
+            throw new Error("마크다운 파일을 불러오지 못했습니다.");
+          }
 
-              document.querySelector("#work-img").src = work.img;
-            });
-        })
-        .catch((error) => {
+          const markdown = await contentResponse.text();
+
+          // 마크다운을 HTML로 변환
+          document.querySelector("#work-content").innerHTML =
+            marked.parse(markdown);
+
+          // 작품 관련 링크
+          const workLink = document.querySelector("#work-link");
+          const workImage = document.querySelector("#work-img");
+
+          if (!work.link || work.link === "undefined") {
+            workLink.style.display = "none";
+          } else {
+            workLink.style.display = "flex";
+            workLink.href = work.link;
+          }
+
+          // 작품 이미지
+          if (work.img) {
+            workImage.src = work.img;
+            workImage.style.display = "block";
+          } else {
+            workImage.style.display = "none";
+          }
+        } catch (error) {
           console.error("작품을 불러오는 중 오류가 발생했습니다.", error);
-        });
+
+          document.querySelector(".work-detail").innerHTML =
+            "<p>작품을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.</p>";
+        }
+      }
+
+      // 페이지 실행
+      initWorkDetail();
     </script>
   </body>
 </html>

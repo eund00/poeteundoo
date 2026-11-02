@@ -1,66 +1,89 @@
 <!doctype html>
 <html lang="ko">
   <head>
-    <!-- Google tag (gtag.js) -->
+    <!-- Google Analytics -->
     <script
       async
       src="https://www.googletagmanager.com/gtag/js?id=G-6X0BDHRPZX"
     ></script>
     <script>
       window.dataLayer = window.dataLayer || [];
+
       function gtag() {
         dataLayer.push(arguments);
       }
-      gtag("js", new Date());
 
+      gtag("js", new Date());
       gtag("config", "G-6X0BDHRPZX");
     </script>
+
     <!-- Google Tag Manager -->
     <script>
       (function (w, d, s, l, i) {
         w[l] = w[l] || [];
-        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != "dataLayer" ? "&l=" + l : "";
+        w[l].push({
+          "gtm.start": new Date().getTime(),
+          event: "gtm.js",
+        });
+
+        var f = d.getElementsByTagName(s)[0];
+        var j = d.createElement(s);
+        var dl = l !== "dataLayer" ? "&l=" + l : "";
+
         j.async = true;
         j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+
         f.parentNode.insertBefore(j, f);
       })(window, document, "script", "dataLayer", "GTM-TRR38Z77");
     </script>
-    <!-- End Google Tag Manager -->
+
+    <!-- 기본 설정 -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <meta
-      name="Keywords"
+      name="keywords"
       content="포엠피플 이은주시인 은듀닷컴 서울예대 문예창작 문창과 신작시 이은주 시인"
     />
-    <meta name="Description" content="안녕하세요. 시 쓰는 이은주입니다." />
+    <meta name="description" content="안녕하세요. 시 쓰는 이은주입니다." />
+
     <meta http-equiv="Subject" content="개인 창작물 포트폴리오" />
     <meta http-equiv="Title" content="놀러와요 : 은듀닷컴" />
     <meta http-equiv="Author" content="이은주" />
+
     <title>방명록 : 은듀닷컴</title>
+
+    <!-- 파비콘 -->
     <link rel="icon" type="image/png" href="../img/favicon.png" />
 
+    <!-- CSS -->
     <link rel="stylesheet" href="../index.css" />
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
     <link
       href="https://fonts.googleapis.com/css2?family=Dongle&display=swap"
       rel="stylesheet"
     />
   </head>
+
   <body>
     <!-- Google Tag Manager (noscript) -->
-    <noscript
-      ><iframe
+    <noscript>
+      <iframe
         src="https://www.googletagmanager.com/ns.html?id=GTM-TRR38Z77"
         height="0"
         width="0"
         style="display: none; visibility: hidden"
-      ></iframe
-    ></noscript>
-    <!-- End Google Tag Manager (noscript) -->
+      ></iframe>
+    </noscript>
+
+    <!-- ==============================
+         HEADER
+    ============================== -->
+
     <header class="header">
       <div class="header__inner">
         <h1 class="logo">
@@ -73,16 +96,18 @@
             <li class="gnb__item">
               <a href="/works/work.html">Works</a>
             </li>
+
             <li class="gnb__item">
               <a href="/diary/diary-before.html">Diary</a>
             </li>
+
             <li class="gnb__item">
               <a href="/guestbook/guestbook.html">Guestbook</a>
             </li>
           </ul>
         </nav>
 
-        <!-- 태블릿 / 모바일 햄버거 -->
+        <!-- 태블릿 / 모바일 햄버거 메뉴 -->
         <button
           class="menu-toggle"
           id="menu-toggle"
@@ -98,13 +123,16 @@
       </div>
     </header>
 
-    <!-- 사이드바 배경 -->
+    <!-- ==============================
+         SIDEBAR
+    ============================== -->
+
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-    <!-- 사이드바 -->
     <aside class="sidebar" id="sidebar" aria-hidden="true">
       <div class="sidebar__header">
         <span>MENU</span>
+
         <button
           class="sidebar__close"
           id="sidebar-close"
@@ -116,9 +144,20 @@
       </div>
 
       <nav class="sidebar__nav">
-        <a href="/works/work.html"><span>01</span>Works</a>
-        <a href="/diary/diary-before.html"><span>02</span>Diary</a>
-        <a href="/guestbook/guestbook.html"><span>03</span>Guestbook</a>
+        <a href="/works/work.html">
+          <span>01</span>
+          Works
+        </a>
+
+        <a href="/diary/diary-before.html">
+          <span>02</span>
+          Diary
+        </a>
+
+        <a href="/guestbook/guestbook.html">
+          <span>03</span>
+          Guestbook
+        </a>
       </nav>
 
       <div class="sidebar__footer">
@@ -127,103 +166,122 @@
       </div>
     </aside>
 
-    <!-- 은듀닷컴 방명록: index.html의 </main> 바로 위에 삽입 -->
-    <section class="guestbook" id="guestbook">
-      <div class="guestbook__header">
-        <div class="guestbook__rightWrap">
-          <p class="guestbook__eyebrow">🐢</p>
-          <p class="guestbook__intro">
-            조금 느릴 수 있으니,<br />
-            참을성을 길러 보아요.
-          </p>
+    <!-- ==============================
+         GUESTBOOK
+    ============================== -->
+
+    <main>
+      <section class="guestbook" id="guestbook">
+        <!-- 방명록 헤더 -->
+        <div class="guestbook__header">
+          <div class="guestbook__rightWrap">
+            <p class="guestbook__eyebrow">🐢</p>
+
+            <p class="guestbook__intro">
+              조금 느릴 수 있으니,<br />
+              참을성을 길러 보아요.
+            </p>
+          </div>
+
+          <h2 class="guestbook__title">방명록</h2>
         </div>
 
-        <h2 class="guestbook__title">방명록</h2>
-      </div>
+        <!-- 댓글 작성 폼 -->
+        <form class="guestbook__form" id="guestbook-form">
+          <input type="hidden" id="guestbook-parent-id" value="" />
 
-      <form class="guestbook__form" id="guestbook-form">
-        <input type="hidden" id="guestbook-parent-id" value="" />
-        <div class="guestbook__fields">
-          <label
-            >닉네임
-            <input
-              id="guestbook-nickname"
-              maxlength="24"
-              required
-              autocomplete="nickname"
-              placeholder="누구세요?"
-            />
-          </label>
-          <label
-            >비밀번호
-            <input
-              id="guestbook-password"
-              type="password"
-              minlength="4"
-              maxlength="100"
-              required
-              autocomplete="new-password"
-              placeholder="분실 시 저에게 연락주세요!"
-            />
-          </label>
-        </div>
-        <label class="guestbook__message-label" for="guestbook-content"
-          >남길 말</label
-        >
-        <textarea
-          id="guestbook-content"
-          maxlength="1000"
-          rows="4"
-          required
-          placeholder="불특정 다수가 볼 수 있는 공간이에요. 안다무하게 부탁해요~.✏️"
-        ></textarea>
+          <div class="guestbook__fields">
+            <label>
+              닉네임
+              <input
+                id="guestbook-nickname"
+                maxlength="24"
+                required
+                autocomplete="nickname"
+                placeholder="누구세요?"
+              />
+            </label>
 
-        <div class="guestbook__form-bottom">
-          <label class="guestbook__private">
-            <input id="guestbook-private" type="checkbox" />
-            <span>비밀 댓글로 남기기</span>
+            <label>
+              비밀번호
+              <input
+                id="guestbook-password"
+                type="password"
+                minlength="4"
+                maxlength="100"
+                required
+                autocomplete="new-password"
+                placeholder="분실 시 저에게 연락주세요!"
+              />
+            </label>
+          </div>
+
+          <label class="guestbook__message-label" for="guestbook-content">
+            남길 말
           </label>
-          <button type="submit" class="guestbook__submit" id="guestbook-submit">
-            댓글 남기기
+
+          <textarea
+            id="guestbook-content"
+            maxlength="1000"
+            rows="4"
+            required
+            placeholder="불특정 다수가 볼 수 있는 공간이에요. 안다무하게 부탁해요~.✏️"
+          ></textarea>
+
+          <div class="guestbook__form-bottom">
+            <button
+              type="submit"
+              class="guestbook__submit"
+              id="guestbook-submit"
+            >
+              댓글 남기기
+            </button>
+          </div>
+
+          <button
+            type="button"
+            class="guestbook__cancel"
+            id="guestbook-cancel"
+            hidden
+          >
+            답글 작성 취소
           </button>
+
+          <p
+            class="guestbook__status"
+            id="guestbook-status"
+            role="status"
+            aria-live="polite"
+          ></p>
+        </form>
+
+        <!-- 댓글 목록 -->
+        <div class="guestbook__list-header">
+          <h3>댓글목록</h3>
+          <span id="guestbook-count">불러오는 중…</span>
         </div>
-        <button
-          type="button"
-          class="guestbook__cancel"
-          id="guestbook-cancel"
-          hidden
-        >
-          답글 작성 취소
-        </button>
-        <p
-          class="guestbook__status"
-          id="guestbook-status"
-          role="status"
-          aria-live="polite"
-        ></p>
-      </form>
 
-      <div class="guestbook__list-header">
-        <h3>댓글목록</h3>
-        <span id="guestbook-count">불러오는 중…</span>
-      </div>
-      <div class="guestbook__list" id="guestbook-list" aria-live="polite">
-        <p class="guestbook__loading">방명록을 불러오는 중입니다.</p>
-      </div>
-    </section>
+        <div class="guestbook__list" id="guestbook-list" aria-live="polite">
+          <p class="guestbook__loading">방명록을 불러오는 중입니다.</p>
+        </div>
+      </section>
+    </main>
 
-    <!-- Apps Script 웹 앱 URL을 guestbook.js의 API_URL에 설정하세요. -->
-    <script src="guestbook.js" defer></script>
+    <!-- ==============================
+         FOOTER
+    ============================== -->
 
     <footer class="footer">
       <div class="footer__inner">
         <p class="footer__name">LEE EUN JOO</p>
-
         <p class="footer__copyright">© 2026 Lee Eun Joo</p>
       </div>
     </footer>
 
-    <!-- 은듀닷컴 커스텀 모달 -->
+    <!-- ==============================
+         CUSTOM MODAL
+    ============================== -->
+
     <div id="guestbook-modal" class="gb-modal" hidden>
       <section
         class="gb-modal__box"
@@ -240,8 +298,8 @@
           ×
         </button>
 
-        <!-- <p class="gb-modal__eyebrow">EUNDOO GUESTBOOK</p> -->
         <h2 id="gb-modal-title">알림</h2>
+
         <div id="gb-modal-message" class="gb-modal__message"></div>
 
         <form id="gb-modal-form">
@@ -252,6 +310,7 @@
             autocomplete="off"
             hidden
           />
+
           <textarea
             id="gb-modal-textarea"
             class="gb-modal__input gb-modal__textarea"
@@ -269,6 +328,7 @@
             >
               취소
             </button>
+
             <button
               type="submit"
               class="gb-modal__button gb-modal__button--main"
@@ -280,8 +340,20 @@
         </form>
       </section>
     </div>
+
+    <!-- ==============================
+         GUESTBOOK JAVASCRIPT
+    ============================== -->
+
+    <script src="guestbook.js" defer></script>
+
+    <!-- ==============================
+         MODAL STYLE
+    ============================== -->
+
     <style>
-      /* 은듀닷컴 커스텀 모달 */
+      /* 모달 기본 설정 */
+
       .gb-modal[hidden],
       .gb-modal [hidden] {
         display: none !important;
@@ -300,15 +372,19 @@
         -webkit-backdrop-filter: blur(5px);
       }
 
+      /* 모달 박스 */
+
       .gb-modal__box {
         position: relative;
+        width: calc(100vw - 20px);
+        max-width: 350px;
         padding: 1rem 1.5rem;
         border: 1px solid #ddd;
         background-color: #fff;
         animation: gb-modal-appear 0.2s ease-out;
-        max-width: 350px;
-        width: calc(100vw - 20px);
       }
+
+      /* 닫기 버튼 */
 
       .gb-modal__close {
         position: absolute;
@@ -321,13 +397,7 @@
         cursor: pointer;
       }
 
-      .gb-modal__eyebrow {
-        margin: 0 0 12px;
-        color: #739b73;
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 0.16em;
-      }
+      /* 모달 제목 */
 
       .gb-modal__box h2 {
         margin: 0 0 16px;
@@ -335,6 +405,8 @@
         font-size: 1rem;
         font-weight: 650;
       }
+
+      /* 모달 메시지 */
 
       .gb-modal__message {
         margin-bottom: 20px;
@@ -344,6 +416,8 @@
         overflow-wrap: anywhere;
         white-space: pre-wrap;
       }
+
+      /* 입력창 */
 
       .gb-modal__input {
         box-sizing: border-box;
@@ -366,18 +440,24 @@
         box-shadow: 0 0 0 3px rgb(115 155 115 / 13%);
       }
 
+      /* 텍스트 영역 */
+
       .gb-modal__textarea {
-        resize: vertical;
         min-height: 120px;
+        resize: vertical;
         line-height: 1.7;
       }
 
+      /* 오류 메시지 */
+
       .gb-modal__error {
-        margin: 0 0 12px;
+        margin-bottom: 12px;
         color: #c04e4e;
         font-size: 12px;
         line-height: 1.6;
       }
+
+      /* 모달 버튼 영역 */
 
       .gb-modal__actions {
         display: flex;
@@ -407,26 +487,35 @@
         transform: scale(0.98);
       }
 
+      /* 확인 버튼 */
+
       .gb-modal__button--main {
         background: #739b73;
-        color: white;
+        color: #fff;
       }
+
+      /* 취소 버튼 */
 
       .gb-modal__button--sub {
         background: #f0f1ec;
         color: #555b52;
       }
 
+      /* 모달 등장 애니메이션 */
+
       @keyframes gb-modal-appear {
         from {
           opacity: 0;
           transform: translateY(8px) scale(0.98);
         }
+
         to {
           opacity: 1;
           transform: translateY(0) scale(1);
         }
       }
+
+      /* 모바일 */
 
       @media (max-width: 480px) {
         .gb-modal__button {
@@ -434,9 +523,15 @@
         }
       }
 
+      /* 모션 최소화 */
+
       @media (prefers-reduced-motion: reduce) {
         .gb-modal__box {
           animation: none;
+        }
+
+        .gb-modal__button {
+          transition: none;
         }
       }
     </style>
