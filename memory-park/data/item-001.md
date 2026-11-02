@@ -1,6 +1,6 @@
 # 오래된 가방
 
-![오래된 가방](https://postimg.cc/9RfYWHJv)
+<img src="https://i.postimg.cc/26Qc7zv8/kuk20261102000210-950x-0.jpg">
 
 나와 꽤 오랜 시간을 함께한 가방.
 이제는 다른 가방을 더 자주 사용하지만,
