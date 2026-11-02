@@ -79,7 +79,7 @@
           <span>${escapeHTML(item.number)}</span>
           <h3>${escapeHTML(item.title)}</h3>
           <p>${escapeHTML(item.description).replace(/\n/g, "<br>")}</p>
-          <small>🧩 : ${escapeHTML(item.date)}</small>
+          <small>🧩 ${escapeHTML(item.date)}</small>
         </div>
       </article>
     `;

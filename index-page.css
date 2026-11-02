@@ -1,89 +1,188 @@
 /* ========================================
-   1. 떠다니는 이모지
+   GHOST BACKGROUND
 ======================================== */
 
 .ghost-container {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   pointer-events: none;
+  z-index: 0;
 }
 
 .ghost {
   position: absolute;
   display: block;
-  font-size: 35px;
-  opacity: 0.25;
+  opacity: 0.15;
   filter: blur(1px);
-  animation: ghost-float 18s ease-in-out infinite alternate;
+  pointer-events: none;
+  will-change: transform;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
 }
 
+/* 개별 위치 및 애니메이션 */
+
 .ghost:nth-child(1) {
-  top: 15%;
+  top: 5%;
   left: 10%;
-  animation-duration: 20s;
+  font-size: 35px;
+  animation: ghost-1 2s ease-in-out infinite alternate;
 }
 
 .ghost:nth-child(2) {
-  top: 40%;
+  top: 20%;
   left: 75%;
   font-size: 25px;
-  animation-duration: 25s;
-  animation-delay: -5s;
+  animation: ghost-2 3s ease-in-out infinite alternate;
 }
 
 .ghost:nth-child(3) {
-  top: 70%;
+  top: 40%;
   left: 20%;
   font-size: 20px;
-  animation-duration: 17s;
-  animation-delay: -8s;
+  animation: ghost-3 2s ease-in-out infinite alternate;
 }
 
 .ghost:nth-child(4) {
-  top: 85%;
+  top: 60%;
   left: 85%;
   font-size: 45px;
-  animation-duration: 23s;
-  animation-delay: -12s;
+  animation: ghost-4 3s ease-in-out infinite alternate;
 }
 
 .ghost:nth-child(5) {
-  top: 55%;
+  top: 75%;
   left: 45%;
   font-size: 22px;
-  animation-duration: 19s;
-  animation-delay: -3s;
+  animation: ghost-5 2.8s ease-in-out infinite alternate;
 }
 
 .ghost:nth-child(6) {
-  top: 10%;
+  top: 90%;
   left: 90%;
   font-size: 18px;
-  animation-duration: 27s;
-  animation-delay: -15s;
+  animation: ghost-6 2s ease-in-out infinite alternate;
 }
 
-@keyframes ghost-float {
-  0% {
-    transform: translate(0, 0) rotate(-15deg);
-  }
+.ghost:nth-child(7) {
+  top: 30%;
+  left: 45%;
+  font-size: 28px;
+  animation: ghost-7 2.2s ease-in-out infinite alternate;
+}
 
-  25% {
-    transform: translate(40px, -50px) rotate(10deg);
-  }
+.ghost:nth-child(8) {
+  top: 10%;
+  left: 55%;
+  font-size: 22px;
+  animation: ghost-8 1.6s ease-in-out infinite alternate;
+}
 
-  50% {
-    transform: translate(-30px, 30px) rotate(-10deg);
-  }
+.ghost:nth-child(9) {
+  top: 55%;
+  left: 5%;
+  font-size: 30px;
+  animation: ghost-9 3.8s ease-in-out infinite alternate;
+}
 
-  75% {
-    transform: translate(60px, 20px) rotate(15deg);
-  }
+.ghost:nth-child(10) {
+  top: 80%;
+  left: 70%;
+  font-size: 24px;
+  animation: ghost-10 2.5s ease-in-out infinite alternate;
+}
 
-  100% {
-    transform: translate(-20px, -60px) rotate(-5deg);
+.ghost:nth-child(11) {
+  top: 35%;
+  left: 90%;
+  font-size: 19px;
+  animation: ghost-11 1.5s ease-in-out infinite alternate;
+}
+
+.ghost:nth-child(12) {
+  top: 65%;
+  left: 35%;
+  font-size: 32px;
+  animation: ghost-12 2.8s ease-in-out infinite alternate;
+}
+
+/* ========================================
+   FLOATING MOTION
+======================================== */
+
+@keyframes ghost-1 {
+  to {
+    transform: translate(25px, -35px) rotate(15deg);
+  }
+}
+
+@keyframes ghost-2 {
+  to {
+    transform: translate(-30px, 25px) rotate(-20deg);
+  }
+}
+
+@keyframes ghost-3 {
+  to {
+    transform: translate(20px, 30px) rotate(15deg);
+  }
+}
+
+@keyframes ghost-4 {
+  to {
+    transform: translate(-25px, -35px) rotate(-15deg);
+  }
+}
+
+@keyframes ghost-5 {
+  to {
+    transform: translate(35px, -20px) rotate(20deg);
+  }
+}
+
+@keyframes ghost-6 {
+  to {
+    transform: translate(-25px, -30px) rotate(-15deg);
+  }
+}
+
+@keyframes ghost-7 {
+  to {
+    transform: translate(20px, 35px) rotate(15deg);
+  }
+}
+
+@keyframes ghost-8 {
+  to {
+    transform: translate(-25px, 30px) rotate(-20deg);
+  }
+}
+
+@keyframes ghost-9 {
+  to {
+    transform: translate(30px, -25px) rotate(15deg);
+  }
+}
+
+@keyframes ghost-10 {
+  to {
+    transform: translate(-30px, 20px) rotate(-15deg);
+  }
+}
+
+@keyframes ghost-11 {
+  to {
+    transform: translate(20px, 25px) rotate(15deg);
+  }
+}
+
+@keyframes ghost-12 {
+  to {
+    transform: translate(-20px, -30px) rotate(-15deg);
   }
 }
 
@@ -97,6 +196,7 @@
   align-items: center;
   padding: 30px 0;
   border-bottom: 1px solid #111;
+  background-color: #fff;
 }
 
 .hero::before {
@@ -189,6 +289,7 @@
   height: auto;
   box-sizing: border-box;
   border-right: 1px solid #111;
+  background-color: #fff;
 }
 
 .work-card__link {
@@ -508,6 +609,7 @@
   min-width: 0;
   height: auto;
   box-sizing: border-box;
+  border: 1px solid #111;
 }
 
 /* 이미지 */
@@ -535,6 +637,7 @@
 
 .memory-card__info {
   padding: 1rem;
+  background-color: #fff;
 }
 
 .memory-card__info > span {
@@ -586,18 +689,19 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-bottom: 5rem;
 }
 
 .memory-park__caption {
   display: inline-block;
   position: relative;
   border: 1px solid #ccc;
-  padding: 1rem 2rem;
+  padding: 0.8rem 1.5rem;
   border-radius: 5px;
-  margin-top: 1.5rem;
-  color: #888;
+  background-color: #666;
   font-size: 0.95rem;
   text-align: center;
+  color: #fff;
 }
 
 /* 말풍선 꼬리 */
@@ -609,7 +713,7 @@
   transform: translateX(-50%);
   width: 14px;
   height: 14px;
-  background: #fff;
+  background: #666;
   border-right: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
   transform: translateX(-50%) rotate(45deg);
@@ -698,22 +802,5 @@
 
   .memory-card__info p {
     font-size: 0.85rem;
-  }
-}
-
-/* ========================================
-   8. 모션 최소화 설정
-======================================== */
-
-@media (prefers-reduced-motion: reduce) {
-  .ghost {
-    animation: none;
-  }
-
-  .work-card__link,
-  .work-slider__btn,
-  .memory-slider__btn,
-  .memory-card__image img {
-    transition: none;
   }
 }
