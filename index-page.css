@@ -574,8 +574,7 @@
 
 .memory-park {
   width: min(1400px, calc(100% - 80px));
-  margin: 0 auto;
-  margin-top: 100px;
+  margin: 5rem auto;
 }
 
 .memory-slider {
@@ -746,5 +745,123 @@
 @media (max-width: 600px) {
   .memory-card {
     flex: 0 0 calc((100% - 16px) / 2);
+  }
+}
+
+/* =========================
+   ITEM MEMORY PARK
+========================= */
+
+.memory-slider {
+  position: relative;
+  width: 100%;
+}
+
+.memory-slider__viewport {
+  width: 100%;
+  overflow: hidden;
+}
+
+.memory-list {
+  display: flex;
+  gap: 16px;
+  transition: transform 0.4s ease;
+  will-change: transform;
+}
+
+.memory-card {
+  flex: 0 0 calc((100% - 64px) / 5);
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* 이미지 */
+.memory-card__image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+.memory-card__image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 카드 정보 */
+.memory-card__info {
+  padding: 1rem;
+}
+
+.memory-card__info span {
+  display: block;
+  font-size: 0.75rem;
+  margin-bottom: 6px;
+}
+
+.memory-card__info h3 {
+  margin: 0 0 6px;
+}
+
+.memory-card__info p {
+  margin: 0 0 8px;
+}
+
+.memory-card__info small {
+  display: block;
+}
+
+/* 이전 / 다음 버튼 */
+.memory-slider__btn {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.memory-slider__btn--prev {
+  left: -20px;
+}
+
+.memory-slider__btn--next {
+  right: -20px;
+}
+
+/* 태블릿 */
+@media (max-width: 1260px) {
+  .memory-card {
+    flex-basis: calc((100% - 48px) / 4);
+  }
+}
+
+/* 소형 태블릿 */
+@media (max-width: 900px) {
+  .memory-card {
+    flex-basis: calc((100% - 32px) / 3);
+  }
+
+  .memory-slider__btn--prev {
+    left: 5px;
+  }
+
+  .memory-slider__btn--next {
+    right: 5px;
+  }
+}
+
+/* 모바일 */
+@media (max-width: 600px) {
+  .memory-card {
+    flex-basis: calc((100% - 16px) / 2);
+  }
+
+  .memory-card__info h3 {
+    font-size: 0.95rem;
+  }
+
+  .memory-card__info p {
+    font-size: 0.85rem;
   }
 }
