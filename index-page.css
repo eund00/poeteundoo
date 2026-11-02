@@ -581,11 +581,64 @@
 
 /* 메모리 파크 하단 문구 */
 
+.memory-park__caption-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .memory-park__caption {
+  display: inline-block;
+  position: relative;
+  border: 1px solid #ccc;
+  padding: 1rem 2rem;
+  border-radius: 5px;
   margin-top: 1.5rem;
   color: #888;
   font-size: 0.95rem;
   text-align: center;
+}
+
+/* 말풍선 꼬리 */
+.memory-park__caption::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.memory-park__icon {
+  font-size: 2rem;
+  margin-top: 1rem;
+  display: inline-block;
+  animation: ghost-float 2s ease-in-out infinite;
+}
+
+@keyframes ghost-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-5deg);
+  }
+
+  25% {
+    transform: translateY(-5px) rotate(3deg);
+  }
+
+  50% {
+    transform: translateY(-2px) rotate(-3deg);
+  }
+
+  75% {
+    transform: translateY(-6px) rotate(5deg);
+  }
 }
 
 /* ========================================
