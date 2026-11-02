@@ -567,3 +567,184 @@
     transition: none;
   }
 }
+
+/* =================================
+   ITEM MEMORY PARK
+================================= */
+
+.memory-park {
+  width: min(1400px, calc(100% - 80px));
+  margin: 0 auto;
+  margin-top: 100px;
+}
+
+.memory-slider {
+  position: relative;
+  width: 100%;
+}
+
+.memory-slider__viewport {
+  overflow: hidden;
+  width: 100%;
+}
+
+.memory-list {
+  display: flex;
+  gap: 1.5rem;
+  transition: transform 0.5s ease;
+  will-change: transform;
+}
+
+.memory-card {
+  flex: 0 0 calc(50% - 0.75rem);
+  min-width: 0;
+  background: #f5f2e9;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.memory-card__image {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #e9e5da;
+}
+
+.memory-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.memory-card:hover .memory-card__image img {
+  transform: scale(1.04);
+}
+
+.memory-card__info {
+  padding: 1.5rem;
+}
+
+.memory-card__info > span {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: #739b73;
+}
+
+.memory-card__info h3 {
+  margin: 0.7rem 0;
+  font-size: 1.5rem;
+}
+
+.memory-card__info p {
+  line-height: 1.8;
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.memory-card__info small {
+  display: block;
+  margin-top: 1.2rem;
+  color: #888;
+}
+
+.memory-slider__btn {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.memory-slider__btn--prev {
+  left: -20px;
+}
+
+.memory-slider__btn--next {
+  right: -20px;
+}
+
+.memory-park__caption {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: #888;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .memory-card {
+    flex: 0 0 85%;
+  }
+
+  .memory-slider__btn--prev {
+    left: 5px;
+  }
+
+  .memory-slider__btn--next {
+    right: 5px;
+  }
+}
+
+/* 메모리 파크 슬라이더 */
+.memory-slider {
+  position: relative;
+  width: 100%;
+}
+
+.memory-slider__viewport {
+  width: 100%;
+  overflow: hidden;
+}
+
+.memory-list {
+  display: flex;
+  gap: 16px;
+  transition: transform 0.4s ease;
+  will-change: transform;
+}
+
+.memory-card {
+  flex: 0 0 calc((100% - 64px) / 5);
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* 이미지 */
+.memory-card__image {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+}
+
+.memory-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 태블릿 */
+@media (max-width: 1260px) {
+  .memory-card {
+    flex: 0 0 calc((100% - 48px) / 4);
+  }
+}
+
+/* 작은 화면 */
+@media (max-width: 900px) {
+  .memory-card {
+    flex: 0 0 calc((100% - 32px) / 3);
+  }
+}
+
+@media (max-width: 600px) {
+  .memory-card {
+    flex: 0 0 calc((100% - 16px) / 2);
+  }
+}

@@ -352,3 +352,54 @@ fetch("./interviews/interviews.json")
   .catch((error) => {
     console.error("인터뷰 목록 오류:", error);
   });
+
+/* =================================
+   ITEM MEMORY PARK SLIDER
+================================= */
+
+(() => {
+  const list = document.getElementById("memory-list");
+  const prev = document.getElementById("memory-prev");
+  const next = document.getElementById("memory-next");
+
+  if (!list || !prev || !next) return;
+
+  const cards = Array.from(list.children);
+
+  if (cards.length === 0) return;
+
+  let currentIndex = 0;
+
+  function getVisibleCount() {
+    return window.innerWidth <= 768 ? 1 : 2;
+  }
+
+  function updateSlider() {
+    const visibleCount = getVisibleCount();
+    const maxIndex = Math.max(0, cards.length - visibleCount);
+
+    currentIndex = Math.min(currentIndex, maxIndex);
+
+    const cardWidth = cards[0].getBoundingClientRect().width;
+    const gap = parseFloat(getComputedStyle(list).gap) || 0;
+
+    list.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
+
+    prev.disabled = currentIndex === 0;
+    next.disabled = currentIndex >= maxIndex;
+  }
+
+  prev.addEventListener("click", () => {
+    currentIndex--;
+    updateSlider();
+  });
+
+  next.addEventListener("click", () => {
+    currentIndex++;
+    updateSlider();
+  });
+
+  window.addEventListener("resize", updateSlider);
+
+  updateSlider();
+})();

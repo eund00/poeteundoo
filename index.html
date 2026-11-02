@@ -223,6 +223,73 @@
         </div>
       </section>
 
+      <!-- 아이템 메모리 파크 -->
+      <section id="memory-park" class="memory-park">
+        <div class="section-header">
+          <p class="section-header__label">ITEM MEMORY PARK</p>
+          <h2 class="section-header__title">
+            <a href="memory-park/index.html">공원 입장하기</a>
+          </h2>
+        </div>
+
+        <div class="memory-slider">
+          <button
+            class="memory-slider__btn memory-slider__btn--prev"
+            id="memory-prev"
+            type="button"
+            aria-label="이전 기록"
+          >
+            &#8592;
+          </button>
+
+          <button
+            class="memory-slider__btn memory-slider__btn--next"
+            id="memory-next"
+            type="button"
+            aria-label="다음 기록"
+          >
+            &#8594;
+          </button>
+
+          <div class="memory-slider__viewport">
+            <div class="memory-list" id="memory-list">
+              <!-- 첫 번째 아이템 -->
+              <article class="memory-card">
+                <div class="memory-card__image">
+                  <img src="img/memory/bag.jpg" alt="오래된 가방" />
+                </div>
+
+                <div class="memory-card__info">
+                  <span>ITEM 001</span>
+                  <h3>오래된 가방</h3>
+                  <p>
+                    나와 꽤 오랜 시간을 함께한 가방. 이제는 다른 가방을 더 자주
+                    사용하지만, 쉽게 헤어지지는 못하고 있다.
+                  </p>
+                  <small>이별 예정일 : 미정</small>
+                </div>
+              </article>
+
+              <!-- 두 번째 아이템 -->
+              <article class="memory-card">
+                <div class="memory-card__image">
+                  <img src="img/memory/item-002.jpg" alt="기록할 물건" />
+                </div>
+
+                <div class="memory-card__info">
+                  <span>ITEM 002</span>
+                  <h3>이름을 입력해 주세요.</h3>
+                  <p>이곳에 물건과 함께했던 이야기를 적어 주세요.</p>
+                  <small>이별 예정일 : 미정</small>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+
+        <p class="memory-park__caption">잘가요@ 내사랑 이젠 보내줄게요-!</p>
+      </section>
+
       <!-- 작가 소개 -->
       <section id="about" class="about">
         <div class="about_bg"></div>
@@ -275,6 +342,7 @@
 
     <!-- JavaScript -->
     <script src="index-page.js" defer></script>
+    <script src="memory-park/memory.js" defer></script>
     <script src="index.js" type="module"></script>
   </body>
 </html>
