@@ -57,12 +57,25 @@ window.addEventListener("resize", () => {
   }
 });
 
-//텔레비전 관련
+/* ========================================
+   TV PLAYER
+======================================== */
+
 let tvPlayer = null;
 let tvVolume = 50;
 let tvMuted = true;
 
-// YouTube API 로드
+// 채널 데이터
+let tvChannels = [];
+let currentChannel = 0;
+
+// TV 상태
+let isTVPlaying = true;
+
+/* ========================================
+   1. YOUTUBE API LOAD
+======================================== */
+
 (function loadYouTubeAPI() {
   if (window.YT && window.YT.Player) {
     createTVPlayer();
@@ -80,92 +93,78 @@ let tvMuted = true;
   }
 })();
 
-// 플레이어 생성
+/* ========================================
+   2. CREATE PLAYER
+======================================== */
+
 function createTVPlayer() {
   tvPlayer = new YT.Player("youtube-player", {
     videoId: "8D_vrwLv1OM",
+
     playerVars: {
       autoplay: 1,
       controls: 0,
       mute: 1,
       playsinline: 1,
     },
+
     events: {
       onReady: function (event) {
         event.target.setVolume(tvVolume);
         event.target.mute();
         event.target.playVideo();
+
+        updateTVButton();
+
         console.log("TV 플레이어 준비 완료");
+      },
+
+      onStateChange: function (event) {
+        if (event.data === YT.PlayerState.PLAYING) {
+          isTVPlaying = true;
+        } else if (
+          event.data === YT.PlayerState.PAUSED ||
+          event.data === YT.PlayerState.ENDED
+        ) {
+          isTVPlaying = false;
+        }
+
+        updateTVButton();
       },
     },
   });
 }
 
-// 버튼 연결
-document.addEventListener("DOMContentLoaded", () => {
-  const up = document.getElementById("volume-up");
-  const down = document.getElementById("volume-down");
-  const mute = document.getElementById("volume-mute");
+/* ========================================
+   3. VOLUME MUTE
+======================================== */
+function toggleTVMute() {
+  if (!tvPlayer) return;
 
-  if (!up || !down || !mute) {
-    console.error("TV 볼륨 버튼을 찾을 수 없습니다.");
-    return;
-  }
+  const iframe = document.querySelector(".television-screen iframe");
 
-  up.addEventListener("click", () => {
-    if (!tvPlayer) return;
-
-    tvVolume = Math.min(tvVolume + 10, 100);
-    tvPlayer.setVolume(tvVolume);
+  if (tvMuted) {
     tvPlayer.unMute();
+    tvPlayer.setVolume(tvVolume || 50);
+
+    tvVolume = tvVolume || 50;
     tvMuted = false;
-    updateTVMuteButton();
-  });
 
-  down.addEventListener("click", () => {
-    if (!tvPlayer) return;
+    // 화면 ON
+    iframe?.classList.add("on");
+  } else {
+    tvPlayer.mute();
+    tvMuted = true;
 
-    tvVolume = Math.max(tvVolume - 10, 0);
-    tvPlayer.setVolume(tvVolume);
-
-    if (tvVolume === 0) {
-      tvPlayer.mute();
-      tvMuted = true;
-    }
-
-    updateTVMuteButton();
-  });
-
-  mute.addEventListener("click", () => {
-    if (!tvPlayer) return;
-
-    if (tvMuted) {
-      tvPlayer.unMute();
-      tvPlayer.setVolume(tvVolume || 50);
-      tvVolume = tvVolume || 50;
-      tvMuted = false;
-    } else {
-      tvPlayer.mute();
-      tvMuted = true;
-    }
-
-    updateTVMuteButton();
-  });
-});
-
-function updateTVMuteButton() {
-  const button = document.getElementById("volume-mute");
-  if (button) {
-    button.textContent = tvMuted ? "🔇" : "🔊";
+    // 화면 OFF
+    iframe?.classList.remove("on");
   }
+
+  updateTVButton();
 }
 /* ========================================
-   TV CHANNEL CONTROL
+   4. CHANNEL CONTROL
 ======================================== */
-
-// 채널 데이터
-let tvChannels = [];
-let currentChannel = 0;
 
 // 채널 표시 요소
 const channelDisplay = document.querySelector(".television__channel");
@@ -185,14 +184,14 @@ async function loadTVChannels() {
       throw new Error("등록된 채널이 없습니다.");
     }
 
-    // 초기 채널명 표시
+    // 초기 채널 표시
     channelDisplay.textContent = tvChannels[currentChannel].name;
   } catch (error) {
     console.error("TV 채널 로드 오류:", error);
   }
 }
 
-// 채널 변경 함수
+// 채널 변경
 function changeChannel(direction) {
   if (
     !tvChannels.length ||
@@ -216,7 +215,7 @@ function changeChannel(direction) {
     suggestedQuality: "medium",
   });
 
-  // 기존 음량 유지
+  // 음량 및 음소거 상태 유지
   tvPlayer.setVolume(tvVolume);
 
   if (tvMuted) {
@@ -228,56 +227,43 @@ function changeChannel(direction) {
   console.log("현재 채널:", channel.name);
 }
 
-// 채널 버튼 이벤트
-document.getElementById("channel-up").addEventListener("click", () => {
-  changeChannel(1);
-});
+/* ========================================
+   5. BUTTON UPDATE
+======================================== */
 
-document.getElementById("channel-down").addEventListener("click", () => {
-  changeChannel(-1);
+function updateTVButton() {
+  const button = document.getElementById("volume-mute");
+
+  if (!button) return;
+
+  button.textContent = tvMuted ? "ON" : "OFF";
+
+  button.setAttribute("aria-label", tvMuted ? "음소거 해제" : "음소거");
+}
+
+/* ========================================
+   6. BUTTON EVENTS
+======================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+  // 음소거 / 음소거 해제
+  const muteButton = document.getElementById("volume-mute");
+
+  muteButton?.addEventListener("click", toggleTVMute);
+
+  // 채널 내리기
+  document
+    .getElementById("channel-down")
+    ?.addEventListener("click", () => changeChannel(-1));
+
+  // 채널 올리기
+  document
+    .getElementById("channel-up")
+    ?.addEventListener("click", () => changeChannel(1));
 });
 
 /* ========================================
-   TV PLAY / PAUSE
+   7. INITIALIZE
 ======================================== */
 
-const playPauseButton = document.getElementById("tv-play-pause");
-
-let isTVPlaying = true;
-
-playPauseButton.addEventListener("click", () => {
-  if (!tvPlayer || typeof tvPlayer.getPlayerState !== "function") {
-    return;
-  }
-
-  const playerState = tvPlayer.getPlayerState();
-
-  if (playerState === YT.PlayerState.PLAYING) {
-    tvPlayer.pauseVideo();
-  } else {
-    tvPlayer.playVideo();
-  }
-});
-
-// 버튼 아이콘 변경
-function updatePlayPauseButton() {
-  playPauseButton.textContent = isTVPlaying ? "⏸" : "▶";
-  playPauseButton.setAttribute("aria-label", isTVPlaying ? "일시정지" : "재생");
-}
-
-// 실제 영상 재생 상태와 버튼 동기화
-function onTVPlayerStateChange(event) {
-  if (event.data === YT.PlayerState.PLAYING) {
-    isTVPlaying = true;
-  } else if (
-    event.data === YT.PlayerState.PAUSED ||
-    event.data === YT.PlayerState.ENDED
-  ) {
-    isTVPlaying = false;
-  }
-
-  updatePlayPauseButton();
-}
-
-// 채널 데이터 로드 실행
 loadTVChannels();
