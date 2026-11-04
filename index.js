@@ -98,8 +98,16 @@ let isTVPlaying = true;
 ======================================== */
 
 function createTVPlayer() {
+  // tv-channels.json의 첫 번째 채널 videoId
+  const firstVideoId = tvChannels[0]?.videoId;
+
+  if (!firstVideoId) {
+    console.error("첫 번째 채널의 videoId를 찾을 수 없습니다.");
+    return;
+  }
+
   tvPlayer = new YT.Player("youtube-player", {
-    videoId: "8D_vrwLv1OM",
+    videoId: firstVideoId,
 
     playerVars: {
       autoplay: 1,

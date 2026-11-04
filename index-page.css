@@ -941,8 +941,14 @@
   row-gap: 20px;
 }
 
+.television__info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .television__channel {
-  width: 140px;
+  width: 30%;
   padding: 5px 10px;
   box-sizing: border-box;
 
@@ -953,7 +959,33 @@
   text-align: center;
 }
 
+.television__name {
+  width: 60%;
+  padding: 5px 10px;
+  box-sizing: border-box;
+  border: 1px solid #739b73;
+  border-radius: 5px;
+  color: #739b73;
+  text-align: center;
+  width: 60%;
+}
+
+@media (max-width: 500px) {
+  .television__channel {
+    display: none;
+  }
+  .television__name {
+    width: 100%;
+  }
+  .television-controler {
+    width: auto !important;
+  }
+}
+
 .television-controler {
+  width: 30%;
+  justify-content: center;
+
   flex: 0 0 48px;
 
   display: flex;
@@ -961,6 +993,8 @@
   align-items: center;
   justify-content: center;
   gap: 18px;
+  flex: none;
+  flex-direction: row;
 }
 
 .television-controler button {
@@ -993,7 +1027,8 @@
 
 .controler__buttons {
   display: flex;
-  gap: 6px;
+  gap: 0.8rem;
+  flex-direction: row;
 }
 
 /* 전원 버튼 */
@@ -1102,14 +1137,5 @@
 .television__right {
   justify-content: space-between;
   width: 100%;
-  gap: 30px;
-}
-
-.television-controler {
-  flex: none;
-  flex-direction: row;
-}
-
-.controler__buttons {
-  flex-direction: row;
+  gap: 1rem;
 }
