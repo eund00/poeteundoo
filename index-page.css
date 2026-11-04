@@ -346,7 +346,7 @@
   justify-content: space-between;
   gap: 16px;
 
-  font-size: 11px;
+  font-size: 14px;
   letter-spacing: 0.02em;
 }
 
@@ -703,15 +703,25 @@
 .memory-card__info p {
   margin: 0 0 8px;
 
-  color: #666;
-  font-size: 0.95rem;
+  color: #333;
+  font-size: 1rem;
   line-height: 1.8;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  line-height: 1.6;
+  min-height: calc(1em * 1.6 * 3);
 }
 
 .memory-card__info small {
   display: block;
   margin-top: 1rem;
-  color: #888;
+  color: #666;
+  font-size: 0.9rem;
 }
 
 /* 슬라이더 버튼 */
@@ -738,6 +748,7 @@
   justify-content: center;
   align-items: center;
   margin-bottom: 5rem;
+  margin-top: 3rem;
 }
 
 .memory-park__caption {
@@ -811,6 +822,10 @@
   position: relative;
   margin: 50px auto 100px;
   padding: 55px 16px 0px;
+}
+
+.television.on .television-screen iframe {
+  opacity: 1;
 }
 
 /* TV 본체 */
@@ -929,8 +944,50 @@
   opacity: 0;
 }
 
-.television-screen iframe.on {
+/* TV 기본 상태 */
+.television-screen iframe {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* TV ON */
+.television.on .television-screen iframe {
   opacity: 1;
+  animation: tv-on 0.2s ease-out;
+}
+
+@keyframes tv-on {
+  0% {
+    opacity: 0;
+    transform: scaleY(0.01);
+    filter: brightness(1);
+  }
+
+  50% {
+    transform: scaleY(1.02);
+    filter: brightness(1.5);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scaleY(1);
+    filter: brightness(1);
+  }
+}
+
+.television-screen iframe {
+  pointer-events: none;
+  opacity: 0;
+  transform: scaleY(0.01);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.television.on .television-screen iframe {
+  opacity: 1;
+  transform: scaleY(1);
+  animation: tv-on 0.8s ease-out;
 }
 
 /* 조작부 */
@@ -948,6 +1005,7 @@
 }
 
 .television__channel {
+  font-size: 0;
   width: 30%;
   padding: 5px 10px;
   box-sizing: border-box;
@@ -959,7 +1017,22 @@
   text-align: center;
 }
 
+.television .television__channel::before {
+  content: "NO SIGNAL";
+  font-size: 1rem;
+}
+
+.television.on .television__channel {
+  font-size: inherit;
+}
+
+.television.on .television__channel::before {
+  content: "";
+}
+
 .television__name {
+  font-size: 0;
+
   width: 60%;
   padding: 5px 10px;
   box-sizing: border-box;
@@ -968,6 +1041,18 @@
   color: #739b73;
   text-align: center;
   width: 60%;
+}
+
+.television__name::before {
+  content: "이곳에 방영 프로그램 제목이 표시됩니다.";
+  font-size: 1rem;
+}
+
+.television.on .television__name {
+  font-size: 1rem;
+}
+.television.on .television__name::before {
+  content: "";
 }
 
 @media (max-width: 500px) {
@@ -1029,6 +1114,11 @@
   display: flex;
   gap: 0.8rem;
   flex-direction: row;
+}
+
+.television-controler button#volume-mute {
+  width: 60px;
+  border-radius: 10px;
 }
 
 /* 전원 버튼 */

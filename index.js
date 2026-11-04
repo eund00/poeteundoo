@@ -114,6 +114,9 @@ function createTVPlayer() {
       controls: 0,
       mute: 1,
       playsinline: 1,
+      fs: 0,
+      disablekb: 1,
+      playlist: firstVideoId,
     },
 
     events: {
@@ -130,11 +133,14 @@ function createTVPlayer() {
       onStateChange: function (event) {
         if (event.data === YT.PlayerState.PLAYING) {
           isTVPlaying = true;
-        } else if (
-          event.data === YT.PlayerState.PAUSED ||
-          event.data === YT.PlayerState.ENDED
-        ) {
+        } else if (event.data === YT.PlayerState.PAUSED) {
           isTVPlaying = false;
+        } else if (event.data === YT.PlayerState.ENDED) {
+          // 영상이 끝나면 처음부터 다시 재생
+          event.target.seekTo(0);
+          event.target.playVideo();
+
+          isTVPlaying = true;
         }
 
         updateTVButton();
@@ -149,7 +155,7 @@ function createTVPlayer() {
 function toggleTVMute() {
   if (!tvPlayer) return;
 
-  const iframe = document.querySelector(".television-screen iframe");
+  const television = document.querySelector(".television");
 
   if (tvMuted) {
     tvPlayer.unMute();
@@ -159,13 +165,13 @@ function toggleTVMute() {
     tvMuted = false;
 
     // 화면 ON
-    iframe?.classList.add("on");
+    television?.classList.add("on");
   } else {
     tvPlayer.mute();
     tvMuted = true;
 
     // 화면 OFF
-    iframe?.classList.remove("on");
+    television?.classList.remove("on");
   }
 
   updateTVButton();
@@ -176,7 +182,7 @@ function toggleTVMute() {
 
 // 채널 표시 요소
 const channelDisplay = document.querySelector(".television__channel");
-const channelNameDisplay = document.querySelector(".television__name");
+const channelNameDisplay = document.querySelector(".television__name span");
 
 // 채널 데이터 불러오기
 async function loadTVChannels() {
@@ -249,7 +255,7 @@ function updateTVButton() {
 
   button.textContent = tvMuted ? "ON" : "OFF";
 
-  button.setAttribute("aria-label", tvMuted ? "음소거 해제" : "음소거");
+  button.setAttribute("aria-label", tvMuted ? "ON" : "OFF");
 }
 
 /* ========================================

@@ -1,22 +1,22 @@
 [
   {
     "channel": "CHANNEL 01",
-    "name": "첫 번째 채널입니다.",
+    "name": "뭐야, 벌써! 아침이네?",
     "videoId": "GKC1P0mCt4o"
   },
   {
     "channel": "CHANNEL 02",
-    "name": "두 번째 채널입니다.",
+    "name": "고고 다마고!",
     "videoId": "Z3Lzz_V69Us"
   },
   {
     "channel": "CHANNEL 03",
-    "name": "세 번째 채널입니다.",
+    "name": "나는야 몸짱아기 댄스신동!",
     "videoId": "JfYNBkqsaQM"
   },
   {
     "channel": "CHANNEL 04",
-    "name": "네 번째 채널입니다.",
+    "name": "동그라미 문어빵 장수는 힘들어!",
     "videoId": "kenmqJExB9k"
   }
 ]

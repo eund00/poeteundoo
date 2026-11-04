@@ -237,11 +237,6 @@
 
       <!-- 아이템 메모리 파크 -->
       <section id="memory-park" class="memory-park">
-        <div class="memory-park__caption-container">
-          <p class="memory-park__caption">으흐흐흐 내가 보이나?</p>
-          <p class="memory-park__icon">👻</p>
-        </div>
-
         <div class="section-header">
           <p class="section-header__label">ITEM MEMORY PARK</p>
           <h2 class="section-header__title">
@@ -269,18 +264,12 @@
           </button>
 
           <div class="memory-list swiper-wrapper" id="memory-list">
-            <article class="memory-card swiper-slide">
-              <div class="memory-card__image">
-                <img src="" alt="" />
-              </div>
+            <!-- LOADING -->
+          </div>
 
-              <div class="memory-card__info">
-                <span>ITEM 001</span>
-                <h3>오래된 테스트</h3>
-                <p>테스트테스트</p>
-                <small>흠흠 : 미정</small>
-              </div>
-            </article>
+          <div class="memory-park__caption-container">
+            <p class="memory-park__caption">으흐흐흐 내가 보이나?</p>
+            <p class="memory-park__icon">👻</p>
           </div>
         </div>
       </section>
@@ -349,11 +338,13 @@
           <div class="television__right">
             <div class="television__info">
               <p class="television__channel"></p>
-              <p class="television__name"></p>
+              <p class="television__name">
+                <span class="txt"></span>
+              </p>
             </div>
             <div class="television-controler">
               <div class="controler__buttons">
-                <button type="button" id="volume-mute">음소거/재생</button>
+                <button type="button" id="volume-mute">ON</button>
                 <button
                   type="button"
                   id="channel-down"
