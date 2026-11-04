@@ -1105,11 +1105,6 @@
   gap: 30px;
 }
 
-.television__channel {
-  width: 70%;
-  margin: 0 auto;
-}
-
 .television-controler {
   flex: none;
   flex-direction: row;

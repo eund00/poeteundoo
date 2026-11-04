@@ -1,18 +1,22 @@
 [
   {
-    "name": "CHANNEL 01",
+    "channel": "CHANNEL 01",
+    "name": "첫 번째 채널입니다.",
     "videoId": "GKC1P0mCt4o"
   },
   {
-    "name": "CHANNEL 02",
+    "channel": "CHANNEL 02",
+    "name": "두 번째 채널입니다.",
     "videoId": "Z3Lzz_V69Us"
   },
   {
-    "name": "CHANNEL 03",
+    "channel": "CHANNEL 03",
+    "name": "세 번째 채널입니다.",
     "videoId": "JfYNBkqsaQM"
   },
   {
-    "name": "CHANNEL 04",
+    "channel": "CHANNEL 04",
+    "name": "네 번째 채널입니다.",
     "videoId": "kenmqJExB9k"
   }
 ]

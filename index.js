@@ -168,6 +168,7 @@ function toggleTVMute() {
 
 // 채널 표시 요소
 const channelDisplay = document.querySelector(".television__channel");
+const channelNameDisplay = document.querySelector(".television__name");
 
 // 채널 데이터 불러오기
 async function loadTVChannels() {
@@ -185,7 +186,8 @@ async function loadTVChannels() {
     }
 
     // 초기 채널 표시
-    channelDisplay.textContent = tvChannels[currentChannel].name;
+    channelDisplay.textContent = tvChannels[currentChannel].channel;
+    channelNameDisplay.textContent = tvChannels[currentChannel].name;
   } catch (error) {
     console.error("TV 채널 로드 오류:", error);
   }
@@ -207,7 +209,8 @@ function changeChannel(direction) {
   const channel = tvChannels[currentChannel];
 
   // 채널명 변경
-  channelDisplay.textContent = channel.name;
+  channelDisplay.textContent = channel.channel;
+  channelNameDisplay.textContent = channel.name;
 
   // 영상 변경
   tvPlayer.loadVideoById({
@@ -224,7 +227,7 @@ function changeChannel(direction) {
     tvPlayer.unMute();
   }
 
-  console.log("현재 채널:", channel.name);
+  console.log("현재 채널:", channel.channel);
 }
 
 /* ========================================
