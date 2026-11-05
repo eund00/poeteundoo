@@ -748,8 +748,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-bottom: 5rem;
-  margin-top: 3rem;
+  padding-bottom: 5rem;
+  padding-top: 3rem;
+  background-color: #333;
+  border-radius: 5px;
 }
 
 .memory-park__caption {
