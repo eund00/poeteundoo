@@ -50,7 +50,7 @@ sidebar.querySelectorAll("a").forEach((link) => {
   link.addEventListener("click", closeSidebar);
 });
 
-// 화면 크기가 바뀌어 PC로 전환될 때 사이드바가 열린 상태로 남지 않도록 아래 코드를 추가
+// 화면 크기 변경 시 사이드바 닫기
 window.addEventListener("resize", () => {
   if (window.innerWidth > 900) {
     closeSidebar();
@@ -72,17 +72,26 @@ let currentChannel = 0;
 // TV 상태
 let isTVPlaying = true;
 
+// 로딩 상태
+let isYouTubeAPIReady = false;
+let isChannelsLoaded = false;
+let isPlayerCreated = false;
+
 /* ========================================
    1. YOUTUBE API LOAD
 ======================================== */
 
 (function loadYouTubeAPI() {
   if (window.YT && window.YT.Player) {
-    createTVPlayer();
+    isYouTubeAPIReady = true;
+    checkTVReady();
     return;
   }
 
-  window.onYouTubeIframeAPIReady = createTVPlayer;
+  window.onYouTubeIframeAPIReady = function () {
+    isYouTubeAPIReady = true;
+    checkTVReady();
+  };
 
   if (
     !document.querySelector('script[src="https://www.youtube.com/iframe_api"]')
@@ -97,17 +106,25 @@ let isTVPlaying = true;
    2. CREATE PLAYER
 ======================================== */
 
-function createTVPlayer() {
-  // tv-channels.json의 첫 번째 채널 videoId
-  const firstVideoId = tvChannels[0]?.videoId;
-
-  if (!firstVideoId) {
-    console.error("첫 번째 채널의 videoId를 찾을 수 없습니다.");
+function checkTVReady() {
+  if (!isYouTubeAPIReady || !isChannelsLoaded || isPlayerCreated) {
     return;
   }
 
+  const firstVideoId = tvChannels[0]?.videoId;
+
+  if (!firstVideoId) {
+    console.error("첫 번째 채널의 videoId를 찾을 수 없습니다.", tvChannels);
+    return;
+  }
+
+  isPlayerCreated = true;
+  createTVPlayer(firstVideoId);
+}
+
+function createTVPlayer(videoId) {
   tvPlayer = new YT.Player("youtube-player", {
-    videoId: firstVideoId,
+    videoId: videoId,
 
     playerVars: {
       autoplay: 1,
@@ -116,7 +133,7 @@ function createTVPlayer() {
       playsinline: 1,
       fs: 0,
       disablekb: 1,
-      playlist: firstVideoId,
+      playlist: videoId,
     },
 
     events: {
@@ -152,6 +169,7 @@ function createTVPlayer() {
 /* ========================================
    3. VOLUME MUTE
 ======================================== */
+
 function toggleTVMute() {
   if (!tvPlayer) return;
 
@@ -176,6 +194,7 @@ function toggleTVMute() {
 
   updateTVButton();
 }
+
 /* ========================================
    4. CHANNEL CONTROL
 ======================================== */
@@ -184,26 +203,51 @@ function toggleTVMute() {
 const channelDisplay = document.querySelector(".television__channel");
 const channelNameDisplay = document.querySelector(".television__name span");
 
+// 채널 정보 표시
+function updateChannelInfo() {
+  const channel = tvChannels[currentChannel];
+
+  if (!channel) return;
+
+  if (channelDisplay) {
+    channelDisplay.textContent = channel.channel;
+  }
+
+  if (channelNameDisplay) {
+    channelNameDisplay.textContent = channel.name;
+  }
+}
+
 // 채널 데이터 불러오기
 async function loadTVChannels() {
   try {
     const response = await fetch("./tv-channels.json");
 
     if (!response.ok) {
-      throw new Error("채널 데이터를 불러오지 못했습니다.");
+      throw new Error(`채널 데이터 로딩 실패: ${response.status}`);
     }
 
     tvChannels = await response.json();
 
-    if (!tvChannels.length) {
-      throw new Error("등록된 채널이 없습니다.");
+    if (!Array.isArray(tvChannels) || tvChannels.length === 0) {
+      throw new Error("채널 데이터가 비어 있습니다.");
     }
 
-    // 초기 채널 표시
-    channelDisplay.textContent = tvChannels[currentChannel].channel;
-    channelNameDisplay.textContent = tvChannels[currentChannel].name;
+    // 첫 번째 채널 설정
+    currentChannel = 0;
+
+    // 영상 재생 전에 채널 정보부터 표시
+    updateChannelInfo();
+
+    // JSON 로딩 완료
+    isChannelsLoaded = true;
+
+    // YouTube API 준비 상태 확인
+    checkTVReady();
+
+    console.log("TV 채널 데이터 로딩 완료");
   } catch (error) {
-    console.error("TV 채널 로드 오류:", error);
+    console.error("TV 채널 로딩 오류:", error);
   }
 }
 
@@ -223,8 +267,7 @@ function changeChannel(direction) {
   const channel = tvChannels[currentChannel];
 
   // 채널명 변경
-  channelDisplay.textContent = channel.channel;
-  channelNameDisplay.textContent = channel.name;
+  updateChannelInfo();
 
   // 영상 변경
   tvPlayer.loadVideoById({
