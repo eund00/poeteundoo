@@ -663,7 +663,7 @@
   aspect-ratio: 1 / 1;
   overflow: hidden;
 
-  background-color: #e9e5da;
+  background-color: #739b73;
 }
 
 .memory-card__image img {
@@ -673,6 +673,7 @@
   object-fit: cover;
 
   transition: transform 0.5s ease;
+  opacity: 0.8;
 }
 
 .memory-card:hover .memory-card__image img {
