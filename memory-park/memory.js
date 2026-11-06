@@ -85,7 +85,7 @@
           </p>
 
           <small>
-            🧩 ${escapeHTML(item.date)}
+            🧩 ${escapeHTML(item.has_item)}
           </small>
 
         </div>
@@ -115,7 +115,12 @@
         throw new Error(data.message || "메모리 데이터 오류");
       }
 
-      const items = data.items || [];
+      const items = (data.items || []).sort((a, b) => {
+        const dateA = new Date(a.id.replace(/\./g, "-"));
+        const dateB = new Date(b.id.replace(/\./g, "-"));
+
+        return dateB - dateA;
+      });
 
       // 최소 2.5초 대기
       const elapsed = Date.now() - loadingStart;
