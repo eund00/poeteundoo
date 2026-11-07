@@ -190,5 +190,13 @@
     "title": "날씨변화",
     "preview": "",
     "contentFile": "261107.md"
+  },
+  {
+    "id": "024",
+    "date": "2026-11-07",
+    "category": "💪",
+    "title": "아침이 올까",
+    "preview": "",
+    "contentFile": "261107_2.md"
   }
 ]
