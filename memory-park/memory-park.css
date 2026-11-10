@@ -5,6 +5,7 @@
 .memory-park {
   max-width: 1100px;
   margin: 70px auto 0;
+  padding: 0 10px;
 }
 
 .memory-park__grid {
@@ -142,11 +143,7 @@
 }
 
 .memory-card__info small {
-  display: block;
-  margin-top: 1rem;
-  color: #666;
-  font-size: 12px;
-  text-align: right;
+  /* opacity: 0.5; */
 }
 
 /* 하단 문구 */
@@ -304,17 +301,17 @@
 
 .memory-modal__image {
   background: #739b73;
-  min-height: 400px;
 }
 
 .memory-modal__image img {
-  display: block;
   width: 100%;
   height: 100%;
-  min-height: 400px;
-
-  object-fit: cover;
   opacity: 0.8;
+
+  display: block;
+  min-height: auto;
+  max-height: none;
+  object-fit: contain;
 }
 
 /* 정보 */
@@ -334,7 +331,7 @@
   letter-spacing: 0.12em;
 }
 
-.memory-modal__info h2 {
+.memory-modal__info .modal_wrap {
   margin: 15px 0 25px;
   font-size: 1.8rem;
 }
@@ -367,18 +364,25 @@
 
   .memory-modal__content {
     grid-template-columns: 1fr;
-    max-width: 480px;
-    max-height: 90vh;
+    max-width: 85%;
+    max-height: 70vh;
   }
 
-  .memory-modal__image,
-  .memory-modal__image img {
-    min-height: 250px;
-    max-height: 350px;
+  .memory-modal.is-open {
+    /* position: relative; */
   }
-
+  .memory-modal.is-open::before {
+    content: "닫아요";
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
   .memory-modal__info {
     padding: 30px 25px;
+  }
+  .memory-modal__image img {
+    object-fit: contain;
   }
 }
 .memory-card {
@@ -433,6 +437,8 @@
   gap: 14px;
 
   text-align: center;
+
+  max-width: 250px;
 }
 
 /* 안내 문구 */

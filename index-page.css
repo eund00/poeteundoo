@@ -719,10 +719,7 @@
 }
 
 .memory-card__info small {
-  display: block;
-  margin-top: 1rem;
-  color: #666;
-  font-size: 0.9rem;
+  /* opacity: 0.5; */
 }
 
 /* 슬라이더 버튼 */

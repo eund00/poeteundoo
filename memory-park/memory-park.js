@@ -100,15 +100,11 @@
 
           <span>${escapeHTML(item.id)}</span>
 
-          <h3>${escapeHTML(item.title)}</h3>
+          <h3><small>${escapeHTML(item.has_item)}</small> ${escapeHTML(item.title)}</h3>
 
           <p>
             ${escapeHTML(item.description).replace(/\n/g, "<br>")}
           </p>
-
-          <small>
-            ${escapeHTML(item.has_item)}
-          </small>
 
         </div>
 

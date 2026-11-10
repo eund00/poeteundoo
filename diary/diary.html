@@ -1024,7 +1024,7 @@
 
         // 본문 파일 불러오기
         try {
-          const response = await fetch(`./${post.contentFile}`);
+          const response = await fetch(`./data/${post.contentFile}`);
 
           if (!response.ok) {
             throw new Error("본문을 불러오지 못했습니다.");
@@ -1204,7 +1204,7 @@
 
       async function init() {
         try {
-          const response = await fetch("./diary.json");
+          const response = await fetch("./data/diary.json");
 
           if (!response.ok) {
             throw new Error("diary.json을 불러오지 못했습니다.");
