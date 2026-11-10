@@ -107,7 +107,7 @@
           </p>
 
           <small>
-            🧩 ${escapeHTML(item.has_item)}
+            ${escapeHTML(item.has_item)}
           </small>
 
         </div>
