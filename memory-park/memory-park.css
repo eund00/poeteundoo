@@ -1,145 +1,454 @@
 /* ========================================
-   MEMORY PARK
+   6. ITEM MEMORY PARK
 ======================================== */
 
 .memory-park {
-  width: 100%;
-  margin-top: 70px;
+  max-width: 1100px;
+  margin: 70px auto 0;
 }
 
+.memory-park__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 1024px) {
+  .memory-park__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .memory-park__grid {
+    grid-template-columns: repeat(2, 1fr);
+    margin: 0 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .memory-park__grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+  }
+  .memory-card__info {
+    display: none;
+  }
+}
+
+/* 메모리 헤드 */
 .memory-park__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 30px 0;
+  margin: 30px auto;
+  padding-top: 30px;
 }
 
-.memory-park__label {
-  margin: 0;
-  color: #739b73;
-  font-size: 14px;
-  letter-spacing: 0.12em;
+.memory-park__header .memory-park__label {
+  font-size: 16px;
+  letter-spacing: 0.25rem;
+  color: #888;
+  font-style: italic;
+}
+
+.memory-park__des-box {
+  padding: 1rem 0.5rem;
+  border: 1px solid #333;
+  margin-top: 15px;
+}
+
+.memory-park__des {
+  font-size: 15px;
+  color: #333;
 }
 
 .memory-park__count {
-  color: #999;
-  font-size: 12px;
+  text-align: right;
+  margin-bottom: 1rem;
+}
+.memory-count {
 }
 
-/* GRID */
-
-.memory-park__list {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 32px 16px;
-}
-
-/* CARD */
+/* 메모리 카드 */
 
 .memory-card {
-  display: flex;
-  flex-direction: column;
   min-width: 0;
-  border: 1px solid #222;
-  background: #fff;
+  height: auto;
+  box-sizing: border-box;
+
+  border: 1px solid #111;
 }
 
-.memory-card__image-wrap {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  overflow: hidden;
-  background: #f3f3f0;
-}
+/* 이미지 */
 
 .memory-card__image {
   width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-  transition: transform 0.35s ease;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+
+  background-color: #739b73;
 }
 
 .memory-card__image img {
+  display: block;
   width: 100%;
   height: 100%;
-  display: block;
   object-fit: cover;
+
+  transition: transform 0.5s ease;
+  opacity: 0.8;
 }
 
-.memory-card:hover .memory-card__image {
+.memory-card:hover .memory-card__image img {
   transform: scale(1.04);
 }
 
-/* CARD CONTENT */
+/* 카드 정보 */
 
-.memory-card__content {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  padding: 16px;
+.memory-card__info {
+  padding: 1rem;
+  background-color: #fff;
 }
 
-.memory-card__date {
-  margin-bottom: 10px;
+.memory-card__info > span {
+  display: block;
+  margin-bottom: 6px;
+
   color: #739b73;
-  font-size: 12px;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
 }
 
-.memory-card__title {
-  margin: 0 0 10px;
-  font-size: 17px;
-  font-weight: 600;
+.memory-card__info h3 {
+  margin: 0 0 6px;
+  font-size: 1.2rem;
 }
 
-.memory-card__description {
-  margin: 0;
-  color: #444;
-  font-size: 14px;
-  line-height: 1.7;
-  word-break: keep-all;
+.memory-card__info p {
+  margin: 0 0 8px;
+
+  color: #333;
+  font-size: 1rem;
+  line-height: 1.8;
 
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   overflow: hidden;
+  text-overflow: ellipsis;
+
+  line-height: 1.6;
+  min-height: calc(1em * 1.6 * 3);
 }
 
-.memory-card__status {
-  margin-top: auto;
-  padding-top: 20px;
-  color: #888;
-  font-size: 12px;
+.memory-card__info small {
+  display: block;
+  margin-top: 1rem;
+  color: #666;
+  font-size: 0.9rem;
 }
 
-/* RESPONSIVE */
+/* 하단 문구 */
 
-@media (max-width: 1100px) {
-  .memory-park__list {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+.memory-park__caption-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 5rem;
+  padding-top: 3rem;
+  background-color: #333;
+  border-radius: 5px;
+}
+
+.memory-park__caption {
+  position: relative;
+  display: inline-block;
+
+  padding: 0.8rem 1.5rem;
+
+  border: 1px solid #ccc;
+  border-radius: 5px;
+
+  background-color: #666;
+  color: #fff;
+
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+/* 말풍선 꼬리 */
+
+.memory-park__caption::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+
+  width: 14px;
+  height: 14px;
+
+  transform: translateX(-50%) rotate(45deg);
+
+  background: #666;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+/* 유령 아이콘 */
+
+.memory-park__icon {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 2rem;
+
+  animation: ghost-float 2s ease-in-out infinite;
+}
+
+@keyframes ghost-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-5deg);
+  }
+
+  25% {
+    transform: translateY(-5px) rotate(3deg);
+  }
+
+  50% {
+    transform: translateY(-2px) rotate(-3deg);
+  }
+
+  75% {
+    transform: translateY(-6px) rotate(5deg);
   }
 }
 
-@media (max-width: 850px) {
-  .memory-park__list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
+/* ========================================
+   MEMORY MODAL
+======================================== */
+
+.memory-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 24px;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
 }
 
-@media (max-width: 600px) {
-  .memory-park__list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px 10px;
+.memory-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* 배경 */
+
+.memory-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgb(115 155 115 / 35%);
+  backdrop-filter: blur(5px);
+}
+
+/* 모달 본체 */
+
+.memory-modal__content {
+  position: relative;
+  z-index: 1;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  width: 100%;
+  max-width: 850px;
+  max-height: 85vh;
+
+  overflow: auto;
+
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+
+  border: 1px solid #000;
+}
+
+.memory-modal.is-open .memory-modal__content {
+  transform: translateY(0);
+}
+
+/* 닫기 버튼 */
+
+.memory-modal__close {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+/* 이미지 */
+
+.memory-modal__image {
+  background: #739b73;
+  min-height: 400px;
+}
+
+.memory-modal__image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+
+  object-fit: cover;
+  opacity: 0.8;
+}
+
+/* 정보 */
+
+.memory-modal__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 50px 35px;
+  background: url(https://images.unsplash.com/photo-1601662528567-526cd06f6582?q=80&w=715&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D);
+}
+
+.memory-modal__info span {
+  color: #739b73;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+}
+
+.memory-modal__info h2 {
+  margin: 15px 0 25px;
+  font-size: 1.8rem;
+}
+
+.memory-modal__info p {
+  font-size: 1rem;
+  line-height: 2;
+  color: #555;
+  white-space: pre-wrap;
+}
+.memory-modal__info small {
+  display: block;
+  margin-top: 1rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* 모바일 */
+
+@media (max-width: 768px) {
+  .memory-park__header {
+    margin: 30px 1rem;
+  }
+  .memory-park__count {
+    padding-right: 1rem;
+  }
+  .memory-modal {
+    padding: 15px;
   }
 
-  .memory-card__content {
-    padding: 11px;
+  .memory-modal__content {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+    max-height: 90vh;
   }
 
-  .memory-card__title {
-    font-size: 14px;
+  .memory-modal__image,
+  .memory-modal__image img {
+    min-height: 250px;
+    max-height: 350px;
   }
 
-  .memory-card__description {
-    font-size: 12px;
+  .memory-modal__info {
+    padding: 30px 25px;
+  }
+}
+.memory-card {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.memory-card:focus-visible {
+  outline: 2px solid #739b73;
+  outline-offset: 4px;
+}
+
+/* ========================================
+   MEMORY LOADING
+======================================== */
+
+.memory-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* background: rgba(255, 255, 255, 0.92); */
+  background: url(https://images.unsplash.com/photo-1601662528567-526cd06f6582?q=80&w=715&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D);
+  backdrop-filter: blur(10px);
+
+  opacity: 1;
+  visibility: visible;
+
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
+}
+
+/* 로딩 완료 */
+
+.memory-loading.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* 로딩 박스 */
+
+.memory-loading__box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+
+  text-align: center;
+}
+
+/* 안내 문구 */
+
+.memory-loading__box p {
+  margin: 5px 0 0;
+
+  font-size: 17px;
+  font-weight: 500;
+  color: #333;
+}
+
+.memory-loading__box span {
+  font-size: 13px;
+  color: #999;
+}
+
+@media (max-width: 480px) {
+  .memory-loading__box p {
+    font-size: 15px;
   }
 }

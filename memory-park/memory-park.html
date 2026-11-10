@@ -51,7 +51,7 @@
     <meta http-equiv="Title" content="놀러와요 : 은듀닷컴" />
     <meta http-equiv="Author" content="이은주" />
 
-    <title>기억공원 : 은듀닷컴</title>
+    <title>물건 기억소 : 은듀닷컴</title>
 
     <!-- 파비콘 -->
     <link rel="icon" type="image/png" href="../img/favicon.png" />
@@ -70,6 +70,22 @@
   </head>
 
   <body>
+    <!-- 로딩 화면 -->
+    <div
+      class="memory-loading"
+      id="memory-loading"
+      aria-live="polite"
+      aria-label="물건 기억을 불러오는 중"
+    >
+      <div class="memory-loading__box">
+        <img
+          src="https://i.pinimg.com/originals/7b/83/7d/7b837d4c0afbba735dd6373a7772645f.gif"
+          alt="물건 기억을 불러오는 중"
+          class="memory-loading__image"
+        />
+        <p>물건들의 기억을 불러오는 중...🧺</p>
+      </div>
+    </div>
     <!-- Google Tag Manager (noscript) -->
     <noscript>
       <iframe
@@ -127,17 +143,55 @@
     <section id="memory-park" class="memory-park">
       <div class="memory-park__header">
         <p class="memory-park__label">🧺 물건 기억소</p>
-        <span class="memory-park__count" id="memory-count"></span>
+
+        <div class="memory-park__des-box">
+          <p class="memory-park__des">내가 기억하는 물건들</p>
+        </div>
       </div>
 
-      <div id="memory-list" class="memory-park__list" aria-live="polite">
+      <div class="memory-park__count">
+        모두 <span id="memory-count">0</span>
+      </div>
+      <div
+        id="memory-list"
+        class="memory-park__list memory-park__grid"
+        aria-live="polite"
+      >
         <!-- JS로 물건 카드 생성 -->
       </div>
+
+      <!-- 물건 상세 모달 -->
+      <div class="memory-modal" id="memory-modal" aria-hidden="true">
+        <div class="memory-modal__backdrop" data-modal-close></div>
+
+        <div
+          class="memory-modal__content"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
+        >
+          <div class="memory-modal__image">
+            <img id="modal-image" src="" alt="" />
+          </div>
+
+          <div class="memory-modal__info">
+            <span id="modal-date"></span>
+            <h2 id="modal-title"></h2>
+            <p id="modal-description"></p>
+            <small id="modal-item"></small>
+          </div>
+        </div>
+      </div>
     </section>
-    <!-- Swiper JS -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <!-- 물건 기억소 JS -->
     <script src="./memory-park.js"></script>
+
+    <footer class="footer">
+      <div class="footer__inner">
+        <p class="footer__name">LEE EUN JOO</p>
+        <p class="footer__copyright">© 2026 Lee Eun Joo</p>
+      </div>
+    </footer>
   </body>
 </html>
