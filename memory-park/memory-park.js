@@ -145,7 +145,7 @@
     modalDescription.textContent = item.description || "";
 
     if (modalItem) {
-      modalItem.textContent = item.has_item ? `🧩 ${item.has_item}` : "";
+      modalItem.textContent = item.has_item ? `${item.has_item}` : "";
     }
 
     // 모달 열기

@@ -145,7 +145,8 @@
   display: block;
   margin-top: 1rem;
   color: #666;
-  font-size: 0.9rem;
+  font-size: 12px;
+  text-align: right;
 }
 
 /* 하단 문구 */
