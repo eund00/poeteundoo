@@ -262,7 +262,7 @@
         padding-top: 5px;
         color: #9b9b8b;
         font-family: Georgia, serif;
-        font-size: 12px;
+        font-size: 14px;
         white-space: nowrap;
       }
 
@@ -891,7 +891,16 @@
       >‹</button>
     `;
 
-        for (let page = 1; page <= totalPages; page++) {
+        // 페이지 번호는 최대 5개까지만 표시
+        const maxVisiblePages = 5;
+
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+        // 마지막 페이지에 가까우면 앞쪽 페이지를 채움
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+
+        for (let page = startPage; page <= endPage; page++) {
           paginationHTML += `
         <button
           type="button"
@@ -1091,22 +1100,19 @@
       });
 
       /* ========================================
-     페이지 번호 클릭
-  ======================================== */
+   페이지 번호 클릭
+======================================== */
 
       paginationEl.addEventListener("click", (event) => {
-        const button = event.target.closest("[data-page]");
+        const button = event.target.closest("button[data-page]");
 
         if (!button || button.disabled) return;
+
+        console.log("페이지 버튼 클릭:", button.dataset.page);
 
         currentPage = Number(button.dataset.page);
 
         renderList();
-
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        });
       });
 
       /* ========================================
