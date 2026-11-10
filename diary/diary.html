@@ -698,6 +698,8 @@
     </main>
 
     <script>
+      "use strict";
+
       let diaryPosts = [];
       let activeCategory = "전체";
       let currentPage = 1;
@@ -712,7 +714,13 @@
       const paginationEl = document.getElementById("diary-pagination");
       const detailEl = document.getElementById("diary-detail");
 
-      /* 날짜 포맷 */
+      // 상세 글 요청 순서 관리 (빠른 게시글 이동 시 충돌 방지)
+      let detailRequestCount = 0;
+
+      /* ========================================
+     날짜 포맷
+  ======================================== */
+
       function formatDate(date) {
         if (!date) return "";
 
@@ -720,7 +728,10 @@
         return `${year}.${month}.${day}`;
       }
 
-      /* HTML 특수문자 이스케이프 */
+      /* ========================================
+     HTML 특수문자 이스케이프
+  ======================================== */
+
       function escapeHTML(value = "") {
         return String(value).replace(/[&<>"']/g, (char) => {
           return {
@@ -733,14 +744,46 @@
         });
       }
 
-      /* 최신 날짜순 정렬 */
-      function getSortedPosts() {
-        return [...diaryPosts].sort((a, b) =>
-          String(b.date).localeCompare(String(a.date)),
-        );
+      /* ========================================
+     게시글 식별자
+     contentFile을 고유 식별자로 사용
+  ======================================== */
+
+      function getPostByFile(file) {
+        return diaryPosts.find((post) => post.contentFile === file);
       }
 
-      /* 카테고리 출력 */
+      /* ========================================
+     최신 날짜순 정렬
+  ======================================== */
+
+      /* ========================================
+   최신 날짜순 + 같은 날짜는 파일 번호순 정렬
+======================================== */
+
+      function getSortedPosts() {
+        return [...diaryPosts].sort((a, b) => {
+          // 1. 날짜가 다르면 최신 날짜 우선
+          const dateCompare = String(b.date).localeCompare(String(a.date));
+
+          if (dateCompare !== 0) {
+            return dateCompare;
+          }
+
+          // 2. 날짜가 같으면 파일명 뒤의 숫자가 큰 글 우선
+          const getFileNumber = (file) => {
+            const match = file.match(/_(\d+)\.md$/);
+            return match ? Number(match[1]) : 1;
+          };
+
+          return getFileNumber(b.contentFile) - getFileNumber(a.contentFile);
+        });
+      }
+
+      /* ========================================
+     카테고리 출력
+  ======================================== */
+
       function renderCategories() {
         const categories = [
           "전체",
@@ -750,20 +793,23 @@
         categoriesEl.innerHTML = categories
           .map(
             (category) => `
-              <button
-                type="button"
-                class="diary-category ${
-                  activeCategory === category ? "active" : ""
-                }"
-                data-category="${escapeHTML(category)}"
-                aria-pressed="${activeCategory === category}"
-              >${escapeHTML(category)}</button>
-            `,
+          <button
+            type="button"
+            class="diary-category ${
+              activeCategory === category ? "active" : ""
+            }"
+            data-category="${escapeHTML(category)}"
+            aria-pressed="${activeCategory === category}"
+          >${escapeHTML(category)}</button>
+        `,
           )
           .join("");
       }
 
-      /* 검색 및 게시글 목록 + 페이지네이션 */
+      /* ========================================
+     게시글 목록 + 검색 + 페이지네이션
+  ======================================== */
+
       function renderList() {
         const keyword = searchEl.value.trim().toLowerCase();
 
@@ -781,7 +827,7 @@
 
         const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
 
-        // 결과가 없거나 현재 페이지가 범위를 벗어난 경우 보정
+        // 페이지 범위 보정
         if (totalPages === 0) {
           currentPage = 1;
         } else if (currentPage > totalPages) {
@@ -802,29 +848,29 @@
           ? posts
               .map(
                 (post) => `
-                  <a
-                    class="diary-item"
-                    href="?id=${encodeURIComponent(post.id)}"
-                    data-post-id="${escapeHTML(post.id)}"
-                  >
-                    <time
-                      class="diary-date"
-                      datetime="${escapeHTML(post.date)}"
-                    >${formatDate(post.date)}</time>
+              <a
+                class="diary-item"
+                href="?file=${encodeURIComponent(post.contentFile)}"
+                data-post-file="${escapeHTML(post.contentFile)}"
+              >
+                <time
+                  class="diary-date"
+                  datetime="${escapeHTML(post.date)}"
+                >${formatDate(post.date)}</time>
 
-                    <div class="diary-line">
-                      <div class="diary-item-category">
-                        <span class="category">
-                          [ ${escapeHTML(post.category)} ]
-                        </span>
-                      </div>
+                <div class="diary-line">
+                  <div class="diary-item-category">
+                    <span class="category">
+                      [ ${escapeHTML(post.category)} ]
+                    </span>
+                  </div>
 
-                      <h2>${escapeHTML(post.title)}</h2>
+                  <h2>${escapeHTML(post.title)}</h2>
 
-                      <p class="diary-preview">${escapeHTML(post.preview)}</p>
-                    </div>
-                  </a>
-                `,
+                  <p class="diary-preview">${escapeHTML(post.preview)}</p>
+                </div>
+              </a>
+            `,
               )
               .join("")
           : `<p class="diary-empty">아직 기록이 없어요.</p>`;
@@ -836,42 +882,48 @@
         }
 
         let paginationHTML = `
-          <button
-            type="button"
-            class="diary-page-button"
-            data-page="${currentPage - 1}"
-            aria-label="이전 페이지"
-            ${currentPage === 1 ? "disabled" : ""}
-          >‹</button>
-        `;
+      <button
+        type="button"
+        class="diary-page-button"
+        data-page="${currentPage - 1}"
+        aria-label="이전 페이지"
+        ${currentPage === 1 ? "disabled" : ""}
+      >‹</button>
+    `;
 
         for (let page = 1; page <= totalPages; page++) {
           paginationHTML += `
-            <button
-              type="button"
-              class="diary-page-button ${page === currentPage ? "active" : ""}"
-              data-page="${page}"
-              ${page === currentPage ? 'aria-current="page"' : ""}
-            >${page}</button>
-          `;
+        <button
+          type="button"
+          class="diary-page-button ${page === currentPage ? "active" : ""}"
+          data-page="${page}"
+          ${page === currentPage ? 'aria-current="page"' : ""}
+        >${page}</button>
+      `;
         }
 
         paginationHTML += `
-          <button
-            type="button"
-            class="diary-page-button"
-            data-page="${currentPage + 1}"
-            aria-label="다음 페이지"
-            ${currentPage === totalPages ? "disabled" : ""}
-          >›</button>
-        `;
+      <button
+        type="button"
+        class="diary-page-button"
+        data-page="${currentPage + 1}"
+        aria-label="다음 페이지"
+        ${currentPage === totalPages ? "disabled" : ""}
+      >›</button>
+    `;
 
         paginationEl.innerHTML = paginationHTML;
       }
 
-      /* 상세 글 출력 */
-      async function renderDetail(id) {
-        const post = diaryPosts.find((item) => String(item.id) === String(id));
+      /* ========================================
+     상세 게시글 출력
+  ======================================== */
+
+      async function renderDetail(file) {
+        const post = getPostByFile(file);
+
+        // 새로운 상세 글 요청 번호
+        const requestId = ++detailRequestCount;
 
         // 브라우저 탭 제목 변경
         document.title = post
@@ -880,71 +932,78 @@
 
         listView.hidden = true;
         detailEl.hidden = false;
+
         window.scrollTo(0, 0);
 
+        // 게시글이 없는 경우
         if (!post) {
           detailEl.innerHTML = `
-            <p class="diary-empty">게시글을 찾을 수 없습니다.</p>
-            <button
-              type="button"
-              class="diary-back"
-              id="diary-back"
-            >← 목록으로</button>
-          `;
+        <p class="diary-empty">게시글을 찾을 수 없습니다.</p>
+
+        <button
+          type="button"
+          class="diary-back"
+          id="diary-back"
+        >← 목록으로</button>
+      `;
+
           return;
         }
 
+        // 상세 페이지 HTML
         detailEl.innerHTML = `
-          <div class="diary-detail-title">
-            <div class="diary-detail-category">
-              ${escapeHTML(post.category)}
-            </div>
+      <div class="diary-detail-title">
+        <div class="diary-detail-category">
+          ${escapeHTML(post.category)}
+        </div>
 
-            <h1>${escapeHTML(post.title)}</h1>
+        <h1>${escapeHTML(post.title)}</h1>
 
-            <time
-              class="diary-detail-date"
-              datetime="${escapeHTML(post.date)}"
-            >${formatDate(post.date)}</time>
-          </div>
+        <time
+          class="diary-detail-date"
+          datetime="${escapeHTML(post.date)}"
+        >${formatDate(post.date)}</time>
+      </div>
 
-          <div class="diary-detail-content" id="diary-content">
-            불러오는 중...
-          </div>
+      <div class="diary-detail-content" id="diary-content">
+        불러오는 중...
+      </div>
 
-          <div class="diary-detail-nav">
-            <button
-              type="button"
-              class="diary-nav-button"
-              data-detail-nav="prev"
-              aria-label="이전 게시글"
-            >←</button>
+      <div class="diary-detail-nav">
+        <button
+          type="button"
+          class="diary-nav-button"
+          data-detail-nav="prev"
+          aria-label="이전 게시글"
+        >←</button>
 
-            <button
-              type="button"
-              class="diary-back"
-              id="diary-back"
-            >☰</button>
+        <button
+          type="button"
+          class="diary-back"
+          id="diary-back"
+        >☰</button>
 
-            <button
-              type="button"
-              class="diary-nav-button"
-              data-detail-nav="next"
-              aria-label="다음 게시글"
-            >→</button>
-          </div>
-        `;
+        <button
+          type="button"
+          class="diary-nav-button"
+          data-detail-nav="next"
+          aria-label="다음 게시글"
+        >→</button>
+      </div>
+    `;
 
         // 게시글 이동 버튼 상태 설정
         const sortedPosts = getSortedPosts();
+
         const currentIndex = sortedPosts.findIndex(
-          (item) => String(item.id) === String(id),
+          (item) => item.contentFile === file,
         );
 
         const prevButton = detailEl.querySelector('[data-detail-nav="prev"]');
+
         const nextButton = detailEl.querySelector('[data-detail-nav="next"]');
 
-        // 최신 날짜순 기준: 이전 게시글은 더 오래된 글
+        // 최신 날짜순 기준: 이전 글은 더 오래된 글
         if (prevButton) {
           prevButton.disabled =
             currentIndex === -1 || currentIndex >= sortedPosts.length - 1;
@@ -954,6 +1013,7 @@
           nextButton.disabled = currentIndex <= 0;
         }
 
+        // 본문 파일 불러오기
         try {
           const response = await fetch(`./${post.contentFile}`);
 
@@ -962,13 +1022,19 @@
           }
 
           const content = await response.text();
-          const contentEl = document.getElementById("diary-content");
+
+          // 다른 게시글로 이동했다면 이전 요청 무시
+          if (requestId !== detailRequestCount) return;
+
+          const contentEl = detailEl.querySelector("#diary-content");
 
           if (contentEl) {
             contentEl.innerHTML = content;
           }
         } catch (error) {
-          const contentEl = document.getElementById("diary-content");
+          if (requestId !== detailRequestCount) return;
+
+          const contentEl = detailEl.querySelector("#diary-content");
 
           if (contentEl) {
             contentEl.textContent = "본문을 불러오지 못했습니다.";
@@ -978,11 +1044,18 @@
         }
       }
 
+      /* ========================================
+     목록으로 돌아가기
+  ======================================== */
+
       function showList(updateHistory = true) {
+        // 진행 중인 상세 글 요청 무효화
+        detailRequestCount++;
+
         detailEl.hidden = true;
         listView.hidden = false;
 
-        // 브라우저 탭 제목을 원래대로 복구
+        // 브라우저 탭 제목 복구
         document.title = "다이어리 : 은듀닷컴";
 
         if (updateHistory) {
@@ -992,7 +1065,10 @@
         window.scrollTo(0, 0);
       }
 
-      /* 카테고리 클릭 */
+      /* ========================================
+     카테고리 클릭
+  ======================================== */
+
       categoriesEl.addEventListener("click", (event) => {
         const button = event.target.closest("[data-category]");
 
@@ -1005,13 +1081,19 @@
         renderList();
       });
 
-      /* 검색 */
+      /* ========================================
+     검색
+  ======================================== */
+
       searchEl.addEventListener("input", () => {
         currentPage = 1;
         renderList();
       });
 
-      /* 페이지 번호 클릭 */
+      /* ========================================
+     페이지 번호 클릭
+  ======================================== */
+
       paginationEl.addEventListener("click", (event) => {
         const button = event.target.closest("[data-page]");
 
@@ -1020,29 +1102,39 @@
         currentPage = Number(button.dataset.page);
 
         renderList();
-        window.scrollTo({ top: 0, behavior: "smooth" });
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
       });
 
-      /* 게시글 클릭 */
+      /* ========================================
+     게시글 클릭
+  ======================================== */
+
       listEl.addEventListener("click", (event) => {
-        const link = event.target.closest("[data-post-id]");
+        const link = event.target.closest("[data-post-file]");
 
         if (!link) return;
 
         event.preventDefault();
 
-        const id = link.dataset.postId;
+        const file = link.dataset.postFile;
 
         history.pushState(
           { diaryDetail: true },
           "",
-          `?id=${encodeURIComponent(id)}`,
+          `?file=${encodeURIComponent(file)}`,
         );
 
-        renderDetail(id);
+        renderDetail(file);
       });
 
-      /* 상세 글에서 목록으로 / 이전·다음 게시글 이동 */
+      /* ========================================
+     상세 글에서 목록으로 / 이전·다음 이동
+  ======================================== */
+
       detailEl.addEventListener("click", (event) => {
         // 목록으로
         if (event.target.closest("#diary-back")) {
@@ -1050,16 +1142,17 @@
           return;
         }
 
-        // 이전 / 다음 게시글
+        // 이전 / 다음 게시글 이동
         const navButton = event.target.closest("[data-detail-nav]");
 
         if (!navButton || navButton.disabled) return;
 
-        const currentId = new URLSearchParams(location.search).get("id");
+        const currentFile = new URLSearchParams(location.search).get("file");
+
         const sortedPosts = getSortedPosts();
 
         const currentIndex = sortedPosts.findIndex(
-          (post) => String(post.id) === String(currentId),
+          (post) => post.contentFile === currentFile,
         );
 
         if (currentIndex === -1) return;
@@ -1074,27 +1167,35 @@
 
         if (!targetPost) return;
 
+        const targetFile = targetPost.contentFile;
+
         history.pushState(
           { diaryDetail: true },
           "",
-          `?id=${encodeURIComponent(targetPost.id)}`,
+          `?file=${encodeURIComponent(targetFile)}`,
         );
 
-        renderDetail(targetPost.id);
+        renderDetail(targetFile);
       });
 
-      /* 브라우저 뒤로 가기 / 앞으로 가기 */
-      window.addEventListener("popstate", () => {
-        const id = new URLSearchParams(location.search).get("id");
+      /* ========================================
+     브라우저 뒤로 가기 / 앞으로 가기
+  ======================================== */
 
-        if (id) {
-          renderDetail(id);
+      window.addEventListener("popstate", () => {
+        const file = new URLSearchParams(location.search).get("file");
+
+        if (file) {
+          renderDetail(file);
         } else {
           showList(false);
         }
       });
 
-      /* 초기 데이터 로딩 */
+      /* ========================================
+     초기 데이터 로딩
+  ======================================== */
+
       async function init() {
         try {
           const response = await fetch("./diary.json");
@@ -1105,14 +1206,29 @@
 
           diaryPosts = await response.json();
 
+          // 필수 데이터 검증
+          const usedFiles = new Set();
+
+          for (const post of diaryPosts) {
+            if (!post.contentFile || !post.date || !post.title) {
+              throw new Error("게시글에 필수 데이터가 누락되었습니다.");
+            }
+
+            if (usedFiles.has(post.contentFile)) {
+              throw new Error(`중복된 contentFile: ${post.contentFile}`);
+            }
+
+            usedFiles.add(post.contentFile);
+          }
+
           renderCategories();
           renderList();
 
-          // 주소에 게시글 ID가 있으면 상세 글 표시
-          const id = new URLSearchParams(location.search).get("id");
+          // URL에 파일명이 있으면 상세 글 표시
+          const file = new URLSearchParams(location.search).get("file");
 
-          if (id) {
-            renderDetail(id);
+          if (file) {
+            renderDetail(file);
           }
         } catch (error) {
           console.error(error);
@@ -1120,10 +1236,10 @@
           countEl.textContent = "TOTAL 0";
 
           listEl.innerHTML = `
-            <p class="diary-empty">
-              기록을 불러오지 못했습니다. 잠시 후 다시 확인해 주세요.
-            </p>
-          `;
+        <p class="diary-empty">
+          기록을 불러오지 못했습니다. 잠시 후 다시 확인해 주세요.
+        </p>
+      `;
 
           paginationEl.innerHTML = "";
         }

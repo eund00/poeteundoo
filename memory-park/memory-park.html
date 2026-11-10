@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <!-- Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-6X0BDHRPZX"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+
+      gtag("js", new Date());
+      gtag("config", "G-6X0BDHRPZX");
+    </script>
+
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({
+          "gtm.start": new Date().getTime(),
+          event: "gtm.js",
+        });
+
+        var f = d.getElementsByTagName(s)[0];
+        var j = d.createElement(s);
+        var dl = l !== "dataLayer" ? "&l=" + l : "";
+
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-TRR38Z77");
+    </script>
+
+    <!-- 기본 설정 -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta
+      name="keywords"
+      content="포엠피플 이은주시인 은듀닷컴 서울예대 문예창작 문창과 신작시 이은주 시인"
+    />
+    <meta name="description" content="안녕하세요. 시 쓰는 이은주입니다." />
+
+    <meta http-equiv="Subject" content="개인 창작물 포트폴리오" />
+    <meta http-equiv="Title" content="놀러와요 : 은듀닷컴" />
+    <meta http-equiv="Author" content="이은주" />
+
+    <title>기억공원 : 은듀닷컴</title>
+
+    <!-- 파비콘 -->
+    <link rel="icon" type="image/png" href="../img/favicon.png" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../index.css" />
+    <link rel="stylesheet" href="memory-park.css" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dongle&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-TRR38Z77"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe>
+    </noscript>
+
+    <!-- ==============================
+         HEADER
+    ============================== -->
+
+    <header class="header">
+      <div class="header__inner">
+        <h1 class="logo">
+          <a href="/">은듀닷컴</a>
+        </h1>
+
+        <!-- PC 메뉴 -->
+        <nav class="gnb">
+          <ul class="gnb__list">
+            <li class="gnb__item">
+              <a href="/works/work.html">Works</a>
+            </li>
+
+            <li class="gnb__item">
+              <a href="/diary/diary-before.html">Diary</a>
+            </li>
+
+            <li class="gnb__item">
+              <a href="/guestbook/guestbook.html">Guestbook</a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- 태블릿 / 모바일 햄버거 메뉴 -->
+        <button
+          class="menu-toggle"
+          id="menu-toggle"
+          type="button"
+          aria-label="메뉴 열기"
+          aria-expanded="false"
+          aria-controls="sidebar"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- MEMORY PARK -->
+    <section id="memory-park" class="memory-park">
+      <div class="memory-park__header">
+        <p class="memory-park__label">🧺 물건 기억소</p>
+        <span class="memory-park__count" id="memory-count"></span>
+      </div>
+
+      <div id="memory-list" class="memory-park__list" aria-live="polite">
+        <!-- JS로 물건 카드 생성 -->
+      </div>
+    </section>
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <!-- 물건 기억소 JS -->
+    <script src="./memory-park.js"></script>
+  </body>
+</html>
