@@ -15,7 +15,7 @@
 .ghost {
   position: absolute;
   display: block;
-  opacity: 0.15;
+  opacity: 0.3;
   filter: blur(1px);
   pointer-events: none;
   will-change: transform;
