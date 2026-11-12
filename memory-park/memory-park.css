@@ -293,8 +293,13 @@
   top: 0px;
   right: 0px;
   border: none;
-  font-size: 28px;
+  font-size: 1.35rem;
   cursor: pointer;
+  border-left: 1px solid #000;
+  border-bottom: 1px solid #000;
+  aspect-ratio: 1 / 1;
+  text-align: center;
+  background: #ffffa3;
 }
 
 /* 이미지 */
@@ -311,7 +316,7 @@
   display: block;
   min-height: auto;
   max-height: none;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 /* 정보 */
@@ -382,7 +387,7 @@
     padding: 30px 25px;
   }
   .memory-modal__image img {
-    object-fit: contain;
+    object-fit: cover;
   }
 }
 .memory-card {
