@@ -201,6 +201,13 @@
           </h2>
 
           <p class="hero__link">퇴거 예정일은 2027-09-29이에요.</p>
+          <p
+            class="hero__link"
+            id="visitor-counter"
+            style="border: none; color: #fff; background-color: #739b73"
+          >
+            방문자 수를 불러오는 중...
+          </p>
         </div>
       </section>
 
@@ -418,11 +425,6 @@
       </div>
     </footer>
 
-    <!-- JavaScript -->
-    <script src="index-page.js" defer></script>
-    <script src="memory-park/memory-park.js" defer></script>
-    <script src="index.js" type="module"></script>
-
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
@@ -430,5 +432,44 @@
     <script src="index-page.js" defer></script>
     <script src="memory-park/memory.js" defer></script>
     <script src="index.js" type="module"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async function () {
+        const counter = document.getElementById("visitor-counter");
+
+        if (!counter) return;
+
+        const API_URL =
+          "https://script.google.com/macros/s/AKfycbx42Xvmc86V9T6HDwPsQzMmOM8xdTvbv-nSko3rzEzXS_ld9u37S7oZ0nZpgQCE6PYx/exec?action=visitor";
+
+        try {
+          const response = await fetch(API_URL);
+
+          console.log("방문자 API 응답 상태:", response.status);
+
+          const raw = await response.text();
+
+          console.log("방문자 API 원본 데이터:", raw);
+
+          const data = JSON.parse(raw);
+
+          console.log("방문자 API 파싱 데이터:", data);
+
+          if (data.success !== true) {
+            throw new Error(
+              data.message || data.error || "success 값이 true가 아닙니다.",
+            );
+          }
+
+          const today = Number(data.todayVisitors).toLocaleString("ko-KR");
+          const total = Number(data.totalVisitors).toLocaleString("ko-KR");
+
+          counter.textContent = `TODAY ${today}명 · TOTAL ${total}명`;
+        } catch (error) {
+          console.error("방문자 수 조회 오류:", error);
+          counter.textContent = "방문자 수를 불러오지 못했어요.";
+        }
+      });
+    </script>
   </body>
 </html>
