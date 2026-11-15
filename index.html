@@ -430,7 +430,7 @@
 
     <!-- 기존 JS -->
     <script src="index-page.js" defer></script>
-    <script src="memory-park/memory.js" defer></script>
+    <script src="memory-park/memory-park.js" defer></script>
     <script src="index.js" type="module"></script>
 
     <script>
@@ -440,19 +440,21 @@
         if (!counter) return;
 
         const API_URL =
-          "https://script.google.com/macros/s/AKfycbx42Xvmc86V9T6HDwPsQzMmOM8xdTvbv-nSko3rzEzXS_ld9u37S7oZ0nZpgQCE6PYx/exec?action=visitor";
+          "https://script.google.com/macros/s/AKfycbziR79-M1PqCbMTlz-ouM7z5ZEDetYPo53OH5gOf2q9tScmsCJemoMAYV1fO08o5NCD/exec?action=visitor";
+
+        console.log("실제 방문자 API 주소:", API_URL);
 
         try {
-          const response = await fetch(API_URL);
+          const response = await fetch(`${API_URL}&_=${Date.now()}`, {
+            cache: "no-store",
+          });
 
           console.log("방문자 API 응답 상태:", response.status);
 
           const raw = await response.text();
-
           console.log("방문자 API 원본 데이터:", raw);
 
           const data = JSON.parse(raw);
-
           console.log("방문자 API 파싱 데이터:", data);
 
           if (data.success !== true) {
