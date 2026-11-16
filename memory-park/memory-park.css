@@ -284,6 +284,7 @@
 
 .memory-modal.is-open .memory-modal__content {
   transform: translateY(0);
+  overflow-x: hidden;
 }
 
 /* 닫기 버튼 */
