@@ -206,7 +206,7 @@
             id="visitor-counter"
             style="border: none; color: #fff; background-color: #739b73"
           >
-            방문자 수를 불러오는 중...
+            어디보자아….
           </p>
         </div>
       </section>
@@ -261,23 +261,16 @@
                 <button type="button" id="channel-up" aria-label="채널 올리기">
                   ▲
                 </button>
+                <button type="button" id="television_help">?</button>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div style="width: 100vw; text-align: center; margin: 5rem 0">
-        <p
-          style="
-            display: inline-block;
-            margin: 0 auto;
-            border: 1px solid #333;
-            text-align: center;
-            padding: 0.5rem 4rem;
-            letter-spacing: 1.8px;
-            line-height: 2.5;
-          "
-        >
+      <!-- 알림창 -->
+      <div class="television__alert">
+        <p>
+          <button id="television_close">❌</button>
           텔레비젼을 만들어 보았고요.<br />
           만든 이유는
           <span
@@ -292,6 +285,75 @@
           >
         </p>
       </div>
+      <style>
+        .television__alert {
+          display: none;
+          text-align: center;
+          position: fixed;
+          width: 100vw;
+          height: 100vh;
+          overflow: hidden;
+          z-index: 999999;
+          top: 0;
+          left: 0;
+          backdrop-filter: blur(10px);
+        }
+        .television__alert.on {
+          display: block;
+        }
+        .television__alert p {
+          border: 1px solid #333;
+          text-align: center;
+          padding: 4rem;
+          letter-spacing: 1.8px;
+          line-height: 2.5;
+          background-color: #fff;
+          max-width: 500px;
+          margin: 0 auto;
+          top: 50%;
+          position: absolute;
+          left: 0;
+          right: 0;
+          transform: translateY(-50%);
+        }
+        @media (max-width: 600px) {
+          .television__alert p {
+            max-width: 90%;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+          }
+        }
+        #television_close {
+          z-index: 1;
+          position: absolute;
+          top: 0px;
+          bottom: 0;
+          max-height: 40px;
+          right: 0px;
+          border: none;
+          font-size: 1.35rem;
+          cursor: pointer;
+          border-left: 1px solid #000;
+          border-bottom: 1px solid #000;
+          aspect-ratio: 1 / 1;
+          text-align: center;
+          background: #ffffa3;
+          line-height: 1;
+        }
+      </style>
+      <script>
+        document
+          .getElementById("television_help")
+          .addEventListener("click", function () {
+            document.querySelector(".television__alert").classList.add("on");
+          });
+
+        document
+          .getElementById("television_close")
+          .addEventListener("click", function () {
+            document.querySelector(".television__alert").classList.remove("on");
+          });
+      </script>
 
       <!-- 작가 소개 -->
       <section id="about" class="about">
@@ -394,7 +456,7 @@
               <br />
               기억을 불러오고 있으니 기다려!
             </p>
-            <p class="memory-park__icon">❄️</p>
+            <p class="memory-park__icon">👻</p>
           </div>
         </div>
       </section>
