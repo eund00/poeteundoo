@@ -1,327 +1,561 @@
-/* ========================================
-   MEMORY PARK (Supabase 연동 버전)
-======================================== */
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-(() => {
-  "use strict";
+const SUPABASE_URL = "https://jxyucxgpdlfidzwizski.supabase.co";
+const SUPABASE_KEY = "sb_publishable_hhdmoi0xScMatNS8Nb9ZVA_FG-DQoG-";
 
-  // Supabase 설정
-  const SUPABASE_URL = "https://jxyucxgpdlfidzwizski.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_hhdmoi0xScMatNS8Nb9ZVA_FG-DQoG-";
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY,
-  );
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const memoryList = document.getElementById("memory-list");
-  const loadingScreen = document.getElementById("memory-loading");
+const $ = (id) => document.getElementById(id);
 
-  // 메인 페이지에 메모리 영역이 없으면 종료
-  if (!memoryList) return;
+const form = $("guestbook-form");
+if (form) {
+  const listEl = $("guestbook-list");
+  const countEl = $("guestbook-count");
+  const statusEl = $("guestbook-status");
+  const submitBtn = $("guestbook-submit");
+  const cancelBtn = $("guestbook-cancel");
 
-  // 모달 요소
-  const modal = document.getElementById("memory-modal");
-  const modalImage = document.getElementById("modal-image");
-  const modalDate = document.getElementById("modal-date");
-  const modalTitle = document.getElementById("modal-title");
-  const modalDescription = document.getElementById("modal-description");
-  const modalItem = document.getElementById("modal-item");
-  const modalCloseButtons = modal
-    ? modal.querySelectorAll("[data-modal-close]")
-    : [];
+  let comments = [];
 
-  let memoryItems = [];
-  let previousFocus = null;
-  let previousOverflow = "";
-
-  /* ========================================
-1. HTML ESCAPE
-  ======================================== */
-
-  function escapeHTML(str = "") {
-    return String(str).replace(
-      /[&<>"']/g,
-      (char) =>
-        ({
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#39;",
-        })[char],
-    );
+  // 상태 메시지
+  function setStatus(message, isError = false) {
+    statusEl.textContent = message;
+    statusEl.style.color = isError ? "#a33" : "#5b7657";
   }
 
-  /* ========================================
-2. IMAGE URL VALIDATION
-  ======================================== */
-
-  function validImageURL(url = "") {
-    try {
-      const parsed = new URL(url);
-
-      return ["http:", "https:"].includes(parsed.protocol) ? url : "";
-    } catch {
-      return "";
-    }
+  // SHA-256 해시 생성 (기존 시트 salt + password 규격 유지)
+  async function hashPassword(salt, password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(salt + password);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(hashBuffer))
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
   }
 
-  /* ========================================
-3. CREATE CARD
-  ======================================== */
+  // 날짜 표시
+  function dateLabel(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
 
-  function createCard(item, index) {
-    const imageURL = validImageURL(item.image);
-
-    return `
-      <article
-        class="memory-card swiper-slide"
-        role="button"
-        tabindex="0"
-        data-memory-index="${index}"
-        aria-label="${escapeHTML(item.title)} 상세 보기"
-      >
-
-        <div class="memory-card__image">
-          ${
-            imageURL
-              ? `
-                <img
-                  src="${escapeHTML(imageURL)}"
-                  alt="${escapeHTML(item.title)}"
-                  loading="lazy"
-                >
-              `
-              : `
-                <div class="memory-card__empty">
-                  NO IMAGE
-                </div>
-              `
-          }
-        </div>
-
-        <div class="memory-card__info">
-
-          <span>${escapeHTML(item.date)}</span>
-
-          <h3><small>${escapeHTML(item.has_item)}</small> ${escapeHTML(item.title)}</h3>
-
-          <p>
-            ${escapeHTML(item.description).replace(/\n/g, "<br>")}
-          </p>
-
-        </div>
-
-      </article>
-    `;
+    return new Intl.DateTimeFormat("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(date);
   }
 
-  /* ========================================
-4. OPEN MODAL
-  ======================================== */
+  // ==================================================
+  // 커스텀 모달 (기존 코드 그대로 유지)
+  // ==================================================
 
-  function openModal(item) {
-    if (!modal) return;
+  const guestbookDialog = (() => {
+    const modal = $("guestbook-modal");
+    const title = $("gb-modal-title");
+    const message = $("gb-modal-message");
+    const dialogForm = $("gb-modal-form");
+    const input = $("gb-modal-input");
+    const textarea = $("gb-modal-textarea");
+    const error = $("gb-modal-error");
+    const actions = $("gb-modal-actions");
+    const cancelButton = $("gb-modal-cancel");
+    const submitButton = $("gb-modal-submit");
+    const closeButton = $("gb-modal-close");
 
-    previousFocus = document.activeElement;
-    previousOverflow = document.body.style.overflow;
+    const requiredElements = [
+      modal,
+      title,
+      message,
+      dialogForm,
+      input,
+      textarea,
+      error,
+      actions,
+      cancelButton,
+      submitButton,
+      closeButton,
+    ];
 
-    const imageURL = validImageURL(item.image);
-
-    // 이미지
-    if (imageURL) {
-      modalImage.src = imageURL;
-      modalImage.alt = item.title || "";
-      modalImage.style.display = "block";
-    } else {
-      modalImage.removeAttribute("src");
-      modalImage.alt = "";
-      modalImage.style.display = "none";
+    if (requiredElements.some((element) => !element)) {
+      return async () => null;
     }
 
-    // 물건 정보
-    modalDate.textContent = item.date || "";
-    modalTitle.textContent = item.title || "";
-    modalDescription.textContent = item.description || "";
+    let resolveDialog = null;
+    let currentType = "message";
+    let previousFocus = null;
 
-    if (modalItem) {
-      modalItem.textContent = item.has_item ? `${item.has_item}` : "";
-    }
+    function finish(value) {
+      if (!resolveDialog) return;
 
-    // 모달 열기
-    modal.classList.add("is-open");
-    modal.setAttribute("aria-hidden", "false");
+      const resolve = resolveDialog;
+      resolveDialog = null;
 
-    // 배경 스크롤 방지
-    document.body.style.overflow = "hidden";
+      modal.hidden = true;
+      document.body.style.overflow = "";
 
-    // 닫기 버튼에 포커스
-    const closeButton = modal.querySelector(".memory-modal__close");
-
-    if (closeButton) {
-      closeButton.focus();
-    }
-  }
-
-  /* ========================================
-5. CLOSE MODAL
-  ======================================== */
-
-  function closeModal() {
-    if (!modal || !modal.classList.contains("is-open")) return;
-
-    modal.classList.remove("is-open");
-    modal.setAttribute("aria-hidden", "true");
-
-    // 스크롤 복구
-    document.body.style.overflow = previousOverflow;
-
-    // 이미지 초기화
-    modalImage.removeAttribute("src");
-
-    // 이전 카드로 포커스 복구
-    if (previousFocus && previousFocus.isConnected) {
-      previousFocus.focus();
-    }
-  }
-
-  /* ========================================
-6. CARD CLICK EVENT
-  ======================================== */
-
-  memoryList.addEventListener("click", (event) => {
-    const card = event.target.closest("[data-memory-index]");
-
-    if (!card) return;
-
-    const index = Number(card.dataset.memoryIndex);
-    const item = memoryItems[index];
-
-    if (item) {
-      openModal(item);
-    }
-  });
-
-  /* ========================================
-7. KEYBOARD EVENT
-  ======================================== */
-
-  memoryList.addEventListener("keydown", (event) => {
-    const card = event.target.closest("[data-memory-index]");
-
-    if (!card) return;
-
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-
-      const index = Number(card.dataset.memoryIndex);
-      const item = memoryItems[index];
-
-      if (item) {
-        openModal(item);
+      if (previousFocus && previousFocus.isConnected) {
+        previousFocus.focus();
       }
+
+      resolve(value);
     }
-  });
 
-  // ESC 키로 닫기
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closeModal();
+    function open(options = {}) {
+      if (resolveDialog) {
+        finish(null);
+      }
+
+      const {
+        title: heading = "알림",
+        message: content = "",
+        type = "message",
+        value = "",
+        placeholder = "",
+        confirmText = "확인",
+        cancelText = "취소",
+        required = false,
+      } = options;
+
+      currentType = type;
+      previousFocus = document.activeElement;
+
+      title.textContent = heading;
+      message.textContent = content;
+
+      input.value = type === "input" || type === "password" ? value : "";
+      textarea.value = type === "textarea" ? value : "";
+
+      input.placeholder = placeholder;
+      textarea.placeholder = placeholder;
+
+      input.type = type === "password" ? "password" : "text";
+      input.autocomplete = type === "password" ? "current-password" : "off";
+
+      input.required = required && (type === "input" || type === "password");
+      textarea.required = required && type === "textarea";
+
+      input.hidden = type !== "input" && type !== "password";
+      textarea.hidden = type !== "textarea";
+
+      error.hidden = true;
+      error.textContent = "";
+
+      const isMessage = type === "message";
+      cancelButton.hidden = isMessage;
+      cancelButton.textContent = cancelText;
+      submitButton.textContent = confirmText;
+      actions.style.justifyContent = isMessage ? "center" : "flex-end";
+
+      modal.hidden = false;
+      document.body.style.overflow = "hidden";
+
+      return new Promise((resolve) => {
+        resolveDialog = resolve;
+
+        requestAnimationFrame(() => {
+          if (modal.hidden) return;
+          if (type === "password" || type === "input") {
+            input.focus();
+          } else if (type === "textarea") {
+            textarea.focus();
+          } else {
+            submitButton.focus();
+          }
+        });
+      });
     }
-  });
 
-  // 닫기 버튼 및 배경 클릭
-  modalCloseButtons.forEach((button) => {
-    button.addEventListener("click", closeModal);
-  });
+    dialogForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (currentType === "input" || currentType === "password") {
+        finish(input.value);
+        return;
+      }
+      if (currentType === "textarea") {
+        finish(textarea.value);
+        return;
+      }
+      finish(true);
+    });
 
-  /* ========================================
-8. LOAD MEMORY DATA
-  ======================================== */
+    cancelButton.addEventListener("click", () => finish(null));
+    closeButton.addEventListener("click", () => finish(null));
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) finish(null);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (!modal.hidden && event.key === "Escape") finish(null);
+    });
 
-  async function loadMemory() {
-    const loadingStart = Date.now();
+    return open;
+  })();
 
-    // 로딩 화면 표시
-    if (loadingScreen) {
-      loadingScreen.classList.remove("is-hidden");
+  // ==================================================
+  // 댓글 렌더링
+  // ==================================================
+
+  function makeButton(label, action, id) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "guestbook__action";
+    button.textContent = label;
+    button.addEventListener("click", () => action(id));
+    return button;
+  }
+
+  function render() {
+    listEl.replaceChildren();
+
+    const visible = comments
+      .filter((comment) => !comment.parent_id)
+      .sort(
+        (a, b) =>
+          new Date(b.updated_at || b.created_at) -
+          new Date(a.updated_at || a.created_at),
+      );
+
+    countEl.textContent = `${comments.length}개의 댓글`;
+
+    if (!visible.length) {
+      const empty = document.createElement("p");
+      empty.className = "guestbook__empty";
+      empty.textContent =
+        "아직 남겨진 이야기가 없어요. 첫 번째 인사를 건네 주세요.";
+      listEl.appendChild(empty);
+      return;
     }
+
+    visible.forEach((comment) => {
+      listEl.appendChild(renderComment(comment, false));
+
+      comments
+        .filter((reply) => reply.parent_id === comment.id)
+        .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+        .forEach((reply) => {
+          listEl.appendChild(renderComment(reply, true));
+        });
+    });
+  }
+
+  function renderComment(comment, isReply) {
+    const article = document.createElement("article");
+    article.className =
+      "guestbook__item" + (isReply ? " guestbook__item--reply" : "");
+
+    const meta = document.createElement("div");
+    meta.className = "guestbook__meta";
+
+    const name = document.createElement("span");
+    name.className = "guestbook__name";
+    name.textContent = comment.nickname || "익명";
+    meta.appendChild(name);
+
+    const date = document.createElement("time");
+    date.textContent = dateLabel(comment.updated_at || comment.created_at);
+    meta.appendChild(date);
+
+    const content = document.createElement("p");
+    content.className = "guestbook__content";
+
+    if (comment.is_private && !comment.unlockedContent) {
+      content.textContent = "🔒 비밀 댓글입니다. (클릭해서 확인)";
+      content.style.cursor = "pointer";
+      content.addEventListener("click", () => readPrivateComment(comment.id));
+    } else {
+      content.textContent = comment.unlockedContent || comment.content || "";
+    }
+
+    const actions = document.createElement("div");
+    actions.className = "guestbook__actions";
+
+    if (!isReply) {
+      actions.appendChild(makeButton("답글", replyTo, comment.id));
+    }
+    actions.appendChild(makeButton("수정", editComment, comment.id));
+    actions.appendChild(makeButton("삭제", deleteComment, comment.id));
+
+    article.append(meta, content, actions);
+    return article;
+  }
+
+  // ==================================================
+  // 목록 불러오기 (Supabase public_comments 뷰 조회)
+  // ==================================================
+
+  async function load() {
+    listEl.innerHTML =
+      '<div class="guestbook__loading"><span class="guestbook__loading-text"></span><span class="guestbook__dots" aria-hidden="true"><span></span><span></span><span></span></span></div>';
 
     try {
-      // visible이 true인 데이터만 최신순(created_at 내림차순)으로 조회
-      const { data, error } = await supabaseClient
-        .from("memory_items")
+      const { data, error } = await supabase
+        .from("public_comments")
         .select("*")
-        .eq("visible", true)
         .order("created_at", { ascending: false });
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
-      // Supabase created_at(2026-11-16T15:00:00+00:00)을 '2026.11.16' 형식으로 변환
-      memoryItems = (data || []).map((item) => ({
-        ...item,
-        date: item.created_at
-          ? item.created_at.slice(0, 10).replace(/-/g, ".")
-          : "",
-      }));
-
-      // 최소 2.5초 대기
-      const elapsed = Date.now() - loadingStart;
-      const remaining = Math.max(0, 2500 - elapsed);
-
-      await new Promise((resolve) => {
-        setTimeout(resolve, remaining);
-      });
-
-      // 카드 생성
-      memoryList.innerHTML = memoryItems.length
-        ? memoryItems.map((item, index) => createCard(item, index)).join("")
-        : "<p>아직 등록된 기억이 없습니다.</p>";
-
-      // 물건 개수 표시
-      const memoryCount = document.getElementById("memory-count");
-
-      if (memoryCount) {
-        memoryCount.textContent = `${memoryItems.length}`;
-      }
-
-      // 로딩 완료 후 캡션 숨기기
-      const caption = document.querySelector(".memory-park__caption-container");
-
-      if (caption) {
-        caption.style.display = "none";
-      }
-
-      // Swiper 업데이트
-      if (window.memorySwiper) {
-        window.memorySwiper.update();
-      }
+      comments = Array.isArray(data) ? data : [];
+      render();
     } catch (error) {
-      console.error("Memory Park:", error);
-
-      const elapsed = Date.now() - loadingStart;
-      const remaining = Math.max(0, 2500 - elapsed);
-
-      await new Promise((resolve) => {
-        setTimeout(resolve, remaining);
-      });
-
-      memoryList.innerHTML = `
-        <p>메모리 파크를 불러오지 못했습니다.</p>
-      `;
-    } finally {
-      // 로딩 화면 닫기
-      if (loadingScreen) {
-        loadingScreen.classList.add("is-hidden");
-      }
+      console.error(error);
+      listEl.textContent =
+        "방명록을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.";
+      setStatus("목록을 불러오지 못했습니다.", true);
     }
   }
 
-  /* ========================================
-9. INITIALIZE
-  ======================================== */
+  // ==================================================
+  // 비밀글 열람
+  // ==================================================
 
-  loadMemory();
-})();
+  async function readPrivateComment(id) {
+    const password = await guestbookDialog({
+      title: "비밀 댓글 확인",
+      message: "이 댓글의 비밀번호를 입력해 주세요.",
+      type: "password",
+      placeholder: "비밀번호 입력",
+      confirmText: "확인",
+      required: true,
+    });
+
+    if (password === null) return;
+
+    const { data, error } = await supabase.rpc("manage_comment", {
+      p_action: "read",
+      p_id: id,
+      p_password: password,
+    });
+
+    if (error || !data?.ok) {
+      await guestbookDialog({
+        title: "확인 실패",
+        message: data?.error || "비밀번호가 일치하지 않습니다.",
+        type: "message",
+      });
+      return;
+    }
+
+    const target = comments.find((item) => item.id === id);
+    if (target) {
+      target.unlockedContent = data.content;
+      render();
+    }
+  }
+
+  // ==================================================
+  // 답글 및 작성 폼
+  // ==================================================
+
+  function replyTo(id) {
+    $("guestbook-parent-id").value = id;
+    $("guestbook-content").focus();
+
+    submitBtn.textContent = "답글 남기기";
+    cancelBtn.hidden = false;
+
+    setStatus("답글을 작성하고 있습니다.");
+    form.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  function resetForm() {
+    $("guestbook-parent-id").value = "";
+    $("guestbook-content").value = "";
+    $("guestbook-password").value = "";
+
+    submitBtn.textContent = "댓글 남기기";
+    cancelBtn.hidden = true;
+    setStatus("");
+  }
+
+  cancelBtn.addEventListener("click", resetForm);
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const nickname = $("guestbook-nickname").value.trim();
+    const password = $("guestbook-password").value;
+    const content = $("guestbook-content").value.trim();
+    const parentId = $("guestbook-parent-id").value || null;
+    const isPrivate = Boolean($("guestbook-private")?.checked);
+
+    if (!nickname || !content) {
+      setStatus("닉네임과 내용을 입력해 주세요.", true);
+      return;
+    }
+
+    if (password.length < 4) {
+      setStatus("비밀번호는 4자 이상 입력해 주세요.", true);
+      return;
+    }
+
+    submitBtn.disabled = true;
+    setStatus("댓글을 등록하는 중입니다...");
+
+    try {
+      const salt = crypto.randomUUID();
+      const passwordHash = await hashPassword(salt, password);
+
+      const { error } = await supabase.from("comments").insert([
+        {
+          parent_id: parentId,
+          nickname,
+          content,
+          is_private: isPrivate,
+          salt,
+          password_hash: passwordHash,
+        },
+      ]);
+
+      if (error) throw error;
+
+      setStatus("방명록이 등록되었습니다!");
+      form.reset();
+      $("guestbook-parent-id").value = "";
+      cancelBtn.hidden = true;
+      submitBtn.textContent = "댓글 남기기";
+
+      await load();
+    } catch (err) {
+      console.error(err);
+      setStatus("등록에 실패했습니다. 다시 시도해 주세요.", true);
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+
+  // ==================================================
+  // 댓글 수정
+  // ==================================================
+
+  async function editComment(id) {
+    const comment = comments.find((item) => item.id === id);
+    if (!comment) return;
+
+    const password = await guestbookDialog({
+      title: "댓글 수정",
+      message: "이 댓글의 비밀번호를 입력해 주세요.",
+      type: "password",
+      placeholder: "비밀번호 입력",
+      confirmText: "다음",
+      required: true,
+    });
+
+    if (password === null) return;
+
+    // 비밀글이 잠겨 있는 상태라면 먼저 비밀번호를 검증하고 원문을 가져옴
+    let initialContent = comment.unlockedContent || comment.content || "";
+    if (comment.is_private && !comment.unlockedContent) {
+      const { data: readRes, error: readErr } = await supabase.rpc(
+        "manage_comment",
+        {
+          p_action: "read",
+          p_id: id,
+          p_password: password,
+        },
+      );
+
+      if (readErr || !readRes?.ok) {
+        await guestbookDialog({
+          title: "인증 실패",
+          message: readRes?.error || "비밀번호가 일치하지 않습니다.",
+          type: "message",
+        });
+        return;
+      }
+      initialContent = readRes.content;
+    }
+
+    const newContent = await guestbookDialog({
+      title: "댓글 수정하기",
+      message: "수정할 내용을 입력해 주세요.",
+      type: "textarea",
+      value: initialContent,
+      placeholder: "댓글 내용을 입력해 주세요.",
+      confirmText: "수정하기",
+      required: true,
+    });
+
+    if (newContent === null) return;
+
+    if (!newContent.trim()) {
+      await guestbookDialog({
+        title: "내용을 입력해 주세요",
+        message: "댓글 내용은 비워 둘 수 없습니다.",
+        type: "message",
+      });
+      return;
+    }
+
+    setStatus("댓글을 수정하는 중입니다...");
+
+    const { data, error } = await supabase.rpc("manage_comment", {
+      p_action: "edit",
+      p_id: id,
+      p_password: password,
+      p_new_content: newContent.trim(),
+    });
+
+    if (error || !data?.ok) {
+      await guestbookDialog({
+        title: "수정 실패",
+        message: data?.error || "비밀번호가 일치하지 않습니다.",
+        type: "message",
+      });
+      setStatus("수정에 실패했습니다.", true);
+      return;
+    }
+
+    setStatus("댓글이 수정되었습니다.");
+    await load();
+  }
+
+  // ==================================================
+  // 댓글 삭제
+  // ==================================================
+
+  async function deleteComment(id) {
+    const password = await guestbookDialog({
+      title: "댓글 삭제",
+      message: "삭제하려면 이 댓글의 비밀번호를 입력해 주세요.",
+      type: "password",
+      placeholder: "비밀번호 입력",
+      confirmText: "다음",
+      required: true,
+    });
+
+    if (password === null) return;
+
+    const confirmed = await guestbookDialog({
+      title: "정말 삭제할까요?",
+      message: "삭제한 댓글은 복구할 수 없습니다.",
+      type: "message",
+      confirmText: "삭제하기",
+    });
+
+    if (!confirmed) return;
+
+    setStatus("댓글을 삭제하는 중입니다...");
+
+    const { data, error } = await supabase.rpc("manage_comment", {
+      p_action: "delete",
+      p_id: id,
+      p_password: password,
+    });
+
+    if (error || !data?.ok) {
+      await guestbookDialog({
+        title: "삭제 실패",
+        message: data?.error || "비밀번호가 일치하지 않습니다.",
+        type: "message",
+      });
+      setStatus("삭제에 실패했습니다.", true);
+      return;
+    }
+
+    setStatus("댓글이 삭제되었습니다.");
+    await load();
+  }
+
+  // 최초 목록 불러오기
+  load();
+}
