@@ -1,13 +1,17 @@
 /* ========================================
-   MEMORY PARK
+   MEMORY PARK (Supabase 연동 버전)
 ======================================== */
 
 (() => {
   "use strict";
 
-  // Google Apps Script API
-  const API_URL =
-    "https://script.google.com/macros/s/AKfycbx42Xvmc86V9T6HDwPsQzMmOM8xdTvbv-nSko3rzEzXS_ld9u37S7oZ0nZpgQCE6PYx/exec";
+  // Supabase 설정
+  const SUPABASE_URL = "https://jxyucxgpdlfidzwizski.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_hhdmoi0xScMatNS8Nb9ZVA_FG-DQoG-";
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY,
+  );
 
   const memoryList = document.getElementById("memory-list");
   const loadingScreen = document.getElementById("memory-loading");
@@ -31,7 +35,7 @@
   let previousOverflow = "";
 
   /* ========================================
-     1. HTML ESCAPE
+1. HTML ESCAPE
   ======================================== */
 
   function escapeHTML(str = "") {
@@ -49,7 +53,7 @@
   }
 
   /* ========================================
-     2. IMAGE URL VALIDATION
+2. IMAGE URL VALIDATION
   ======================================== */
 
   function validImageURL(url = "") {
@@ -63,7 +67,7 @@
   }
 
   /* ========================================
-     3. CREATE CARD
+3. CREATE CARD
   ======================================== */
 
   function createCard(item, index) {
@@ -98,7 +102,7 @@
 
         <div class="memory-card__info">
 
-          <span>${escapeHTML(item.id)}</span>
+          <span>${escapeHTML(item.date)}</span>
 
           <h3><small>${escapeHTML(item.has_item)}</small> ${escapeHTML(item.title)}</h3>
 
@@ -113,7 +117,7 @@
   }
 
   /* ========================================
-     4. OPEN MODAL
+4. OPEN MODAL
   ======================================== */
 
   function openModal(item) {
@@ -136,7 +140,7 @@
     }
 
     // 물건 정보
-    modalDate.textContent = item.date || item.id || "";
+    modalDate.textContent = item.date || "";
     modalTitle.textContent = item.title || "";
     modalDescription.textContent = item.description || "";
 
@@ -160,7 +164,7 @@
   }
 
   /* ========================================
-     5. CLOSE MODAL
+5. CLOSE MODAL
   ======================================== */
 
   function closeModal() {
@@ -182,7 +186,7 @@
   }
 
   /* ========================================
-     6. CARD CLICK EVENT
+6. CARD CLICK EVENT
   ======================================== */
 
   memoryList.addEventListener("click", (event) => {
@@ -199,7 +203,7 @@
   });
 
   /* ========================================
-     7. KEYBOARD EVENT
+7. KEYBOARD EVENT
   ======================================== */
 
   memoryList.addEventListener("keydown", (event) => {
@@ -232,7 +236,7 @@
   });
 
   /* ========================================
-     8. LOAD MEMORY DATA
+8. LOAD MEMORY DATA
   ======================================== */
 
   async function loadMemory() {
@@ -244,25 +248,24 @@
     }
 
     try {
-      const response = await fetch(API_URL);
+      // visible이 true인 데이터만 최신순(created_at 내림차순)으로 조회
+      const { data, error } = await supabaseClient
+        .from("memory_items")
+        .select("*")
+        .eq("visible", true)
+        .order("created_at", { ascending: false });
 
-      if (!response.ok) {
-        throw new Error("메모리 데이터를 불러오지 못했습니다.");
+      if (error) {
+        throw error;
       }
 
-      const data = await response.json();
-
-      if (!data.success) {
-        throw new Error(data.message || "메모리 데이터 오류");
-      }
-
-      // 날짜순 정렬
-      memoryItems = (data.items || []).sort((a, b) => {
-        const dateA = new Date(a.id.replace(/\./g, "-"));
-        const dateB = new Date(b.id.replace(/\./g, "-"));
-
-        return dateB - dateA;
-      });
+      // Supabase created_at(2026-11-16T15:00:00+00:00)을 '2026.11.16' 형식으로 변환
+      memoryItems = (data || []).map((item) => ({
+        ...item,
+        date: item.created_at
+          ? item.created_at.slice(0, 10).replace(/-/g, ".")
+          : "",
+      }));
 
       // 최소 2.5초 대기
       const elapsed = Date.now() - loadingStart;
@@ -317,7 +320,7 @@
   }
 
   /* ========================================
-     9. INITIALIZE
+9. INITIALIZE
   ======================================== */
 
   loadMemory();
