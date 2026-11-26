@@ -287,6 +287,35 @@
   overflow-x: hidden;
 }
 
+@media screen and (max-width: 480px) {
+  .memory-modal__content.hiude-scrollbar {
+    overflow-y: scroll; /* 또는 scroll */
+
+    /* Firefox */
+    scrollbar-width: none;
+
+    /* IE 및 구버전 Edge */
+  }
+  .memory-modal__content::-webkit-scrollbar {
+    display: none;
+  }
+  .memory-modal__info span {
+    font-size: 0.8rem;
+  }
+  .memory-modal__info .modal_wrap {
+    display: flex;
+    align-items: baseline;
+    column-gap: 10px;
+    margin: 0 0 5px !important;
+  }
+  .memory-modal__info small {
+    margin: 0;
+  }
+  .memory-modal__info h2 {
+    font-size: 1.5rem;
+  }
+}
+
 /* 닫기 버튼 */
 
 .memory-modal__close {
