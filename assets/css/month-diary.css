@@ -137,6 +137,13 @@
   text-align: center;
 }
 
+.month-diary-heart__message {
+  margin: 0 0 0.75rem;
+  color: #666;
+  line-height: 1.6;
+  font-size: 0.7rem;
+}
+
 .month-diary-heart__button {
   display: inline-flex;
   align-items: center;

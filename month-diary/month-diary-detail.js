@@ -89,6 +89,10 @@ function createHeartControl(db, diaryId) {
   section.className = "month-diary-heart";
   section.setAttribute("aria-label", "하트");
 
+  const message = document.createElement("p");
+  message.className = "month-diary-heart__message";
+  message.innerHTML = "이번 호가 좋았다면 하트 꾹!";
+
   const button = document.createElement("button");
   button.className = "month-diary-heart__button";
   button.type = "button";
@@ -113,7 +117,7 @@ function createHeartControl(db, diaryId) {
   status.setAttribute("aria-live", "polite");
   status.textContent = "하트 수를 불러오는 중이에요.";
 
-  section.append(button, status);
+  section.append(message, button, status);
 
   let voterId;
 
@@ -374,9 +378,10 @@ function createCommentSection(db, diaryId) {
       }
 
       submit.disabled = true;
-      status.textContent = action === "edit"
-        ? "댓글을 수정하고 있어요."
-        : "댓글을 삭제하고 있어요.";
+      status.textContent =
+        action === "edit"
+          ? "댓글을 수정하고 있어요."
+          : "댓글을 삭제하고 있어요.";
 
       try {
         const passwordHash = await hashCommentPassword(
@@ -396,13 +401,13 @@ function createCommentSection(db, diaryId) {
           return;
         }
 
-        status.textContent = action === "edit"
-          ? "댓글을 수정했어요."
-          : "댓글을 삭제했어요.";
+        status.textContent =
+          action === "edit" ? "댓글을 수정했어요." : "댓글을 삭제했어요.";
         await loadComments();
       } catch (error) {
         console.error("월간닷컴 댓글 관리 오류:", error);
-        status.textContent = "요청을 처리하지 못했어요. 잠시 후 다시 시도해 주세요.";
+        status.textContent =
+          "요청을 처리하지 못했어요. 잠시 후 다시 시도해 주세요.";
       } finally {
         submit.disabled = false;
       }
@@ -422,7 +427,8 @@ function createCommentSection(db, diaryId) {
     } catch (error) {
       console.error("월간닷컴 댓글을 불러오지 못했습니다.", error);
       count.textContent = "";
-      list.textContent = "댓글을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.";
+      list.textContent =
+        "댓글을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.";
     }
   }
 
@@ -433,9 +439,10 @@ function createCommentSection(db, diaryId) {
     const content = contentInput.value.trim();
     const password = passwordInput.value;
     if (!nickname || !content || password.length < 4) {
-      status.textContent = !nickname || !content
-        ? "닉네임과 댓글 내용을 입력해 주세요."
-        : "비밀번호는 4자 이상 입력해 주세요.";
+      status.textContent =
+        !nickname || !content
+          ? "닉네임과 댓글 내용을 입력해 주세요."
+          : "비밀번호는 4자 이상 입력해 주세요.";
       return;
     }
 
@@ -463,7 +470,8 @@ function createCommentSection(db, diaryId) {
       await loadComments();
     } catch (error) {
       console.error("월간닷컴 댓글 등록 오류:", error);
-      status.textContent = "댓글을 등록하지 못했어요. 잠시 후 다시 시도해 주세요.";
+      status.textContent =
+        "댓글을 등록하지 못했어요. 잠시 후 다시 시도해 주세요.";
     } finally {
       submitButton.disabled = false;
     }
