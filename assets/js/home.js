@@ -6,6 +6,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   initWorkSlider();
   initMemoryParkSlider();
+  initMonthDiarySlider();
   initInterviewList();
 });
 
@@ -157,7 +158,114 @@ async function initWorkSlider() {
 }
 
 /* ========================================
-   2. INTERVIEW
+   2. MONTH DIARY
+======================================== */
+
+async function initMonthDiarySlider() {
+  const swiperElement = document.getElementById("month-diary-swiper");
+  const diaryList = document.getElementById("month-diary-list");
+  if (!swiperElement || !diaryList) return;
+
+  const emptyState = diaryList.querySelector(".month-diary__empty");
+  const previousButton = document.getElementById("month-diary-prev");
+  const nextButton = document.getElementById("month-diary-next");
+
+  try {
+    const db = window.supabase.createClient(
+      "https://jxyucxgpdlfidzwizski.supabase.co",
+      "sb_publishable_hhdmoi0xScMatNS8Nb9ZVA_FG-DQoG-",
+    );
+    const { data: diaries, error } = await db
+      .from("month_diaries")
+      .select("id, title, diary_date, body_html")
+      .eq("is_published", true)
+      .order("diary_date", { ascending: false })
+      .order("id", { ascending: false });
+
+    if (error) throw error;
+    if (!Array.isArray(diaries)) {
+      throw new Error("일기 데이터 형식이 올바르지 않습니다.");
+    }
+    if (!diaries.length) return;
+
+    const fragment = document.createDocumentFragment();
+    diaries.forEach((diary) => {
+      const card = document.createElement("article");
+      card.className = "work-card swiper-slide";
+
+      const link = document.createElement("a");
+      link.className = "work-card__link";
+      link.href = `month-diary/month-diary-detail.html?id=${encodeURIComponent(diary.id)}`;
+
+      const meta = document.createElement("div");
+      meta.className = "work-card__meta";
+
+      const date = document.createElement("time");
+      date.className = "work-card__publication";
+      date.dateTime = diary.diary_date;
+      const [year, month, day] = diary.diary_date.split("-").map(Number);
+      date.textContent = new Date(year, month - 1, day).toLocaleDateString(
+        "ko-KR",
+      );
+
+      const label = document.createElement("span");
+      label.className = "work-card__type";
+      label.textContent = "월간이은주";
+      meta.append(date, label);
+
+      const title = document.createElement("h3");
+      title.className = "work-card__title";
+      title.textContent = diary.title;
+
+      const content = document.createElement("div");
+      content.innerHTML = DOMPurify.sanitize(diary.body_html, {
+        USE_PROFILES: { html: true },
+      });
+      const excerpt = document.createElement("p");
+      excerpt.className = "work-card__excerpt";
+      const excerptText = content.textContent.trim().replace(/\s+/g, " ");
+      excerpt.textContent = excerptText
+        ? `${excerptText.slice(0, 100)}${excerptText.length > 100 ? "…" : ""}`
+        : "사진이 담긴 일기입니다.";
+
+      link.append(meta, title, excerpt);
+      card.appendChild(link);
+      fragment.appendChild(card);
+    });
+
+    diaryList.replaceChildren(fragment);
+    previousButton.disabled = false;
+    nextButton.disabled = false;
+
+    new Swiper(swiperElement, {
+      slidesPerView: 1,
+      slidesPerGroup: 1,
+      spaceBetween: 0,
+      speed: 500,
+      watchOverflow: true,
+      navigation: {
+        prevEl: previousButton,
+        nextEl: nextButton,
+      },
+      breakpoints: {
+        601: { slidesPerView: 2 },
+        901: { slidesPerView: 3 },
+        1261: { slidesPerView: 4 },
+      },
+    });
+  } catch (error) {
+    console.error("월간이은주 목록 오류:", error);
+    if (emptyState) {
+      emptyState.querySelector("p").textContent =
+        "일기를 불러오지 못했어요.";
+      emptyState.querySelector("span").textContent =
+        "잠시 후 다시 방문해 주세요.";
+    }
+  }
+}
+
+/* ========================================
+   3. INTERVIEW
 ======================================== */
 
 function getInterviewTimestamp(value) {
@@ -241,7 +349,7 @@ async function initInterviewList() {
 }
 
 /* ========================================
-   3. ITEM MEMORY PARK
+   4. ITEM MEMORY PARK
 ======================================== */
 
 function initMemoryParkSlider() {

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>월간이은주 : 은듀닷컴</title>
+    <link rel="icon" type="image/png" href="../img/favicon.png" />
+    <link rel="stylesheet" href="../assets/css/global.css" />
+    <link rel="stylesheet" href="../assets/css/fonts.css" />
+    <link rel="stylesheet" href="../assets/css/month-diary.css" />
+  </head>
+  <body>
+    <div id="shared-header"></div>
+
+    <main class="month-diary-detail">
+      <div class="month-diary-detail__inner">
+        <a class="month-diary-detail__back" href="../index.html#month-diary-list">
+          ← 월간이은주
+        </a>
+        <div id="month-diary-entry" aria-live="polite">
+          <p class="month-diary-detail__status">일기를 불러오고 있어요.</p>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer__inner">
+        <p class="footer__name">LEE EUN JOO</p>
+        <p class="footer__copyright">© 2026 Lee Eun Joo</p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+    <script src="../assets/js/common.js"></script>
+    <script src="month-diary-detail.js" defer></script>
+  </body>
+</html>

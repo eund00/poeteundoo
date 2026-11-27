@@ -394,7 +394,46 @@
         </div>
       </section>
 
-      <!-- 인터뷰 -->
+      <!-- 월간 이은주 -->
+      <section class="month-diary">
+        <div class="section-header">
+          <p class="section-header__label">📔월간이은주</p>
+          <h2 class="section-header__title">
+            <a href="#month-diary-list">모아보기</a>
+          </h2>
+        </div>
+
+        <div class="work-slider swiper" id="month-diary-swiper">
+          <button
+            class="work-slider__btn work-slider__btn--prev"
+            id="month-diary-prev"
+            type="button"
+            aria-label="이전 일기"
+            disabled
+          >
+            &#8592;
+          </button>
+
+          <button
+            class="work-slider__btn work-slider__btn--next"
+            id="month-diary-next"
+            type="button"
+            aria-label="다음 일기"
+            disabled
+          >
+            &#8594;
+          </button>
+
+          <div class="work-list swiper-wrapper" id="month-diary-list">
+            <div class="month-diary__empty" role="status">
+              <p>준비중이에요!</p>
+              <span>기다려보시라~ 두구두구</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 공지 -->
       <section id="interview" class="interview">
         <div class="section-header">
           <p class="section-header__label">🎙️주절주절</p>
@@ -425,6 +464,7 @@
 
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
 
     <!-- 기존 JS -->
     <script src="assets/js/home.js" defer></script>

@@ -257,7 +257,8 @@
    3. LATEST WORKS
 ======================================== */
 
-.latest-works {
+.latest-works,
+.month-diary {
   width: min(1400px, calc(100% - 80px));
   margin: 100px auto 0;
 }
@@ -279,6 +280,35 @@
 
 .work-slider:active {
   cursor: grabbing;
+}
+
+.month-diary .work-slider,
+.month-diary .work-slider:active {
+  cursor: default;
+}
+
+.month-diary__empty {
+  display: flex;
+  width: 100%;
+  min-height: 180px;
+  flex-shrink: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  background-color: #fff;
+  text-align: center;
+}
+
+.month-diary__empty p {
+  font-family: "Noto Serif KR", Georgia, serif;
+  font-size: 1.2rem;
+}
+
+.month-diary__empty span {
+  color: #888;
+  font-size: 0.9rem;
 }
 
 /* 작품 카드 */
@@ -1069,7 +1099,8 @@
 
   /* LATEST WORKS */
 
-  .latest-works {
+  .latest-works,
+  .month-diary {
     width: calc(100% - 40px);
     margin-top: 0;
     padding-block: 60px;

@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>관리자 — 은듀닷컴</title>
     <link rel="stylesheet" href="assets/css/fonts.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css"
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -243,6 +247,7 @@
       input[type="password"],
       input[type="number"],
       input[type="url"],
+      input[type="date"],
       select,
       textarea {
         width: 100%;
@@ -265,6 +270,7 @@
 
       input:focus,
       select:focus,
+      input[type="date"]:focus,
       textarea:focus {
         outline: none;
         border-color: var(--accent-dark);
@@ -280,6 +286,35 @@
         min-height: 260px;
         resize: vertical;
         line-height: 2;
+      }
+
+      .diary-editor {
+        background: var(--surface);
+      }
+
+      .diary-editor .ql-editor {
+        min-height: 300px;
+        font-family: "Noto Serif KR", Georgia, serif;
+        font-size: 1rem;
+        line-height: 1.9;
+      }
+
+      .diary-editor .ql-editor img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        margin: 1rem 0;
+      }
+
+      .ql-toolbar.ql-snow button {
+        width: auto;
+        padding: 3px 5px;
+        background: transparent;
+        color: var(--ink);
+      }
+
+      .ql-toolbar.ql-snow button:hover {
+        color: var(--accent-dark);
       }
 
       .upload-box {
@@ -556,6 +591,14 @@
             id="tabInterviewsBtn"
           >
             공지 관리
+          </button>
+          <button
+            type="button"
+            class="tab-btn"
+            data-tab="diaries"
+            id="tabDiariesBtn"
+          >
+            월간이은주
           </button>
         </nav>
 
@@ -1034,14 +1077,131 @@
             </form>
           </section>
         </div>
+
+        <!-- ==================== [탭 5] 월간이은주 ==================== -->
+        <div id="panel-diaries" class="hidden">
+          <section class="card">
+            <div class="section-header">
+              <div class="section-title">
+                <h2 id="diariesTitle">월간이은주 목록</h2>
+              </div>
+              <button type="button" id="newDiaryBtn" class="secondary">
+                + 새 일기 작성
+              </button>
+            </div>
+            <div id="diariesList" class="works-list">
+              <div class="hint">일기 목록을 불러오는 중...</div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="section-header">
+              <div class="section-title">
+                <h2 id="diaryFormTitle">새 일기 작성</h2>
+              </div>
+              <button
+                type="button"
+                id="cancelDiaryEditBtn"
+                class="secondary hidden"
+              >
+                수정 취소
+              </button>
+            </div>
+
+            <form id="diaryForm">
+              <div class="row">
+                <div class="field">
+                  <label for="diary-title"
+                    >제목 <span class="req">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="diary-title"
+                    required
+                    maxlength="200"
+                    placeholder="일기 제목"
+                  />
+                </div>
+                <div class="field">
+                  <label for="diary-date"
+                    >일기 작성 날짜 <span class="req">*</span></label
+                  >
+                  <input type="date" id="diary-date" required />
+                </div>
+              </div>
+
+              <div class="field">
+                <label>본문 <span class="req">*</span></label>
+                <div id="diaryEditorToolbar">
+                  <span class="ql-formats">
+                    <select class="ql-header">
+                      <option selected></option>
+                      <option value="2"></option>
+                      <option value="3"></option>
+                    </select>
+                    <button class="ql-bold" type="button"></button>
+                    <button class="ql-italic" type="button"></button>
+                    <button class="ql-underline" type="button"></button>
+                  </span>
+                  <span class="ql-formats">
+                    <button
+                      class="ql-list"
+                      value="ordered"
+                      type="button"
+                    ></button>
+                    <button
+                      class="ql-list"
+                      value="bullet"
+                      type="button"
+                    ></button>
+                    <button class="ql-blockquote" type="button"></button>
+                    <button class="ql-link" type="button"></button>
+                    <button
+                      class="ql-image"
+                      type="button"
+                      aria-label="본문에 이미지 삽입"
+                    ></button>
+                  </span>
+                </div>
+                <div id="diaryEditor" class="diary-editor"></div>
+                <div class="hint">
+                  이미지 버튼에서 여러 장을 선택하면 커서 위치에 차례로 삽입됩니다.
+                </div>
+                <input
+                  type="file"
+                  id="diaryImageFile"
+                  accept="image/*"
+                  multiple
+                  hidden
+                />
+                <div id="diaryImageStatus" class="hint" aria-live="polite"></div>
+              </div>
+
+              <div class="checkbox-row">
+                <input type="checkbox" id="diaryPublished" checked />
+                <label for="diaryPublished"
+                  >즉시 공개 (체크 해제 시 비공개 저장)</label
+                >
+              </div>
+
+              <button type="submit" id="diarySubmitBtn">
+                일기 등록하기
+              </button>
+              <div id="diaryFormStatus" class="status"></div>
+            </form>
+          </section>
+        </div>
       </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
     <script>
       const SUPABASE_URL = "https://jxyucxgpdlfidzwizski.supabase.co";
       const SUPABASE_ANON_KEY =
         "sb_publishable_hhdmoi0xScMatNS8Nb9ZVA_FG-DQoG-";
       const STORAGE_BUCKET = "images";
+      const DIARY_STORAGE_BUCKET = "month-diary-images";
 
       const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -1056,10 +1216,12 @@
       const tabMemoryBtn = document.getElementById("tabMemoryBtn");
       const tabTVBtn = document.getElementById("tabTVBtn");
       const tabInterviewsBtn = document.getElementById("tabInterviewsBtn");
+      const tabDiariesBtn = document.getElementById("tabDiariesBtn");
       const panelWorks = document.getElementById("panel-works");
       const panelMemory = document.getElementById("panel-memory");
       const panelTV = document.getElementById("panel-tv");
       const panelInterviews = document.getElementById("panel-interviews");
+      const panelDiaries = document.getElementById("panel-diaries");
 
       // [작품 관리] 요소
       const workForm = document.getElementById("workForm");
@@ -1115,6 +1277,18 @@
       );
       const newInterviewBtn = document.getElementById("newInterviewBtn");
 
+      // [월간이은주] 요소
+      const diaryForm = document.getElementById("diaryForm");
+      const diaryFormTitle = document.getElementById("diaryFormTitle");
+      const diaryFormStatus = document.getElementById("diaryFormStatus");
+      const diariesListEl = document.getElementById("diariesList");
+      const diariesTitleEl = document.getElementById("diariesTitle");
+      const diarySubmitBtn = document.getElementById("diarySubmitBtn");
+      const cancelDiaryEditBtn = document.getElementById("cancelDiaryEditBtn");
+      const newDiaryBtn = document.getElementById("newDiaryBtn");
+      const diaryImageFile = document.getElementById("diaryImageFile");
+      const diaryImageStatus = document.getElementById("diaryImageStatus");
+
       let allWorks = [];
       let editingId = null;
 
@@ -1126,6 +1300,11 @@
 
       let allInterviews = [];
       let editingInterviewId = null;
+
+      let allDiaries = [];
+      let editingDiaryId = null;
+      let diaryImageSelection = null;
+      let diaryImageUploading = false;
 
       // =========================================================
       // 공통 이미지 업로드 및 미리보기 핸들러
@@ -1171,7 +1350,7 @@
           statusEl.style.color = "var(--accent-dark)";
 
           const { error: uploadError } = await sb.storage
-            .from(STORAGE_BUCKET)
+            .from(DIARY_STORAGE_BUCKET)
             .upload(fileName, file, {
               cacheControl: "3600",
               upsert: false,
@@ -1209,20 +1388,183 @@
         previewId: "mem-image-preview",
       });
 
+      const diaryEditor = new Quill("#diaryEditor", {
+        theme: "snow",
+        modules: {
+          toolbar: {
+            container: "#diaryEditorToolbar",
+            handlers: {
+              image() {
+                const range = diaryEditor.getSelection(true);
+                diaryImageSelection = range
+                  ? range.index
+                  : diaryEditor.getLength();
+                diaryImageFile.click();
+              },
+            },
+          },
+        },
+      });
+
+      function readImagePreview(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            if (typeof reader.result === "string") {
+              resolve(reader.result);
+            } else {
+              reject(new Error(`${file.name}: 미리보기를 만들 수 없습니다.`));
+            }
+          };
+          reader.onerror = () =>
+            reject(
+              reader.error ||
+                new Error(`${file.name}: 파일을 읽지 못했습니다.`),
+            );
+          reader.readAsDataURL(file);
+        });
+      }
+
+      diaryImageFile.addEventListener("change", async () => {
+        const files = Array.from(diaryImageFile.files || []);
+        if (!files.length) return;
+
+        const extensionByMime = {
+          "image/jpeg": "jpg",
+          "image/png": "png",
+          "image/gif": "gif",
+          "image/webp": "webp",
+          "image/avif": "avif",
+        };
+        const unsupportedFiles = files.filter(
+          (file) => !extensionByMime[file.type],
+        );
+        if (unsupportedFiles.length) {
+          const names = unsupportedFiles.map((file) => file.name).join(", ");
+          showStatus(
+            diaryImageStatus,
+            `지원하지 않는 이미지 형식이에요: ${names}`,
+            true,
+          );
+          diaryImageFile.value = "";
+          return;
+        }
+
+        const oversizedFiles = files.filter(
+          (file) => file.size > 10 * 1024 * 1024,
+        );
+        if (oversizedFiles.length) {
+          const names = oversizedFiles.map((file) => file.name).join(", ");
+          showStatus(
+            diaryImageStatus,
+            `10MB를 초과한 파일이 있어요: ${names}`,
+            true,
+          );
+          diaryImageFile.value = "";
+          return;
+        }
+
+        diaryImageStatus.textContent = `${files.length}개 이미지를 업로드하고 있어요...`;
+        diaryImageStatus.className = "status";
+        diaryImageUploading = true;
+        diaryEditor.enable(false);
+        diaryImageFile.disabled = true;
+        newDiaryBtn.disabled = true;
+        cancelDiaryEditBtn.disabled = true;
+
+        let insertionIndex = diaryImageSelection ?? diaryEditor.getLength();
+        let uploadedCount = 0;
+        const pendingImages = [];
+        try {
+          const previewUrls = await Promise.all(files.map(readImagePreview));
+          files.forEach((file, index) => {
+            const imageIndex = insertionIndex + index * 2;
+            pendingImages.push({ file, imageIndex });
+            diaryEditor.insertEmbed(
+              imageIndex,
+              "image",
+              previewUrls[index],
+              "api",
+            );
+            diaryEditor.insertText(imageIndex + 1, "\n", "api");
+          });
+          insertionIndex += files.length * 2;
+          diaryEditor.setSelection(insertionIndex, 0, "silent");
+          diaryImageStatus.textContent =
+            `${files.length}개 이미지 미리보기를 표시하고 업로드 중이에요...`;
+
+          for (const pendingImage of pendingImages) {
+            const { file, imageIndex } = pendingImage;
+            const randomId = Math.random().toString(36).slice(2, 10);
+            const fileName =
+              `month-diary-${Date.now()}-${randomId}.` +
+              extensionByMime[file.type];
+            const { error: uploadError } = await sb.storage
+              .from(DIARY_STORAGE_BUCKET)
+              .upload(fileName, file, {
+                cacheControl: "3600",
+                upsert: false,
+              });
+
+            if (uploadError) {
+              throw new Error(`${file.name}: ${uploadError.message}`);
+            }
+
+            const { data } = sb.storage
+              .from(DIARY_STORAGE_BUCKET)
+              .getPublicUrl(fileName);
+            diaryEditor.deleteText(imageIndex, 1, "api");
+            diaryEditor.insertEmbed(
+              imageIndex,
+              "image",
+              data.publicUrl,
+              "api",
+            );
+            uploadedCount += 1;
+            diaryImageStatus.textContent = `${uploadedCount}/${files.length}개 이미지 삽입 완료`;
+          }
+
+          diaryEditor.setSelection(insertionIndex, 0, "silent");
+          diaryImageStatus.textContent = `${uploadedCount}개 이미지를 본문에 삽입했어요.`;
+          diaryImageStatus.className = "status ok";
+        } catch (error) {
+          pendingImages.slice(uploadedCount).reverse().forEach((image) => {
+            diaryEditor.deleteText(image.imageIndex, 2, "api");
+          });
+          console.error("월간이은주 이미지 업로드 오류:", error);
+          showStatus(
+            diaryImageStatus,
+            `${uploadedCount}개 삽입 완료. 업로드 실패: ${error.message}`,
+            true,
+          );
+        } finally {
+          diaryImageUploading = false;
+          diaryEditor.enable(true);
+          diaryImageFile.disabled = false;
+          newDiaryBtn.disabled = false;
+          cancelDiaryEditBtn.disabled = false;
+          diaryImageFile.value = "";
+          diaryImageSelection = null;
+        }
+      });
+
       // 탭 전환 로직
       function switchTab(tabName) {
         const isWorks = tabName === "works";
         const isMemory = tabName === "memory";
         const isTV = tabName === "tv";
         const isInterviews = tabName === "interviews";
+        const isDiaries = tabName === "diaries";
         tabWorksBtn.classList.toggle("active", isWorks);
         tabMemoryBtn.classList.toggle("active", isMemory);
         tabTVBtn.classList.toggle("active", isTV);
         tabInterviewsBtn.classList.toggle("active", isInterviews);
+        tabDiariesBtn.classList.toggle("active", isDiaries);
         panelWorks.classList.toggle("hidden", !isWorks);
         panelMemory.classList.toggle("hidden", !isMemory);
         panelTV.classList.toggle("hidden", !isTV);
         panelInterviews.classList.toggle("hidden", !isInterviews);
+        panelDiaries.classList.toggle("hidden", !isDiaries);
       }
 
       tabWorksBtn.addEventListener("click", () => switchTab("works"));
@@ -1231,6 +1573,7 @@
       tabInterviewsBtn.addEventListener("click", () =>
         switchTab("interviews"),
       );
+      tabDiariesBtn.addEventListener("click", () => switchTab("diaries"));
 
       // 접기/펼치기 공통 유틸
       function setSectionExpanded(toggle, content, expanded, label) {
@@ -2125,7 +2468,245 @@
       });
 
       // =========================================================
-      // 5. 인증 세션 관리
+      // 5. 월간이은주 관리
+      // =========================================================
+      function localDateValue(date = new Date()) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      }
+
+      document.getElementById("diary-date").value = localDateValue();
+
+      function formatDiaryDate(value) {
+        const [year, month, day] = value.split("-").map(Number);
+        return new Date(year, month - 1, day).toLocaleDateString("ko-KR");
+      }
+
+      async function loadDiaries() {
+        try {
+          const { data, error } = await sb
+            .from("month_diaries")
+            .select("id, title, diary_date, body_html, is_published")
+            .order("diary_date", { ascending: false })
+            .order("id", { ascending: false });
+
+          if (error) throw error;
+
+          allDiaries = data || [];
+          diariesTitleEl.textContent = `월간이은주 목록 (${allDiaries.length}개)`;
+          renderDiariesList();
+        } catch (error) {
+          console.error("월간이은주 목록 조회 오류:", error);
+          diariesListEl.textContent = `목록 조회 오류: ${error.message}`;
+        }
+      }
+
+      function renderDiariesList() {
+        diariesListEl.replaceChildren();
+
+        if (allDiaries.length === 0) {
+          const empty = document.createElement("div");
+          empty.className = "hint";
+          empty.textContent = "등록된 일기가 없습니다.";
+          diariesListEl.appendChild(empty);
+          return;
+        }
+
+        allDiaries.forEach((diary) => {
+          const item = document.createElement("div");
+          item.className = `work-item${editingDiaryId === diary.id ? " editing" : ""}`;
+
+          const meta = document.createElement("div");
+          meta.className = "work-meta";
+
+          const date = document.createElement("span");
+          date.className = "work-sub";
+          date.textContent = formatDiaryDate(diary.diary_date);
+
+          const title = document.createElement("span");
+          title.className = "work-title";
+          title.textContent = diary.title;
+
+          meta.append(date, title);
+
+          if (!diary.is_published) {
+            const badge = document.createElement("span");
+            badge.className = "badge-private";
+            badge.textContent = "비공개";
+            meta.appendChild(badge);
+          }
+
+          const actions = document.createElement("div");
+          actions.className = "item-actions";
+
+          [["edit", "수정", "secondary"], ["delete", "삭제", "danger"]].forEach(
+            ([action, label, className]) => {
+              const button = document.createElement("button");
+              button.type = "button";
+              button.className = className;
+              button.dataset.diaryAction = action;
+              button.dataset.diaryId = String(diary.id);
+              button.textContent = label;
+              actions.appendChild(button);
+            },
+          );
+
+          item.append(meta, actions);
+          diariesListEl.appendChild(item);
+        });
+      }
+
+      function startEditDiary(id) {
+        const target = allDiaries.find(
+          (diary) => String(diary.id) === String(id),
+        );
+        if (!target) return;
+
+        editingDiaryId = target.id;
+        diaryFormTitle.textContent = `일기 수정 중 · ${target.title}`;
+        diarySubmitBtn.textContent = "수정 내용 저장하기";
+        cancelDiaryEditBtn.classList.remove("hidden");
+        document.getElementById("diary-title").value = target.title;
+        document.getElementById("diary-date").value = target.diary_date;
+        document.getElementById("diaryPublished").checked =
+          target.is_published !== false;
+        diaryEditor.clipboard.dangerouslyPasteHTML(
+          DOMPurify.sanitize(target.body_html, {
+            USE_PROFILES: { html: true },
+          }),
+          "silent",
+        );
+
+        renderDiariesList();
+        diaryFormTitle.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      function resetDiaryForm() {
+        editingDiaryId = null;
+        diaryForm.reset();
+        document.getElementById("diary-date").value = localDateValue();
+        document.getElementById("diaryPublished").checked = true;
+        diaryEditor.setText("");
+        diaryFormTitle.textContent = "새 일기 작성";
+        diarySubmitBtn.textContent = "일기 등록하기";
+        cancelDiaryEditBtn.classList.add("hidden");
+        diaryFormStatus.className = "status";
+        diaryImageStatus.className = "hint";
+        diaryImageStatus.textContent = "";
+        renderDiariesList();
+      }
+
+      diariesListEl.addEventListener("click", async (event) => {
+        const button = event.target.closest("button[data-diary-action]");
+        if (!button) return;
+
+        const { diaryAction, diaryId } = button.dataset;
+        if (diaryAction === "edit") {
+          startEditDiary(diaryId);
+          return;
+        }
+
+        const target = allDiaries.find(
+          (diary) => String(diary.id) === String(diaryId),
+        );
+        const label = target ? target.title : diaryId;
+        if (
+          !confirm(
+            `정말 「${label}」 일기를 삭제할까요?\n삭제 후에는 복구할 수 없습니다.`,
+          )
+        ) {
+          return;
+        }
+
+        try {
+          const { error } = await sb
+            .from("month_diaries")
+            .delete()
+            .eq("id", diaryId);
+          if (error) throw error;
+        } catch (error) {
+          console.error("월간이은주 삭제 오류:", error);
+          showStatus(diaryFormStatus, `삭제 오류: ${error.message}`, true);
+          return;
+        }
+
+        if (String(editingDiaryId) === String(diaryId)) resetDiaryForm();
+        showStatus(diaryFormStatus, `「${label}」 일기를 삭제했습니다.`);
+        await loadDiaries();
+      });
+
+      newDiaryBtn.addEventListener("click", () => {
+        resetDiaryForm();
+        diaryFormTitle.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      cancelDiaryEditBtn.addEventListener("click", resetDiaryForm);
+
+      diaryForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        if (diaryImageUploading) {
+          showStatus(
+            diaryFormStatus,
+            "이미지 업로드가 끝난 뒤 저장해 주세요.",
+            true,
+          );
+          return;
+        }
+
+        const editorHasImage = diaryEditor.root.querySelector("img") !== null;
+        if (!diaryEditor.getText().trim() && !editorHasImage) {
+          showStatus(diaryFormStatus, "본문을 입력해 주세요.", true);
+          return;
+        }
+
+        const payload = {
+          title: document.getElementById("diary-title").value.trim(),
+          diary_date: document.getElementById("diary-date").value,
+          body_html: DOMPurify.sanitize(diaryEditor.root.innerHTML, {
+            USE_PROFILES: { html: true },
+          }),
+          is_published: document.getElementById("diaryPublished").checked,
+        };
+        const isEditing = editingDiaryId !== null;
+
+        diarySubmitBtn.disabled = true;
+        diarySubmitBtn.textContent = isEditing
+          ? "수정 내용 저장 중..."
+          : "일기 등록 중...";
+
+        try {
+          const result = isEditing
+            ? await sb
+                .from("month_diaries")
+                .update(payload)
+                .eq("id", editingDiaryId)
+            : await sb.from("month_diaries").insert([payload]);
+
+          if (result.error) throw result.error;
+
+          resetDiaryForm();
+          showStatus(
+            diaryFormStatus,
+            `「${payload.title}」 일기를 ${isEditing ? "수정" : "등록"}했습니다.`,
+          );
+          await loadDiaries();
+        } catch (error) {
+          console.error("월간이은주 저장 오류:", error);
+          showStatus(diaryFormStatus, `저장 오류: ${error.message}`, true);
+        } finally {
+          diarySubmitBtn.disabled = false;
+          if (editingDiaryId !== null) {
+            diarySubmitBtn.textContent = "수정 내용 저장하기";
+          } else {
+            diarySubmitBtn.textContent = "일기 등록하기";
+          }
+        }
+      });
+
+      // =========================================================
+      // 6. 인증 세션 관리
       // =========================================================
       async function checkSession() {
         const {
@@ -2139,6 +2720,7 @@
           loadMemoryItems();
           loadTVChannels();
           loadInterviews();
+          loadDiaries();
         } else {
           loginSection.classList.remove("hidden");
           adminArea.classList.add("hidden");
