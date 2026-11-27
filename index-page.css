@@ -577,7 +577,7 @@
 
 .interview {
   width: min(1400px, calc(100% - 80px));
-  margin: 100px auto 0;
+  margin: 100px auto;
 }
 
 .interview-list {
