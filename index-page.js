@@ -20,20 +20,21 @@ async function initWorkSlider() {
   if (!swiperElement || !workList) return;
 
   try {
-    const response = await fetch("works/works.json");
+    const db = window.supabase.createClient(
+      "https://jxyucxgpdlfidzwizski.supabase.co",
+      "sb_publishable_hhdmoi0xScMatNS8Nb9ZVA_FG-DQoG-",
+    );
+    const { data: works, error } = await db
+      .from("works")
+      .select("id, title, year, kind, publication, subtitle")
+      .eq("is_published", true)
+      .order("id", { ascending: false });
 
-    if (!response.ok) {
-      throw new Error(`작품 데이터 요청 실패: ${response.status}`);
-    }
+    if (error) throw error;
 
-    const works = await response.json();
+    if (!works.length) return;
 
-    // 최신 작품부터 표시
-    const sortedWorks = [...works].reverse();
-
-    if (!sortedWorks.length) return;
-
-    renderWorks(sortedWorks);
+    renderWorks(works);
 
     // Swiper 초기화
     new Swiper(swiperElement, {
