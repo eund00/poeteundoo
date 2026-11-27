@@ -4,15 +4,35 @@
   background-color: #f7f6f2;
 }
 
+.month-diary-detail::before {
+  content: "";
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  opacity: 0.5;
+}
+
 .month-diary-detail__inner {
-  width: min(900px, calc(100% - 48px));
+  width: min(750px, calc(100% - 48px));
   margin: 0 auto;
+  position: relative;
+  z-index: 99;
 }
 
 .month-diary-detail__back {
   display: inline-block;
   margin-bottom: 2rem;
-  color: #739b73;
+  background-color: #739b73;
+  color: #fff;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid #000;
+  font-family: "IBM Plex Sans KR", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .month-diary-detail__back:hover {
@@ -34,7 +54,7 @@
 .month-diary-entry__title {
   margin-bottom: 0.75rem;
   font-family: "Noto Serif KR", Georgia, serif;
-  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-size: 2.5rem;
   font-weight: 400;
   line-height: 1.3;
   letter-spacing: -0.05em;
@@ -42,8 +62,10 @@
 }
 
 .month-diary-entry__date {
-  color: #888;
-  font-size: 0.9rem;
+  color: #333;
+  font-size: 0.8rem;
+  text-align: right;
+  display: block;
 }
 
 .month-diary-entry__body {
@@ -54,7 +76,34 @@
 }
 
 .month-diary-entry__body p {
-  margin: 0 0 1.25em;
+  margin: 0 0 0.5rem;
+  font-family: "Gothic A1", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  line-height: normal;
+}
+
+.month-diary-entry__body .ql-size-small {
+  font-size: 0.8rem;
+}
+
+.month-diary-entry__body .ql-size-large {
+  font-size: 1.5rem;
+}
+
+.month-diary-entry__body .ql-letter {
+  display: block;
+  width: 100%;
+  border: 1px solid #ccc;
+  padding: 1rem 1.5rem;
+}
+
+.month-diary-entry__body .ql-align-center {
+  text-align: center;
+}
+
+.month-diary-entry__body .ql-align-right {
+  text-align: right;
 }
 
 .month-diary-entry__body h2,
@@ -65,9 +114,10 @@
 
 .month-diary-entry__body img {
   display: block;
-  max-width: 100%;
   height: auto;
-  margin: 1.5rem auto;
+  width: 100%;
+  max-width: 550px;
+  border: 1px solid #111;
 }
 
 .month-diary-entry__body blockquote {
@@ -75,6 +125,225 @@
   padding-left: 1rem;
   border-left: 2px solid #739b73;
   color: #666;
+}
+
+.month-diary-heart {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #d8d5cc;
+  font-family: "Gothic A1", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  text-align: center;
+}
+
+.month-diary-heart__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid #739b73;
+  background: #fff;
+  color: #4e7450;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.month-diary-heart__button:hover:not(:disabled) {
+  background: #f1f6ef;
+  transform: translateY(-1px);
+}
+
+.month-diary-heart__button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.month-diary-heart__icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.month-diary-heart__count {
+  min-width: 1ch;
+  font-family: "IBM Plex Sans KR", sans-serif;
+}
+
+.month-diary-heart__status {
+  min-height: 1.25em;
+  margin-top: 0.5rem;
+  color: #666;
+  font-size: 0.85rem;
+  font-size: 0.85rem;
+}
+
+.month-diary-comments {
+  display: none;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #d8d5cc;
+  font-family: "Gothic A1", sans-serif;
+}
+
+.month-diary-comments__header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.month-diary-comments__header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.month-diary-comments__count,
+.month-diary-comments__meta time {
+  color: #777;
+  font-size: 0.85rem;
+}
+
+.month-diary-comments__item {
+  padding: 1rem 0;
+  border-top: 1px solid #eeeae2;
+}
+
+.month-diary-comments__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.month-diary-comments__nickname {
+  font-weight: 500;
+}
+
+.month-diary-comments__content {
+  margin: 0.5rem 0 0;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.month-diary-comments__actions,
+.month-diary-comments__manage-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.month-diary-comments__actions button,
+.month-diary-comments__manage-actions button {
+  padding: 0.2rem 0;
+  border: 0;
+  background: transparent;
+  color: #666;
+  font: inherit;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.month-diary-comments__manage {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: #f7f6f2;
+}
+
+.month-diary-comments__manage label {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.month-diary-comments__manage input,
+.month-diary-comments__manage textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #d8d5cc;
+  border-radius: 0;
+  background: #fff;
+  color: #222;
+  font: inherit;
+}
+
+.month-diary-comments__manage textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.month-diary-comments__manage p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.month-diary-comments__empty {
+  margin: 0;
+  padding: 1rem 0;
+  border-top: 1px solid #eeeae2;
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.month-diary-comments__form {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.month-diary-comments__form label {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.month-diary-comments__form input,
+.month-diary-comments__form textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #d8d5cc;
+  border-radius: 0;
+  background: #fff;
+  color: #222;
+  font: inherit;
+}
+
+.month-diary-comments__form textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.month-diary-comments__submit {
+  justify-self: end;
+  padding: 0.55rem 1rem;
+  border: 1px solid #739b73;
+  background: #739b73;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.month-diary-comments__submit:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.month-diary-comments__status {
+  min-height: 1.25em;
+  margin: 0.5rem 0 0;
+  color: #666;
+  font-size: 0.85rem;
 }
 
 .month-diary-detail__status {
@@ -86,5 +355,11 @@
 @media (max-width: 600px) {
   .month-diary-detail {
     padding-block: 2rem 4rem;
+  }
+}
+
+@media (max-width: 450px) {
+  .month-diary-entry__title {
+    font-size: 1.5rem;
   }
 }

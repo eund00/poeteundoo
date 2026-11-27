@@ -179,6 +179,64 @@ main {
   opacity: 0.5;
 }
 
+.footer-top {
+  position: fixed;
+  right: 50px;
+  bottom: 50px;
+  z-index: 99;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+}
+
+.footer-top.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.footer-topBtn {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  width: 50px;
+  aspect-ratio: 1;
+  border: 1px solid #739b73;
+  border-radius: 50%;
+  background-color: #fff;
+  color: #739b73;
+  font-size: 0;
+  cursor: pointer;
+}
+
+.footer-topBtn::before {
+  position: absolute;
+  inset: 0;
+  background-image: url("https://www.kukinews.com/data/kuk/image/2026/11/13/kuk20261113000303.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 55%;
+  content: "";
+  filter: hue-rotate(35deg) saturate(1.5);
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .footer-top {
+    right: 2vw;
+    bottom: 5vw;
+    z-index: 9999;
+  }
+
+  .footer-topBtn {
+    width: 10vw;
+    min-width: 40px;
+  }
+}
+
 /* ==================================================
    5. GUESTBOOK
    방명록

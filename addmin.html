@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>관리자 — 은듀닷컴</title>
     <link rel="stylesheet" href="assets/css/fonts.css" />
+    <link rel="stylesheet" href="assets/css/month-diary.css" />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css"
@@ -36,7 +37,7 @@
 
       body {
         margin: 0;
-        padding: 48px 24px 80px;
+        padding: 40px 25px 10px;
         background: var(--bg);
         color: var(--ink);
         font-family: "돋움", Dotum, sans-serif;
@@ -294,20 +295,70 @@
 
       .diary-editor {
         background: var(--surface);
+        height: calc(100vh - 300px) !important;
       }
 
       .diary-editor .ql-editor {
         min-height: 300px;
-        font-family: "Noto Serif KR", Georgia, serif;
+        font-family: "Gothic A1", sans-serif;
+        font-weight: 400;
+        font-style: normal;
         font-size: 1rem;
         line-height: 1.9;
       }
 
+      .diary-editor .ql-editor .ql-size-small {
+        font-size: 0.8rem;
+      }
+
+      .diary-editor .ql-editor .ql-size-large {
+        font-size: 1.5rem;
+      }
+
+      .diary-editor .ql-editor .ql-letter {
+        display: block;
+        width: 100%;
+        border: 1px solid #ccc;
+        padding: 1rem 1.5rem;
+      }
+
+      .ql-snow .ql-picker.ql-size .ql-picker-label::before,
+      .ql-snow .ql-picker.ql-size .ql-picker-item::before {
+        content: "보통 글씨";
+      }
+
+      .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="small"]::before,
+      .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="small"]::before {
+        content: "작은 글씨";
+      }
+
+      .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="large"]::before,
+      .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="large"]::before {
+        content: "큰 글씨";
+      }
+
       .diary-editor .ql-editor img {
         display: block;
-        max-width: 100%;
         height: auto;
-        margin: 1rem 0;
+        border: 1px solid #000;
+        max-width: 450px !important;
+      }
+
+      .diary-preview {
+        margin: 1.5rem 0;
+      }
+
+      .diary-preview > summary {
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .diary-preview__entry {
+        margin-top: 1rem;
+      }
+
+      .diary-preview__body--empty {
+        color: var(--muted);
       }
 
       .ql-toolbar.ql-snow button {
@@ -1127,7 +1178,9 @@
                 <label>슬라이드 배경 이미지 (선택)</label>
                 <div class="upload-box">
                   <div class="upload-controls">
-                    <label for="diary-background-file">이미지 파일 업로드</label>
+                    <label for="diary-background-file"
+                      >이미지 파일 업로드</label
+                    >
                     <input
                       type="file"
                       id="diary-background-file"
@@ -1144,7 +1197,9 @@
                     class="img-preview"
                     alt="슬라이드 배경 미리보기"
                   />
-                  <label for="diary-background-image">또는 이미지 URL 입력</label>
+                  <label for="diary-background-image"
+                    >또는 이미지 URL 입력</label
+                  >
                   <input
                     type="url"
                     id="diary-background-image"
@@ -1155,7 +1210,9 @@
               </div>
 
               <div class="field">
-                <label for="diary-card-excerpt">슬라이드 요약 문구 (선택)</label>
+                <label for="diary-card-excerpt"
+                  >슬라이드 요약 문구 (선택)</label
+                >
                 <textarea
                   id="diary-card-excerpt"
                   class="diary-card-excerpt"
@@ -1168,14 +1225,35 @@
                 <label>본문 <span class="req">*</span></label>
                 <div id="diaryEditorToolbar">
                   <span class="ql-formats">
-                    <select class="ql-header">
+                    <select
+                      class="ql-align"
+                      aria-label="본문 정렬"
+                      title="본문 정렬"
+                    >
                       <option selected></option>
-                      <option value="2"></option>
-                      <option value="3"></option>
+                      <option value="center"></option>
+                      <option value="right"></option>
+                    </select>
+                    <select
+                      class="ql-size"
+                      aria-label="글자 크기"
+                      title="글자 크기"
+                    >
+                      <option value="small"></option>
+                      <option selected></option>
+                      <option value="large"></option>
                     </select>
                     <button class="ql-bold" type="button"></button>
                     <button class="ql-italic" type="button"></button>
                     <button class="ql-underline" type="button"></button>
+                    <button
+                      class="ql-letter"
+                      type="button"
+                      aria-label="편지 상자 꾸미기"
+                      title="편지 상자 꾸미기"
+                    >
+                      💌
+                    </button>
                   </span>
                   <span class="ql-formats">
                     <button
@@ -1199,6 +1277,8 @@
                 </div>
                 <div id="diaryEditor" class="diary-editor"></div>
                 <div class="hint">
+                  텍스트를 드래그한 뒤 💌 버튼을 누르면 편지 상자로 꾸며집니다.
+                  <br />
                   이미지 버튼에서 여러 장을 선택하면 커서 위치에 차례로
                   삽입됩니다.
                 </div>
@@ -1215,6 +1295,28 @@
                   aria-live="polite"
                 ></div>
               </div>
+
+              <details class="diary-preview">
+                <summary>공개 페이지 미리보기</summary>
+                <article class="month-diary-entry diary-preview__entry">
+                  <header class="month-diary-entry__header">
+                    <h2
+                      class="month-diary-entry__title"
+                      id="diary-preview-title"
+                    ></h2>
+                    <time
+                      class="month-diary-entry__date font-ibm"
+                      id="diary-preview-date"
+                    ></time>
+                  </header>
+                  <div
+                    class="month-diary-entry__body diary-preview__body--empty"
+                    id="diary-preview-body"
+                  >
+                    본문을 입력하면 미리보기에 표시됩니다.
+                  </div>
+                </article>
+              </details>
 
               <div class="checkbox-row">
                 <input type="checkbox" id="diaryPublished" checked />
@@ -1438,6 +1540,20 @@
         previewId: "mem-image-preview",
       });
 
+      const InlineBlot = Quill.import("blots/inline");
+
+      class LetterBlot extends InlineBlot {
+        static blotName = "letter";
+        static tagName = "span";
+        static className = "ql-letter";
+
+        static formats() {
+          return true;
+        }
+      }
+
+      Quill.register(LetterBlot);
+
       const diaryEditor = new Quill("#diaryEditor", {
         theme: "snow",
         modules: {
@@ -1451,10 +1567,64 @@
                   : diaryEditor.getLength();
                 diaryImageFile.click();
               },
+              letter() {
+                const range = diaryEditor.getSelection(true);
+                if (!range) return;
+
+                const isActive = diaryEditor.getFormat(range).letter;
+                diaryEditor.format("letter", !isActive);
+              },
             },
           },
         },
       });
+
+      const diaryPreviewTitle = document.getElementById("diary-preview-title");
+      const diaryPreviewDate = document.getElementById("diary-preview-date");
+      const diaryPreviewBody = document.getElementById("diary-preview-body");
+
+      function updateDiaryPreview() {
+        const title = document.getElementById("diary-title").value.trim();
+        diaryPreviewTitle.textContent = title || "제목 미리보기";
+
+        const dateValue = document.getElementById("diary-date").value;
+        if (dateValue) {
+          const [year, month, day] = dateValue.split("-").map(Number);
+          diaryPreviewDate.dateTime = dateValue;
+          diaryPreviewDate.textContent = new Date(
+            year,
+            month - 1,
+            day,
+          ).toLocaleDateString("ko-KR", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+        } else {
+          diaryPreviewDate.removeAttribute("datetime");
+          diaryPreviewDate.textContent = "날짜 미리보기";
+        }
+
+        const bodyHtml = diaryEditor.root.innerHTML;
+        const bodyHasContent =
+          diaryEditor.getText().trim() || diaryEditor.root.querySelector("img");
+
+        diaryPreviewBody.classList.toggle(
+          "diary-preview__body--empty",
+          !bodyHasContent,
+        );
+        diaryPreviewBody.innerHTML = bodyHasContent
+          ? DOMPurify.sanitize(bodyHtml, { USE_PROFILES: { html: true } })
+          : "본문을 입력하면 미리보기에 표시됩니다.";
+      }
+
+      diaryEditor.on("text-change", updateDiaryPreview);
+      document
+        .getElementById("diary-title")
+        .addEventListener("input", updateDiaryPreview);
+      document
+        .getElementById("diary-date")
+        .addEventListener("input", updateDiaryPreview);
 
       function readImagePreview(file) {
         return new Promise((resolve, reject) => {
@@ -1659,7 +1829,8 @@
         newDiaryBtn.disabled = true;
         cancelDiaryEditBtn.disabled = true;
         diaryBackgroundStatus.className = "status";
-        diaryBackgroundStatus.textContent = "배경 이미지를 업로드하고 있어요...";
+        diaryBackgroundStatus.textContent =
+          "배경 이미지를 업로드하고 있어요...";
 
         try {
           const { error } = await sb.storage
@@ -2597,6 +2768,7 @@
       }
 
       document.getElementById("diary-date").value = localDateValue();
+      updateDiaryPreview();
 
       function formatDiaryDate(value) {
         const [year, month, day] = value.split("-").map(Number);
@@ -2705,6 +2877,7 @@
           }),
           "silent",
         );
+        updateDiaryPreview();
 
         renderDiariesList();
         diaryFormTitle.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -2728,6 +2901,7 @@
         diaryFormStatus.className = "status";
         diaryImageStatus.className = "hint";
         diaryImageStatus.textContent = "";
+        updateDiaryPreview();
         renderDiariesList();
       }
 

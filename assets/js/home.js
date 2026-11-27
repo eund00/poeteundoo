@@ -220,10 +220,7 @@ async function initMonthDiarySlider() {
         "ko-KR",
       );
 
-      const label = document.createElement("span");
-      label.className = "work-card__type";
-      label.textContent = "월간닷컴";
-      meta.append(date, label);
+      meta.appendChild(date);
 
       const title = document.createElement("h3");
       title.className = "work-card__title";

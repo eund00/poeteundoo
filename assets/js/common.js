@@ -1,5 +1,48 @@
 const commonScriptUrl = document.currentScript.src;
 
+function initFooterTopButton() {
+  const footer = document.querySelector("footer");
+
+  if (!footer) return;
+
+  const container = document.createElement("div");
+  container.className = "footer-top";
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "footer-topBtn";
+  button.setAttribute("aria-label", "맨 위로 이동");
+  container.appendChild(button);
+  footer.appendChild(container);
+
+  function updateVisibility() {
+    const footerTop = footer.getBoundingClientRect().top;
+    const isMobile = window.matchMedia("(max-width: 600px)").matches;
+    const defaultBottom = isMobile ? window.innerWidth * 0.05 : 50;
+    const footerGap = 16;
+    const bottom = Math.max(
+      defaultBottom,
+      window.innerHeight - footerTop + footerGap,
+    );
+
+    container.style.bottom = `${bottom}px`;
+    container.classList.toggle("show", window.scrollY > 300);
+  }
+
+  window.addEventListener("scroll", updateVisibility, { passive: true });
+  window.addEventListener("resize", updateVisibility);
+  updateVisibility();
+
+  button.addEventListener("click", () => {
+    const behavior = window.matchMedia("(prefers-reduced-motion: reduce)")
+      .matches
+      ? "auto"
+      : "smooth";
+
+    window.scrollTo({ top: 0, behavior });
+  });
+}
+
 function createDesktopMenu(sidebarNav) {
   const nav = document.createElement("nav");
   const list = document.createElement("ul");
@@ -159,3 +202,11 @@ async function loadSharedLayout() {
 loadSharedLayout().catch((error) => {
   console.error("공통 헤더와 사이드바를 불러오지 못했습니다.", error);
 });
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initFooterTopButton, {
+    once: true,
+  });
+} else {
+  initFooterTopButton();
+}
