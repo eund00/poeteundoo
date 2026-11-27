@@ -267,13 +267,14 @@
           : "",
       }));
 
-      // 최소 2.5초 대기
-      const elapsed = Date.now() - loadingStart;
-      const remaining = Math.max(0, 2500 - elapsed);
+      if (loadingScreen) {
+        const elapsed = Date.now() - loadingStart;
+        const remaining = Math.max(0, 2500 - elapsed);
 
-      await new Promise((resolve) => {
-        setTimeout(resolve, remaining);
-      });
+        await new Promise((resolve) => {
+          setTimeout(resolve, remaining);
+        });
+      }
 
       // 카드 생성
       memoryList.innerHTML = memoryItems.length
@@ -287,13 +288,6 @@
         memoryCount.textContent = `${memoryItems.length}`;
       }
 
-      // 로딩 완료 후 캡션 숨기기
-      const caption = document.querySelector(".memory-park__caption-container");
-
-      if (caption) {
-        caption.style.display = "none";
-      }
-
       // Swiper 업데이트
       if (window.memorySwiper) {
         window.memorySwiper.update();
@@ -301,12 +295,14 @@
     } catch (error) {
       console.error("Memory Park:", error);
 
-      const elapsed = Date.now() - loadingStart;
-      const remaining = Math.max(0, 2500 - elapsed);
+      if (loadingScreen) {
+        const elapsed = Date.now() - loadingStart;
+        const remaining = Math.max(0, 2500 - elapsed);
 
-      await new Promise((resolve) => {
-        setTimeout(resolve, remaining);
-      });
+        await new Promise((resolve) => {
+          setTimeout(resolve, remaining);
+        });
+      }
 
       memoryList.innerHTML = `
         <p>메모리 파크를 불러오지 못했습니다.</p>

@@ -44,7 +44,7 @@
         gap: 20px;
         border-bottom: 1px solid var(--ink);
         padding-bottom: 20px;
-        margin-bottom: 32px;
+        margin-bottom: 24px;
       }
 
       header h1 {
@@ -60,14 +60,34 @@
         align-items: center;
       }
 
-      a.nav-link {
-        color: var(--muted);
-        font-size: 0.9rem;
-        text-underline-offset: 4px;
+      .admin-tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 24px;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 12px;
       }
 
-      a.nav-link:hover {
+      .tab-btn {
+        width: auto;
+        background: var(--surface);
+        color: var(--muted);
+        border: 1px solid var(--border);
+        padding: 9px 18px;
+        font-size: 0.92rem;
+        font-weight: 400;
+      }
+
+      .tab-btn:hover {
         color: var(--ink);
+        border-color: var(--ink);
+      }
+
+      .tab-btn.active {
+        background: var(--ink);
+        color: #fff;
+        border-color: var(--ink);
+        font-weight: 600;
       }
 
       .card {
@@ -213,6 +233,7 @@
       input[type="text"],
       input[type="email"],
       input[type="password"],
+      select,
       textarea {
         width: 100%;
         background: var(--surface);
@@ -233,6 +254,7 @@
       }
 
       input:focus,
+      select:focus,
       textarea:focus {
         outline: none;
         border-color: var(--accent-dark);
@@ -245,9 +267,44 @@
       }
 
       textarea {
-        min-height: 320px;
+        min-height: 260px;
         resize: vertical;
         line-height: 2;
+      }
+
+      .upload-box {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        background: var(--bg);
+        border: 1px dashed var(--border);
+        padding: 12px;
+      }
+
+      .upload-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      input[type="file"] {
+        font-size: 0.85rem;
+        font-family: inherit;
+        color: var(--ink);
+      }
+
+      .img-preview {
+        max-width: 180px;
+        max-height: 180px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        object-fit: cover;
+        display: none;
+      }
+
+      .img-preview.show {
+        display: block;
       }
 
       .checkbox-row {
@@ -323,6 +380,7 @@
 
       button.danger:hover {
         background: var(--danger-bg);
+        color: var(--danger);
         border-color: var(--danger);
       }
 
@@ -348,7 +406,7 @@
       }
 
       .hidden {
-        display: none;
+        display: none !important;
       }
 
       .hint {
@@ -366,7 +424,7 @@
           align-items: flex-start;
           flex-direction: column;
           gap: 12px;
-          margin-bottom: 24px;
+          margin-bottom: 20px;
         }
 
         .work-item {
@@ -426,141 +484,310 @@
 
       <!-- 로그인 성공 시 표시되는 영역 -->
       <div id="adminArea" class="hidden">
-        <!-- 2. 기존 작품 목록 (수정 / 삭제) -->
-        <section class="card">
-          <div class="section-header">
-            <div class="section-title">
-              <button
-                type="button"
-                id="worksListToggle"
-                class="section-toggle"
-                aria-expanded="true"
-                aria-controls="worksList"
-                aria-label="등록된 작품 목록 접기"
-              >
-                🔼
-              </button>
-              <h2 id="listTitle">등록된 작품 목록</h2>
-            </div>
-            <button type="button" id="newModeBtn" class="secondary">
-              + 새 작품 작성 모드
-            </button>
-          </div>
-          <div id="worksList" class="works-list">
-            <div class="hint">목록을 불러오는 중...</div>
-          </div>
-        </section>
+        <!-- 탭 전환 버튼 -->
+        <nav class="admin-tabs" aria-label="관리 메뉴 전환">
+          <button
+            type="button"
+            class="tab-btn active"
+            data-tab="works"
+            id="tabWorksBtn"
+          >
+            작품 관리 (works)
+          </button>
+          <button
+            type="button"
+            class="tab-btn"
+            data-tab="memory"
+            id="tabMemoryBtn"
+          >
+            물건기억소 (memory_items)
+          </button>
+        </nav>
 
-        <!-- 3. 작품 등록 및 수정 폼 -->
-        <section class="card">
-          <div class="section-header">
-            <div class="section-title">
-              <button
-                type="button"
-                id="workFormToggle"
-                class="section-toggle"
-                aria-expanded="true"
-                aria-controls="workForm"
-                aria-label="작품 등록 폼 접기"
-              >
-                🔼
-              </button>
-              <h2 id="formModeTitle">새 작품 등록</h2>
-            </div>
-            <button type="button" id="cancelEditBtn" class="secondary hidden">
-              수정 취소
-            </button>
-          </div>
-
-          <form id="workForm">
-            <div class="row">
-              <div class="field">
-                <label for="work-id"
-                  >발표 순서 ID <span class="req">*</span></label
+        <!-- ==================== [탭 1] 작품 관리 (works) ==================== -->
+        <div id="panel-works">
+          <section class="card">
+            <div class="section-header">
+              <div class="section-title">
+                <button
+                  type="button"
+                  id="worksListToggle"
+                  class="section-toggle"
+                  aria-expanded="true"
+                  aria-controls="worksList"
+                  aria-label="등록된 작품 목록 접기"
                 >
-                <input type="text" id="work-id" required placeholder="예: 34" />
-                <div class="hint" id="idHint">
-                  기존 데이터 개수를 확인 중...
+                  🔼
+                </button>
+                <h2 id="listTitle">등록된 작품 목록</h2>
+              </div>
+              <button type="button" id="newModeBtn" class="secondary">
+                + 새 작품 작성 모드
+              </button>
+            </div>
+            <div id="worksList" class="works-list">
+              <div class="hint">목록을 불러오는 중...</div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="section-header">
+              <div class="section-title">
+                <button
+                  type="button"
+                  id="workFormToggle"
+                  class="section-toggle"
+                  aria-expanded="true"
+                  aria-controls="workForm"
+                  aria-label="작품 등록 폼 접기"
+                >
+                  🔼
+                </button>
+                <h2 id="formModeTitle">새 작품 등록</h2>
+              </div>
+              <button type="button" id="cancelEditBtn" class="secondary hidden">
+                수정 취소
+              </button>
+            </div>
+
+            <form id="workForm">
+              <div class="row">
+                <div class="field">
+                  <label for="work-id"
+                    >발표 순서 ID <span class="req">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="work-id"
+                    required
+                    placeholder="예: 34"
+                  />
+                  <div class="hint" id="idHint">
+                    기존 데이터 개수를 확인 중...
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="work-year">발표 연도</label>
+                  <input type="text" id="work-year" placeholder="2026" />
                 </div>
               </div>
+
               <div class="field">
-                <label for="work-year">발표 연도</label>
-                <input type="text" id="work-year" placeholder="2026" />
-              </div>
-            </div>
-
-            <div class="field">
-              <label for="work-title">제목 <span class="req">*</span></label>
-              <input
-                type="text"
-                id="work-title"
-                required
-                placeholder="작품 제목을 입력하세요"
-              />
-            </div>
-
-            <div class="field">
-              <label for="work-subtitle">부제</label>
-              <input
-                type="text"
-                id="work-subtitle"
-                placeholder="부제가 있을 경우 입력"
-              />
-            </div>
-
-            <div class="row">
-              <div class="field">
-                <label for="work-kind">갈래 (kind)</label>
+                <label for="work-title">제목 <span class="req">*</span></label>
                 <input
                   type="text"
-                  id="work-kind"
-                  value="시"
-                  placeholder="시 / 산문 / 엽편소설"
+                  id="work-title"
+                  required
+                  placeholder="작품 제목을 입력하세요"
                 />
               </div>
+
               <div class="field">
-                <label for="work-publication">발표 지면 / 시집</label>
+                <label for="work-subtitle">부제</label>
                 <input
                   type="text"
-                  id="work-publication"
-                  placeholder="예: 포엠피플 2026 여름호"
+                  id="work-subtitle"
+                  placeholder="부제가 있을 경우 입력"
                 />
               </div>
-            </div>
 
-            <div class="field">
-              <label for="work-content">본문 <span class="req">*</span></label>
-              <textarea
-                id="work-content"
-                required
-                placeholder="여기에 시 본문을 붙여넣으세요. 줄바꿈과 연 구분이 그대로 저장됩니다."
-              ></textarea>
-            </div>
-
-            <div class="row">
-              <div class="field">
-                <label for="work-img">이미지 URL (선택)</label>
-                <input type="text" id="work-img" placeholder="https://..." />
+              <div class="row">
+                <div class="field">
+                  <label for="work-kind">갈래 (kind)</label>
+                  <input
+                    type="text"
+                    id="work-kind"
+                    value="시"
+                    placeholder="시 / 산문 / 엽편소설"
+                  />
+                </div>
+                <div class="field">
+                  <label for="work-publication">발표 지면 / 시집</label>
+                  <input
+                    type="text"
+                    id="work-publication"
+                    placeholder="예: 포엠피플 2026 여름호"
+                  />
+                </div>
               </div>
+
+              <div class="field">
+                <label for="work-content"
+                  >본문 <span class="req">*</span></label
+                >
+                <textarea
+                  id="work-content"
+                  required
+                  placeholder="여기에 시 본문을 붙여넣으세요. 줄바꿈과 연 구분이 그대로 저장됩니다."
+                ></textarea>
+              </div>
+
+              <div class="field">
+                <label for="work-img-file"
+                  >이미지 첨부 (images 버킷 자동 업로드)</label
+                >
+                <div class="upload-box">
+                  <div class="upload-controls">
+                    <input type="file" id="work-img-file" accept="image/*" />
+                    <span class="hint" id="work-upload-status"></span>
+                  </div>
+                  <img
+                    id="work-img-preview"
+                    class="img-preview"
+                    alt="미리보기"
+                  />
+                  <input
+                    type="text"
+                    id="work-img"
+                    placeholder="파일을 선택하면 URL이 자동 입력됩니다 (직접 입력도 가능)"
+                  />
+                </div>
+              </div>
+
               <div class="field">
                 <label for="work-link">외부 링크 URL (선택)</label>
                 <input type="text" id="work-link" placeholder="https://..." />
               </div>
-            </div>
 
-            <div class="checkbox-row">
-              <input type="checkbox" id="work-published" checked />
-              <label for="work-published"
-                >즉시 공개 (체크 해제 시 비공개 저장)</label
+              <div class="checkbox-row">
+                <input type="checkbox" id="work-published" checked />
+                <label for="work-published"
+                  >즉시 공개 (체크 해제 시 비공개 저장)</label
+                >
+              </div>
+
+              <button type="submit" id="submitBtn">
+                Supabase에 새 작품 등록하기
+              </button>
+              <div id="formStatus" class="status"></div>
+            </form>
+          </section>
+        </div>
+
+        <!-- ==================== [탭 2] 물건기억소 (memory_items) ==================== -->
+        <div id="panel-memory" class="hidden">
+          <section class="card">
+            <div class="section-header">
+              <div class="section-title">
+                <button
+                  type="button"
+                  id="memListToggle"
+                  class="section-toggle"
+                  aria-expanded="true"
+                  aria-controls="memList"
+                  aria-label="등록된 물건 목록 접기"
+                >
+                  🔼
+                </button>
+                <h2 id="memListTitle">물건기억소 목록</h2>
+              </div>
+              <button type="button" id="newMemModeBtn" class="secondary">
+                + 새 물건 기록 모드
+              </button>
+            </div>
+            <div id="memList" class="works-list">
+              <div class="hint">목록을 불러오는 중...</div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="section-header">
+              <div class="section-title">
+                <button
+                  type="button"
+                  id="memFormToggle"
+                  class="section-toggle"
+                  aria-expanded="true"
+                  aria-controls="memForm"
+                  aria-label="물건 등록 폼 접기"
+                >
+                  🔼
+                </button>
+                <h2 id="memFormModeTitle">새 물건 기억 등록</h2>
+              </div>
+              <button
+                type="button"
+                id="cancelMemEditBtn"
+                class="secondary hidden"
               >
+                수정 취소
+              </button>
             </div>
 
-            <button type="submit" id="submitBtn">
-              Supabase에 새 작품 등록하기
-            </button>
-            <div id="formStatus" class="status"></div>
-          </form>
-        </section>
+            <form id="memForm">
+              <div class="row">
+                <div class="field">
+                  <label for="mem-title"
+                    >물건 이름 (title) <span class="req">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="mem-title"
+                    required
+                    placeholder="예: 초록색 다마고치"
+                  />
+                </div>
+                <div class="field">
+                  <label for="mem-has-item"
+                    >구분 (has_item · 이모지만 저장)</label
+                  >
+                  <select id="mem-has-item">
+                    <option value="">선택 안 함</option>
+                    <option value="🎁">🎁 선물</option>
+                    <option value="🛍️">🛍️ 구매</option>
+                    <option value="🤝">🤝 양도</option>
+                    <option value="🪡">🪡 제작</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="mem-image-file"
+                  >사진 첨부 (images 버킷 자동 업로드)</label
+                >
+                <div class="upload-box">
+                  <div class="upload-controls">
+                    <input type="file" id="mem-image-file" accept="image/*" />
+                    <span class="hint" id="mem-upload-status"></span>
+                  </div>
+                  <img
+                    id="mem-image-preview"
+                    class="img-preview"
+                    alt="미리보기"
+                  />
+                  <input
+                    type="text"
+                    id="mem-image"
+                    placeholder="사진 파일을 선택하면 URL이 자동 입력됩니다 (직접 입력도 가능)"
+                  />
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="mem-description"
+                  >기억의 기록 (description) <span class="req">*</span></label
+                >
+                <textarea
+                  id="mem-description"
+                  required
+                  placeholder="이 물건에 얽힌 기억과 이야기를 기록하세요."
+                ></textarea>
+              </div>
+
+              <div class="checkbox-row">
+                <input type="checkbox" id="mem-visible" checked />
+                <label for="mem-visible"
+                  >즉시 공개 (visible — 체크 해제 시 비공개)</label
+                >
+              </div>
+
+              <button type="submit" id="memSubmitBtn">
+                물건기억소에 등록하기
+              </button>
+              <div id="memFormStatus" class="status"></div>
+            </form>
+          </section>
+        </div>
       </div>
     </div>
 
@@ -568,6 +795,7 @@
       const SUPABASE_URL = "https://jxyucxgpdlfidzwizski.supabase.co";
       const SUPABASE_ANON_KEY =
         "sb_publishable_hhdmoi0xScMatNS8Nb9ZVA_FG-DQoG-";
+      const STORAGE_BUCKET = "images";
 
       const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -575,24 +803,141 @@
       const adminArea = document.getElementById("adminArea");
       const logoutBtn = document.getElementById("logoutBtn");
       const loginForm = document.getElementById("loginForm");
-      const workForm = document.getElementById("workForm");
       const loginStatus = document.getElementById("loginStatus");
+
+      // 탭 전환 요소
+      const tabWorksBtn = document.getElementById("tabWorksBtn");
+      const tabMemoryBtn = document.getElementById("tabMemoryBtn");
+      const panelWorks = document.getElementById("panel-works");
+      const panelMemory = document.getElementById("panel-memory");
+
+      // [작품 관리] 요소
+      const workForm = document.getElementById("workForm");
       const formStatus = document.getElementById("formStatus");
       const worksListEl = document.getElementById("worksList");
       const listTitleEl = document.getElementById("listTitle");
       const worksListToggle = document.getElementById("worksListToggle");
       const workFormToggle = document.getElementById("workFormToggle");
       const formModeTitle = document.getElementById("formModeTitle");
-      const workFormEl = document.getElementById("workForm");
       const cancelEditBtn = document.getElementById("cancelEditBtn");
       const newModeBtn = document.getElementById("newModeBtn");
       const submitBtn = document.getElementById("submitBtn");
       const idInput = document.getElementById("work-id");
       const idHint = document.getElementById("idHint");
 
-      let allWorks = [];
-      let editingId = null; // null이면 새 글 등록 모드, 문자열이면 해당 ID 수정 모드
+      // [물건기억소] 요소
+      const memForm = document.getElementById("memForm");
+      const memFormStatus = document.getElementById("memFormStatus");
+      const memListEl = document.getElementById("memList");
+      const memListTitleEl = document.getElementById("memListTitle");
+      const memListToggle = document.getElementById("memListToggle");
+      const memFormToggle = document.getElementById("memFormToggle");
+      const memFormModeTitle = document.getElementById("memFormModeTitle");
+      const cancelMemEditBtn = document.getElementById("cancelMemEditBtn");
+      const newMemModeBtn = document.getElementById("newMemModeBtn");
+      const memSubmitBtn = document.getElementById("memSubmitBtn");
 
+      let allWorks = [];
+      let editingId = null;
+
+      let allMemoryItems = [];
+      let editingMemId = null;
+
+      // =========================================================
+      // 공통 이미지 업로드 및 미리보기 핸들러
+      // =========================================================
+      function updatePreview(previewEl, url) {
+        if (url && url.trim()) {
+          previewEl.src = url.trim();
+          previewEl.classList.add("show");
+        } else {
+          previewEl.removeAttribute("src");
+          previewEl.classList.remove("show");
+        }
+      }
+
+      function setupImageUploader({
+        fileInputId,
+        urlInputId,
+        statusId,
+        previewId,
+      }) {
+        const fileInput = document.getElementById(fileInputId);
+        const urlInput = document.getElementById(urlInputId);
+        const statusEl = document.getElementById(statusId);
+        const previewEl = document.getElementById(previewId);
+
+        urlInput.addEventListener("input", () => {
+          updatePreview(previewEl, urlInput.value);
+        });
+
+        fileInput.addEventListener("change", async (e) => {
+          const file = e.target.files?.[0];
+          if (!file) return;
+
+          const now = new Date();
+          const yyyy = now.getFullYear();
+          const mm = String(now.getMonth() + 1).padStart(2, "0");
+          const dd = String(now.getDate()).padStart(2, "0");
+          const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+          const rand = Math.random().toString(36).substring(2, 8);
+          const fileName = `${yyyy}.${mm}.${dd}_${rand}.${ext}`;
+
+          statusEl.textContent = "Storage에 업로드 중...";
+          statusEl.style.color = "var(--accent-dark)";
+
+          const { error: uploadError } = await sb.storage
+            .from(STORAGE_BUCKET)
+            .upload(fileName, file, {
+              cacheControl: "3600",
+              upsert: false,
+            });
+
+          if (uploadError) {
+            statusEl.textContent = `업로드 실패: ${uploadError.message}`;
+            statusEl.style.color = "var(--danger)";
+            return;
+          }
+
+          const { data: publicData } = sb.storage
+            .from(STORAGE_BUCKET)
+            .getPublicUrl(fileName);
+
+          const publicUrl = publicData.publicUrl;
+          urlInput.value = publicUrl;
+          updatePreview(previewEl, publicUrl);
+          statusEl.textContent = `업로드 완료 (${fileName})`;
+          statusEl.style.color = "var(--accent-dark)";
+        });
+      }
+
+      setupImageUploader({
+        fileInputId: "work-img-file",
+        urlInputId: "work-img",
+        statusId: "work-upload-status",
+        previewId: "work-img-preview",
+      });
+
+      setupImageUploader({
+        fileInputId: "mem-image-file",
+        urlInputId: "mem-image",
+        statusId: "mem-upload-status",
+        previewId: "mem-image-preview",
+      });
+
+      // 탭 전환 로직
+      function switchTab(tabName) {
+        const isWorks = tabName === "works";
+        tabWorksBtn.classList.toggle("active", isWorks);
+        tabMemoryBtn.classList.toggle("active", !isWorks);
+        panelWorks.classList.toggle("hidden", !isWorks);
+        panelMemory.classList.toggle("hidden", isWorks);
+      }
+
+      tabWorksBtn.addEventListener("click", () => switchTab("works"));
+      tabMemoryBtn.addEventListener("click", () => switchTab("memory"));
+
+      // 접기/펼치기 공통 유틸
       function setSectionExpanded(toggle, content, expanded, label) {
         content.classList.toggle("hidden", !expanded);
         toggle.setAttribute("aria-expanded", String(expanded));
@@ -617,12 +962,22 @@
       workFormToggle.addEventListener("click", () => {
         const expanded =
           workFormToggle.getAttribute("aria-expanded") !== "true";
+        setSectionExpanded(workFormToggle, workForm, expanded, "작품 등록 폼");
+      });
+
+      memListToggle.addEventListener("click", () => {
+        const expanded = memListToggle.getAttribute("aria-expanded") !== "true";
         setSectionExpanded(
-          workFormToggle,
-          workFormEl,
+          memListToggle,
+          memListEl,
           expanded,
-          "작품 등록 폼",
+          "물건기억소 목록",
         );
+      });
+
+      memFormToggle.addEventListener("click", () => {
+        const expanded = memFormToggle.getAttribute("aria-expanded") !== "true";
+        setSectionExpanded(memFormToggle, memForm, expanded, "물건 등록 폼");
       });
 
       document.getElementById("work-year").value = new Date()
@@ -634,7 +989,21 @@
         el.className = "status " + (isError ? "err" : "ok");
       }
 
-      // 전체 작품 목록 불러오기
+      function escapeHtml(str) {
+        return String(str ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function escapeAttr(str) {
+        return String(str ?? "").replace(/'/g, "\\'");
+      }
+
+      // =========================================================
+      // 1. 작품 관리 (works) 기능
+      // =========================================================
       async function loadWorks() {
         const { data, error } = await sb
           .from("works")
@@ -655,7 +1024,6 @@
         }
       }
 
-      // 목록 화면 렌더링
       function renderWorksList() {
         if (allWorks.length === 0) {
           worksListEl.innerHTML =
@@ -689,19 +1057,6 @@
           .join("");
       }
 
-      function escapeHtml(str) {
-        return String(str ?? "")
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;");
-      }
-
-      function escapeAttr(str) {
-        return String(str ?? "").replace(/'/g, "\\'");
-      }
-
-      // 다음 ID 자동 제안 (01, 02처럼 두 자리 포맷 유지)
       function suggestNextId() {
         const numericIds = allWorks
           .map((row) => parseInt(row.id, 10))
@@ -719,9 +1074,8 @@
         }
       }
 
-      // 수정 모드 진입
       window.startEdit = function (id) {
-        const target = allWorks.find((w) => w.id === id);
+        const target = allWorks.find((w) => String(w.id) === String(id));
         if (!target) return;
 
         editingId = target.id;
@@ -742,16 +1096,19 @@
         document.getElementById("work-subtitle").value = target.subtitle || "";
         document.getElementById("work-content").value = target.content || "";
         document.getElementById("work-img").value = target.img || "";
+        document.getElementById("work-img-file").value = "";
+        document.getElementById("work-upload-status").textContent = "";
+        updatePreview(document.getElementById("work-img-preview"), target.img);
+
         document.getElementById("work-link").value = target.link || "";
         document.getElementById("work-published").checked =
           target.is_published !== false;
 
         renderWorksList();
-        setSectionExpanded(workFormToggle, workFormEl, true, "작품 등록 폼");
+        setSectionExpanded(workFormToggle, workForm, true, "작품 등록 폼");
         formModeTitle.scrollIntoView({ behavior: "smooth", block: "start" });
       };
 
-      // 새 작품 등록 모드로 초기화
       function resetToCreateMode() {
         editingId = null;
         formModeTitle.textContent = "새 작품 등록";
@@ -763,6 +1120,10 @@
         document.getElementById("work-subtitle").value = "";
         document.getElementById("work-content").value = "";
         document.getElementById("work-img").value = "";
+        document.getElementById("work-img-file").value = "";
+        document.getElementById("work-upload-status").textContent = "";
+        updatePreview(document.getElementById("work-img-preview"), "");
+
         document.getElementById("work-link").value = "";
         document.getElementById("work-published").checked = true;
 
@@ -778,13 +1139,12 @@
       newModeBtn.addEventListener("click", () => {
         formStatus.className = "status";
         resetToCreateMode();
-        setSectionExpanded(workFormToggle, workFormEl, true, "작품 등록 폼");
+        setSectionExpanded(workFormToggle, workForm, true, "작품 등록 폼");
         formModeTitle.scrollIntoView({ behavior: "smooth", block: "start" });
       });
 
-      // 작품 삭제
       window.deleteWork = async function (id) {
-        const target = allWorks.find((w) => w.id === id);
+        const target = allWorks.find((w) => String(w.id) === String(id));
         const label = target ? `[#${target.id}] ${target.title}` : id;
         if (
           !confirm(
@@ -800,52 +1160,13 @@
           return;
         }
 
-        if (editingId === id) {
+        if (String(editingId) === String(id)) {
           resetToCreateMode();
         }
         showStatus(formStatus, `「${label}」 작품이 삭제되었습니다.`);
         await loadWorks();
       };
 
-      // 세션 확인
-      async function checkSession() {
-        const {
-          data: { session },
-        } = await sb.auth.getSession();
-        if (session) {
-          loginSection.classList.add("hidden");
-          adminArea.classList.remove("hidden");
-          logoutBtn.classList.remove("hidden");
-          loadWorks();
-        } else {
-          loginSection.classList.remove("hidden");
-          adminArea.classList.add("hidden");
-          logoutBtn.classList.add("hidden");
-        }
-      }
-
-      // 로그인
-      loginForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const email = document.getElementById("admin-email").value.trim();
-        const password = document.getElementById("admin-password").value;
-
-        const { error } = await sb.auth.signInWithPassword({ email, password });
-        if (error) {
-          showStatus(loginStatus, "로그인 실패: " + error.message, true);
-        } else {
-          loginStatus.className = "status";
-          checkSession();
-        }
-      });
-
-      // 로그아웃
-      logoutBtn.addEventListener("click", async () => {
-        await sb.auth.signOut();
-        checkSession();
-      });
-
-      // 등록 및 수정 제출 처리
       workForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         submitBtn.disabled = true;
@@ -865,7 +1186,6 @@
         };
 
         if (editingId) {
-          // 기존 작품 수정 (UPDATE)
           submitBtn.textContent = "수정 사항 저장 중...";
           const { error } = await sb
             .from("works")
@@ -885,7 +1205,6 @@
             await loadWorks();
           }
         } else {
-          // 새 작품 등록 (INSERT)
           submitBtn.textContent = "새 작품 등록 중...";
           const insertPayload = { id: idInput.value.trim(), ...payload };
           const { error } = await sb.from("works").insert([insertPayload]);
@@ -903,6 +1222,248 @@
             await loadWorks();
           }
         }
+      });
+
+      // =========================================================
+      // 2. 물건기억소 (memory_items) 기능
+      // =========================================================
+      async function loadMemoryItems() {
+        const { data, error } = await sb
+          .from("memory_items")
+          .select("*")
+          .order("id", { ascending: false });
+
+        if (error) {
+          memListEl.innerHTML = `<div class="hint">물건기억소 조회 오류: ${error.message}</div>`;
+          return;
+        }
+
+        allMemoryItems = data || [];
+        memListTitleEl.textContent = `물건기억소 목록 (${allMemoryItems.length}개)`;
+        renderMemoryList();
+      }
+
+      function renderMemoryList() {
+        if (allMemoryItems.length === 0) {
+          memListEl.innerHTML =
+            '<div class="hint">등록된 물건 기억이 없습니다.</div>';
+          return;
+        }
+
+        memListEl.innerHTML = allMemoryItems
+          .map((item) => {
+            const isEditing = editingMemId === item.id;
+            const privateBadge =
+              item.visible === false
+                ? '<span class="badge-private">비공개</span>'
+                : "";
+            const emojiBadge = item.has_item ? `${item.has_item} ` : "";
+            const dateStr = item.created_at
+              ? new Date(item.created_at).toLocaleDateString("ko-KR")
+              : "";
+            return `
+          <div class="work-item ${isEditing ? "editing" : ""}">
+            <div class="work-meta">
+              <span class="work-id">#${escapeHtml(item.id)}</span>
+              <span class="work-title">${escapeHtml(emojiBadge + (item.title || "(제목 없음)"))}</span>
+              <span class="work-sub">${escapeHtml(dateStr)}</span>
+              ${privateBadge}
+            </div>
+            <div class="item-actions">
+              <button type="button" class="secondary" onclick="startEditMem(${item.id})">수정</button>
+              <button type="button" class="danger" onclick="deleteMem(${item.id})">삭제</button>
+            </div>
+          </div>
+        `;
+          })
+          .join("");
+      }
+
+      window.startEditMem = function (id) {
+        const target = allMemoryItems.find((m) => m.id === id);
+        if (!target) return;
+
+        editingMemId = target.id;
+        memFormModeTitle.textContent = `물건 수정 중 (#${target.id} · ${target.title || "제목 없음"})`;
+        cancelMemEditBtn.classList.remove("hidden");
+        memSubmitBtn.textContent = "수정 내용 저장하기";
+        memFormStatus.className = "status";
+
+        document.getElementById("mem-title").value = target.title || "";
+
+        // 기존 값에 텍스트가 섞여 있어도 이모지만 추출해 select 옵션과 매칭
+        const hasSelect = document.getElementById("mem-has-item");
+        const rawVal = (target.has_item || "").trim();
+        const matchedEmoji = ["🎁", "🛍️", "🤝", "🪡"].find((em) =>
+          rawVal.includes(em),
+        );
+        hasSelect.value = matchedEmoji || "";
+
+        document.getElementById("mem-image").value = target.image || "";
+        document.getElementById("mem-image-file").value = "";
+        document.getElementById("mem-upload-status").textContent = "";
+        updatePreview(
+          document.getElementById("mem-image-preview"),
+          target.image,
+        );
+
+        document.getElementById("mem-description").value =
+          target.description || "";
+        document.getElementById("mem-visible").checked =
+          target.visible !== false;
+
+        renderMemoryList();
+        setSectionExpanded(memFormToggle, memForm, true, "물건 등록 폼");
+        memFormModeTitle.scrollIntoView({ behavior: "smooth", block: "start" });
+      };
+
+      function resetMemToCreateMode() {
+        editingMemId = null;
+        memFormModeTitle.textContent = "새 물건 기억 등록";
+        cancelMemEditBtn.classList.add("hidden");
+        memSubmitBtn.textContent = "물건기억소에 등록하기";
+
+        document.getElementById("mem-title").value = "";
+        document.getElementById("mem-has-item").value = "";
+        document.getElementById("mem-image").value = "";
+        document.getElementById("mem-image-file").value = "";
+        document.getElementById("mem-upload-status").textContent = "";
+        updatePreview(document.getElementById("mem-image-preview"), "");
+
+        document.getElementById("mem-description").value = "";
+        document.getElementById("mem-visible").checked = true;
+
+        renderMemoryList();
+      }
+
+      cancelMemEditBtn.addEventListener("click", () => {
+        memFormStatus.className = "status";
+        resetMemToCreateMode();
+      });
+
+      newMemModeBtn.addEventListener("click", () => {
+        memFormStatus.className = "status";
+        resetMemToCreateMode();
+        setSectionExpanded(memFormToggle, memForm, true, "물건 등록 폼");
+        memFormModeTitle.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+
+      window.deleteMem = async function (id) {
+        const target = allMemoryItems.find((m) => m.id === id);
+        const label = target
+          ? `[#${target.id}] ${target.title || "제목 없음"}`
+          : id;
+        if (
+          !confirm(
+            `정말 「${label}」 물건 기록을 삭제할까요?\n삭제 후에는 복구할 수 없습니다.`,
+          )
+        ) {
+          return;
+        }
+
+        const { error } = await sb.from("memory_items").delete().eq("id", id);
+        if (error) {
+          alert("삭제 오류: " + error.message);
+          return;
+        }
+
+        if (editingMemId === id) {
+          resetMemToCreateMode();
+        }
+        showStatus(memFormStatus, `「${label}」 기록이 삭제되었습니다.`);
+        await loadMemoryItems();
+      };
+
+      memForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        memSubmitBtn.disabled = true;
+
+        // select의 value(🎁, 🛍️, 🤝, 🪡)만 저장됨
+        const selectedEmoji = document.getElementById("mem-has-item").value;
+
+        const payload = {
+          title: document.getElementById("mem-title").value.trim(),
+          has_item: selectedEmoji || null,
+          image: document.getElementById("mem-image").value.trim() || null,
+          description: document.getElementById("mem-description").value,
+          visible: document.getElementById("mem-visible").checked,
+        };
+
+        if (editingMemId !== null) {
+          memSubmitBtn.textContent = "수정 사항 저장 중...";
+          const { error } = await sb
+            .from("memory_items")
+            .update(payload)
+            .eq("id", editingMemId);
+
+          memSubmitBtn.disabled = false;
+          if (error) {
+            memSubmitBtn.textContent = "수정 내용 저장하기";
+            showStatus(memFormStatus, "수정 오류: " + error.message, true);
+          } else {
+            showStatus(
+              memFormStatus,
+              `「${payload.title}」 수정이 완료되었습니다!`,
+            );
+            resetMemToCreateMode();
+            await loadMemoryItems();
+          }
+        } else {
+          memSubmitBtn.textContent = "물건기억소에 등록 중...";
+          const { error } = await sb.from("memory_items").insert([payload]);
+
+          memSubmitBtn.disabled = false;
+          if (error) {
+            memSubmitBtn.textContent = "물건기억소에 등록하기";
+            showStatus(memFormStatus, "등록 오류: " + error.message, true);
+          } else {
+            showStatus(
+              memFormStatus,
+              `「${payload.title}」 물건 기억이 등록되었습니다!`,
+            );
+            resetMemToCreateMode();
+            await loadMemoryItems();
+          }
+        }
+      });
+
+      // =========================================================
+      // 3. 인증 세션 관리
+      // =========================================================
+      async function checkSession() {
+        const {
+          data: { session },
+        } = await sb.auth.getSession();
+        if (session) {
+          loginSection.classList.add("hidden");
+          adminArea.classList.remove("hidden");
+          logoutBtn.classList.remove("hidden");
+          loadWorks();
+          loadMemoryItems();
+        } else {
+          loginSection.classList.remove("hidden");
+          adminArea.classList.add("hidden");
+          logoutBtn.classList.add("hidden");
+        }
+      }
+
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("admin-email").value.trim();
+        const password = document.getElementById("admin-password").value;
+
+        const { error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) {
+          showStatus(loginStatus, "로그인 실패: " + error.message, true);
+        } else {
+          loginStatus.className = "status";
+          checkSession();
+        }
+      });
+
+      logoutBtn.addEventListener("click", async () => {
+        await sb.auth.signOut();
+        checkSession();
       });
 
       checkSession();
