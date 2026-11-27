@@ -15,7 +15,7 @@ html {
 body {
   margin: 0;
   color: #111;
-  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+  font-family: serif;
   line-height: 1.6;
 }
 
@@ -156,7 +156,6 @@ main {
 ================================================== */
 
 .footer {
-  margin-top: 100px;
   padding: 60px 0;
   border-top: 1px solid #111;
   background-color: #fff;
@@ -715,7 +714,6 @@ main {
 
   .work-detail {
     width: calc(100% - 40px);
-    padding: 100px 0;
   }
 
   .work__header {

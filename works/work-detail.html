@@ -72,9 +72,16 @@
          작품 상세 페이지
       ============================== */
 
+      .work-bg {
+        background-image: url(https://images.unsplash.com/photo-1783700697126-8055c3c15baa?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D);
+      }
       .work-detail {
         width: min(550px, calc(100% - 80px));
-        margin: 80px auto 0;
+        margin: 0 auto;
+        padding: 0 2rem 2rem;
+        background-color: rgb(255 255 255 / 45%);
+        margin: 90px auto 20px;
+        border-radius: 5px;
       }
 
       /* ==============================
@@ -83,6 +90,7 @@
 
       .work-detail__header {
         padding-bottom: 30px;
+        margin-top: 35px;
         border-bottom: 1px solid #111;
       }
 
@@ -171,7 +179,6 @@
       @media (max-width: 600px) {
         .work-detail {
           width: calc(100% - 40px);
-          margin-top: 60px;
         }
 
         .work-detail__poem {
@@ -192,7 +199,7 @@
     </style>
   </head>
 
-  <body>
+  <body class="work-bg">
     <!-- Google Tag Manager (noscript) -->
     <noscript>
       <iframe
@@ -203,17 +210,7 @@
       ></iframe>
     </noscript>
 
-    <!-- ==============================
-         HEADER
-    ============================== -->
-
-    <header class="header">
-      <div class="header__inner">
-        <h1 class="logo">
-          <a href="/">은듀닷컴</a>
-        </h1>
-      </div>
-    </header>
+    <div id="shared-header"></div>
 
     <!-- ==============================
          MAIN
@@ -258,30 +255,42 @@
          JAVASCRIPT
     ============================== -->
 
+    <!-- Supabase JS SDK 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script>
-      // URL에서 작품 ID 가져오기
+      // Supabase 연결 설정 (공개용 Publishable key 사용)
+      const supabaseUrl = "https://jxyucxgpdlfidzwizski.supabase.co";
+      const supabaseKey =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4eXVjeGdwZGxmaWR6d2l6c2tpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU2NjAzMzUsImV4cCI6MjExMTIzNjMzNX0.cwgm-FWcZbdfSL-vuFvYQx2AS4W3x2GJ2GLWbcC5Ksk";
+      const db = supabase.createClient(supabaseUrl, supabaseKey);
+
+      // URL에서 작품 ID 가져오기 (예: ?id=02)
       const params = new URLSearchParams(window.location.search);
       const workId = params.get("id");
 
       // 작품 데이터 불러오기
+      // 작품 데이터 불러오기
       async function initWorkDetail() {
         try {
-          const response = await fetch("../works/works.json");
+          // 기본 쿼리: 공개된 작품 조회
+          let query = db.from("works").select("*").eq("is_published", true);
 
-          if (!response.ok) {
-            throw new Error("작품 데이터를 불러오지 못했습니다.");
+          if (workId) {
+            // URL에 ?id=02 가 있으면 해당 작품 조회
+            query = query.eq("id", workId);
+          } else {
+            // URL에 ?id 가 없으면 가장 최신 작품(id 내림차순 1번째) 자동 선택
+            // (특정 작품을 기본으로 띄우고 싶다면 .eq("id", "02") 로 바꾸면 됩니다)
+            query = query.order("id", { ascending: false }).limit(1);
           }
 
-          const works = await response.json();
+          const { data: work, error } = await query.single();
 
-          // URL의 ID와 일치하는 작품 찾기
-          const work = works.find((item) => item.id === workId);
-
-          // 작품이 없는 경우
-          if (!work) {
+          // 작품이 없거나 조회 에러 발생 시
+          if (error || !work) {
             document.querySelector(".work-detail").innerHTML =
               "<p>작품을 찾을 수 없습니다.</p>";
-
             return;
           }
 
@@ -294,18 +303,10 @@
 
           document.querySelector("#work-title").textContent = work.title ?? "";
 
-          // 마크다운 파일 불러오기
-          const contentResponse = await fetch(work.contentFile);
-
-          if (!contentResponse.ok) {
-            throw new Error("마크다운 파일을 불러오지 못했습니다.");
-          }
-
-          const markdown = await contentResponse.text();
-
-          // 마크다운을 HTML로 변환
-          document.querySelector("#work-content").innerHTML =
-            marked.parse(markdown);
+          // DB의 content 컬럼(마크다운 원문)을 바로 HTML로 변환
+          document.querySelector("#work-content").innerHTML = marked.parse(
+            work.content ?? "",
+          );
 
           // 작품 관련 링크
           const workLink = document.querySelector("#work-link");
@@ -336,5 +337,6 @@
       // 페이지 실행
       initWorkDetail();
     </script>
+    <script src="../common.js"></script>
   </body>
 </html>

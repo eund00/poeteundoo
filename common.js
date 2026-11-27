@@ -1,3 +1,5 @@
+const commonScriptUrl = document.currentScript.src;
+
 function createDesktopMenu(sidebarNav) {
   const nav = document.createElement("nav");
   const list = document.createElement("ul");
@@ -27,6 +29,33 @@ function createDesktopMenu(sidebarNav) {
   return nav;
 }
 
+async function loadSharedHeader() {
+  const placeholder = document.getElementById("shared-header");
+
+  if (!placeholder) {
+    return;
+  }
+
+  const partialUrl = new URL("header.html", commonScriptUrl);
+  const response = await fetch(partialUrl);
+
+  if (!response.ok) {
+    throw new Error(`Header load failed: ${response.status}`);
+  }
+
+  const template = document.createElement("template");
+  template.innerHTML = await response.text();
+
+  if (
+    !template.content.querySelector(".header") ||
+    !template.content.querySelector("#shared-sidebar")
+  ) {
+    throw new Error("Header markup is incomplete.");
+  }
+
+  placeholder.replaceWith(template.content);
+}
+
 async function loadSharedSidebar() {
   const placeholder = document.getElementById("shared-sidebar");
 
@@ -34,8 +63,7 @@ async function loadSharedSidebar() {
     return;
   }
 
-  const script = document.currentScript;
-  const partialUrl = new URL("sidebar.html", script.src);
+  const partialUrl = new URL("sidebar.html", commonScriptUrl);
   const response = await fetch(partialUrl);
 
   if (!response.ok) {
@@ -123,6 +151,11 @@ async function loadSharedSidebar() {
   });
 }
 
-loadSharedSidebar().catch((error) => {
-  console.error("공통 사이드바를 불러오지 못했습니다.", error);
+async function loadSharedLayout() {
+  await loadSharedHeader();
+  await loadSharedSidebar();
+}
+
+loadSharedLayout().catch((error) => {
+  console.error("공통 헤더와 사이드바를 불러오지 못했습니다.", error);
 });

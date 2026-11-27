@@ -519,7 +519,7 @@
 }
 
 .about__heading h2 {
-  font-family: "Noto Serif KR", Georgia, serif;
+  font-family: serif;
   font-size: clamp(60px, 8vw, 120px);
   font-weight: 400;
   line-height: 1;
