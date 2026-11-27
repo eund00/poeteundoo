@@ -576,12 +576,7 @@
           >
             물건기억소 (memory_items)
           </button>
-          <button
-            type="button"
-            class="tab-btn"
-            data-tab="tv"
-            id="tabTVBtn"
-          >
+          <button type="button" class="tab-btn" data-tab="tv" id="tabTVBtn">
             TV 채널 관리
           </button>
           <button
@@ -598,7 +593,7 @@
             data-tab="diaries"
             id="tabDiariesBtn"
           >
-            월간이은주
+            월간닷컴
           </button>
         </nav>
 
@@ -975,9 +970,7 @@
                 </div>
               </div>
 
-              <button type="submit" id="tvChannelSubmitBtn">
-                채널 추가
-              </button>
+              <button type="submit" id="tvChannelSubmitBtn">채널 추가</button>
               <div id="tvChannelFormStatus" class="status"></div>
             </form>
           </section>
@@ -990,11 +983,7 @@
               <div class="section-title">
                 <h2 id="interviewsTitle">공지 목록</h2>
               </div>
-              <button
-                type="button"
-                id="newInterviewBtn"
-                class="secondary"
-              >
+              <button type="button" id="newInterviewBtn" class="secondary">
                 + 새 공지 추가
               </button>
             </div>
@@ -1037,7 +1026,9 @@
                     >분류 <span class="req">*</span></label
                   >
                   <select id="interview-category" required>
-                    <option value="" disabled selected>분류를 선택하세요</option>
+                    <option value="" disabled selected>
+                      분류를 선택하세요
+                    </option>
                     <option value="집중해요">집중해요</option>
                     <option value="함께해요">함께해요</option>
                     <option value="들어봐요">들어봐요</option>
@@ -1070,20 +1061,18 @@
                 />
               </div>
 
-              <button type="submit" id="interviewSubmitBtn">
-                공지 추가
-              </button>
+              <button type="submit" id="interviewSubmitBtn">공지 추가</button>
               <div id="interviewFormStatus" class="status"></div>
             </form>
           </section>
         </div>
 
-        <!-- ==================== [탭 5] 월간이은주 ==================== -->
+        <!-- ==================== [탭 5] 월간닷컴 ==================== -->
         <div id="panel-diaries" class="hidden">
           <section class="card">
             <div class="section-header">
               <div class="section-title">
-                <h2 id="diariesTitle">월간이은주 목록</h2>
+                <h2 id="diariesTitle">월간닷컴 목록</h2>
               </div>
               <button type="button" id="newDiaryBtn" class="secondary">
                 + 새 일기 작성
@@ -1165,7 +1154,8 @@
                 </div>
                 <div id="diaryEditor" class="diary-editor"></div>
                 <div class="hint">
-                  이미지 버튼에서 여러 장을 선택하면 커서 위치에 차례로 삽입됩니다.
+                  이미지 버튼에서 여러 장을 선택하면 커서 위치에 차례로
+                  삽입됩니다.
                 </div>
                 <input
                   type="file"
@@ -1174,7 +1164,11 @@
                   multiple
                   hidden
                 />
-                <div id="diaryImageStatus" class="hint" aria-live="polite"></div>
+                <div
+                  id="diaryImageStatus"
+                  class="hint"
+                  aria-live="polite"
+                ></div>
               </div>
 
               <div class="checkbox-row">
@@ -1184,9 +1178,7 @@
                 >
               </div>
 
-              <button type="submit" id="diarySubmitBtn">
-                일기 등록하기
-              </button>
+              <button type="submit" id="diarySubmitBtn">일기 등록하기</button>
               <div id="diaryFormStatus" class="status"></div>
             </form>
           </section>
@@ -1277,7 +1269,7 @@
       );
       const newInterviewBtn = document.getElementById("newInterviewBtn");
 
-      // [월간이은주] 요소
+      // [월간닷컴] 요소
       const diaryForm = document.getElementById("diaryForm");
       const diaryFormTitle = document.getElementById("diaryFormTitle");
       const diaryFormStatus = document.getElementById("diaryFormStatus");
@@ -1490,8 +1482,7 @@
           });
           insertionIndex += files.length * 2;
           diaryEditor.setSelection(insertionIndex, 0, "silent");
-          diaryImageStatus.textContent =
-            `${files.length}개 이미지 미리보기를 표시하고 업로드 중이에요...`;
+          diaryImageStatus.textContent = `${files.length}개 이미지 미리보기를 표시하고 업로드 중이에요...`;
 
           for (const pendingImage of pendingImages) {
             const { file, imageIndex } = pendingImage;
@@ -1514,12 +1505,7 @@
               .from(DIARY_STORAGE_BUCKET)
               .getPublicUrl(fileName);
             diaryEditor.deleteText(imageIndex, 1, "api");
-            diaryEditor.insertEmbed(
-              imageIndex,
-              "image",
-              data.publicUrl,
-              "api",
-            );
+            diaryEditor.insertEmbed(imageIndex, "image", data.publicUrl, "api");
             uploadedCount += 1;
             diaryImageStatus.textContent = `${uploadedCount}/${files.length}개 이미지 삽입 완료`;
           }
@@ -1528,10 +1514,13 @@
           diaryImageStatus.textContent = `${uploadedCount}개 이미지를 본문에 삽입했어요.`;
           diaryImageStatus.className = "status ok";
         } catch (error) {
-          pendingImages.slice(uploadedCount).reverse().forEach((image) => {
-            diaryEditor.deleteText(image.imageIndex, 2, "api");
-          });
-          console.error("월간이은주 이미지 업로드 오류:", error);
+          pendingImages
+            .slice(uploadedCount)
+            .reverse()
+            .forEach((image) => {
+              diaryEditor.deleteText(image.imageIndex, 2, "api");
+            });
+          console.error("월간닷컴 이미지 업로드 오류:", error);
           showStatus(
             diaryImageStatus,
             `${uploadedCount}개 삽입 완료. 업로드 실패: ${error.message}`,
@@ -1570,9 +1559,7 @@
       tabWorksBtn.addEventListener("click", () => switchTab("works"));
       tabMemoryBtn.addEventListener("click", () => switchTab("memory"));
       tabTVBtn.addEventListener("click", () => switchTab("tv"));
-      tabInterviewsBtn.addEventListener("click", () =>
-        switchTab("interviews"),
-      );
+      tabInterviewsBtn.addEventListener("click", () => switchTab("interviews"));
       tabDiariesBtn.addEventListener("click", () => switchTab("diaries"));
 
       // 접기/펼치기 공통 유틸
@@ -2146,10 +2133,8 @@
         tvChannelFormStatus.className = "status";
         document.getElementById("tv-channel-label").value = channel.channel;
         document.getElementById("tv-channel-name").value = channel.name;
-        document.getElementById("tv-channel-video-id").value =
-          channel.video_id;
-        document.getElementById("tv-channel-order").value =
-          channel.sort_order;
+        document.getElementById("tv-channel-video-id").value = channel.video_id;
+        document.getElementById("tv-channel-order").value = channel.sort_order;
 
         renderTVChannels();
         tvChannelFormTitle.scrollIntoView({
@@ -2169,9 +2154,7 @@
         }
 
         const channel = allTVChannels.find((item) => item.id === tvId);
-        const label = channel
-          ? `${channel.channel} · ${channel.name}`
-          : tvId;
+        const label = channel ? `${channel.channel} · ${channel.name}` : tvId;
         if (
           !confirm(
             `정말 「${label}」 채널을 삭제할까요?\n삭제 후에는 복구할 수 없습니다.`,
@@ -2180,10 +2163,7 @@
           return;
         }
 
-        const { error } = await sb
-          .from("tv_channels")
-          .delete()
-          .eq("id", tvId);
+        const { error } = await sb.from("tv_channels").delete().eq("id", tvId);
         if (error) {
           showStatus(tvChannelFormStatus, "삭제 오류: " + error.message, true);
           return;
@@ -2213,12 +2193,8 @@
         const payload = {
           channel: document.getElementById("tv-channel-label").value.trim(),
           name: document.getElementById("tv-channel-name").value.trim(),
-          video_id: document
-            .getElementById("tv-channel-video-id")
-            .value.trim(),
-          sort_order: Number(
-            document.getElementById("tv-channel-order").value,
-          ),
+          video_id: document.getElementById("tv-channel-video-id").value.trim(),
+          sort_order: Number(document.getElementById("tv-channel-order").value),
         };
         const isEditing = editingTVChannelId !== null;
 
@@ -2289,8 +2265,7 @@
         }
 
         allInterviews = (data || []).sort(
-          (a, b) =>
-            parseInterviewDate(b.date) - parseInterviewDate(a.date),
+          (a, b) => parseInterviewDate(b.date) - parseInterviewDate(a.date),
         );
         interviewsTitleEl.textContent = `공지 목록 (${allInterviews.length}개)`;
         renderInterviews();
@@ -2356,9 +2331,7 @@
       }
 
       interviewsListEl.addEventListener("click", async (event) => {
-        const button = event.target.closest(
-          "button[data-interview-action]",
-        );
+        const button = event.target.closest("button[data-interview-action]");
         if (!button) return;
 
         const { interviewAction, interviewId } = button.dataset;
@@ -2368,9 +2341,7 @@
         }
         if (interviewAction !== "delete") return;
 
-        const interview = allInterviews.find(
-          (item) => item.id === interviewId,
-        );
+        const interview = allInterviews.find((item) => item.id === interviewId);
         const label = interview ? interview.title : interviewId;
         if (
           !confirm(
@@ -2385,21 +2356,14 @@
           .delete()
           .eq("id", interviewId);
         if (error) {
-          showStatus(
-            interviewFormStatus,
-            "삭제 오류: " + error.message,
-            true,
-          );
+          showStatus(interviewFormStatus, "삭제 오류: " + error.message, true);
           return;
         }
 
         if (editingInterviewId === interviewId) {
           resetInterviewForm();
         }
-        showStatus(
-          interviewFormStatus,
-          `「${label}」 공지가 삭제되었습니다.`,
-        );
+        showStatus(interviewFormStatus, `「${label}」 공지가 삭제되었습니다.`);
         await loadInterviews();
       });
 
@@ -2418,9 +2382,7 @@
 
         const payload = {
           date: document.getElementById("interview-date").value.trim(),
-          category: document
-            .getElementById("interview-category")
-            .value.trim(),
+          category: document.getElementById("interview-category").value.trim(),
           title: document.getElementById("interview-title").value.trim(),
           url: document.getElementById("interview-url").value.trim(),
         };
@@ -2468,7 +2430,7 @@
       });
 
       // =========================================================
-      // 5. 월간이은주 관리
+      // 5. 월간닷컴 관리
       // =========================================================
       function localDateValue(date = new Date()) {
         const year = date.getFullYear();
@@ -2495,10 +2457,10 @@
           if (error) throw error;
 
           allDiaries = data || [];
-          diariesTitleEl.textContent = `월간이은주 목록 (${allDiaries.length}개)`;
+          diariesTitleEl.textContent = `월간닷컴 목록 (${allDiaries.length}개)`;
           renderDiariesList();
         } catch (error) {
-          console.error("월간이은주 목록 조회 오류:", error);
+          console.error("월간닷컴 목록 조회 오류:", error);
           diariesListEl.textContent = `목록 조회 오류: ${error.message}`;
         }
       }
@@ -2541,17 +2503,18 @@
           const actions = document.createElement("div");
           actions.className = "item-actions";
 
-          [["edit", "수정", "secondary"], ["delete", "삭제", "danger"]].forEach(
-            ([action, label, className]) => {
-              const button = document.createElement("button");
-              button.type = "button";
-              button.className = className;
-              button.dataset.diaryAction = action;
-              button.dataset.diaryId = String(diary.id);
-              button.textContent = label;
-              actions.appendChild(button);
-            },
-          );
+          [
+            ["edit", "수정", "secondary"],
+            ["delete", "삭제", "danger"],
+          ].forEach(([action, label, className]) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = className;
+            button.dataset.diaryAction = action;
+            button.dataset.diaryId = String(diary.id);
+            button.textContent = label;
+            actions.appendChild(button);
+          });
 
           item.append(meta, actions);
           diariesListEl.appendChild(item);
@@ -2627,7 +2590,7 @@
             .eq("id", diaryId);
           if (error) throw error;
         } catch (error) {
-          console.error("월간이은주 삭제 오류:", error);
+          console.error("월간닷컴 삭제 오류:", error);
           showStatus(diaryFormStatus, `삭제 오류: ${error.message}`, true);
           return;
         }
@@ -2693,7 +2656,7 @@
           );
           await loadDiaries();
         } catch (error) {
-          console.error("월간이은주 저장 오류:", error);
+          console.error("월간닷컴 저장 오류:", error);
           showStatus(diaryFormStatus, `저장 오류: ${error.message}`, true);
         } finally {
           diarySubmitBtn.disabled = false;

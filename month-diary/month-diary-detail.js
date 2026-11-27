@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    document.title = `${diary.title} : 월간이은주`;
+    document.title = `${diary.title} : 월간닷컴`;
 
     const article = document.createElement("article");
     article.className = "month-diary-entry";
@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     article.append(header, body);
     entry.replaceChildren(article);
   } catch (error) {
-    console.error("월간이은주 일기 조회 오류:", error);
+    console.error("월간닷컴 일기 조회 오류:", error);
     showDiaryError(entry);
   }
 });

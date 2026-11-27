@@ -210,7 +210,7 @@ async function initMonthDiarySlider() {
 
       const label = document.createElement("span");
       label.className = "work-card__type";
-      label.textContent = "월간이은주";
+      label.textContent = "월간닷컴";
       meta.append(date, label);
 
       const title = document.createElement("h3");
@@ -254,10 +254,9 @@ async function initMonthDiarySlider() {
       },
     });
   } catch (error) {
-    console.error("월간이은주 목록 오류:", error);
+    console.error("월간닷컴 목록 오류:", error);
     if (emptyState) {
-      emptyState.querySelector("p").textContent =
-        "일기를 불러오지 못했어요.";
+      emptyState.querySelector("p").textContent = "일기를 불러오지 못했어요.";
       emptyState.querySelector("span").textContent =
         "잠시 후 다시 방문해 주세요.";
     }
