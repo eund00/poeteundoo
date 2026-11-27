@@ -177,7 +177,9 @@ async function initMonthDiarySlider() {
     );
     const { data: diaries, error } = await db
       .from("month_diaries")
-      .select("id, title, diary_date, body_html")
+      .select(
+        "id, title, diary_date, body_html, background_image, card_excerpt",
+      )
       .eq("is_published", true)
       .order("diary_date", { ascending: false })
       .order("id", { ascending: false });
@@ -196,6 +198,16 @@ async function initMonthDiarySlider() {
       const link = document.createElement("a");
       link.className = "work-card__link";
       link.href = `month-diary/month-diary-detail.html?id=${encodeURIComponent(diary.id)}`;
+
+      const backgroundUrl = diary.background_image?.trim();
+      if (backgroundUrl && /^https?:\/\//i.test(backgroundUrl)) {
+        const background = document.createElement("img");
+        background.className = "work-card__background";
+        background.src = backgroundUrl;
+        background.alt = "";
+        background.draggable = false;
+        link.appendChild(background);
+      }
 
       const meta = document.createElement("div");
       meta.className = "work-card__meta";
@@ -224,9 +236,10 @@ async function initMonthDiarySlider() {
       const excerpt = document.createElement("p");
       excerpt.className = "work-card__excerpt";
       const excerptText = content.textContent.trim().replace(/\s+/g, " ");
-      excerpt.textContent = excerptText
+      const generatedExcerpt = excerptText
         ? `${excerptText.slice(0, 100)}${excerptText.length > 100 ? "…" : ""}`
         : "사진이 담긴 일기입니다.";
+      excerpt.textContent = diary.card_excerpt?.trim() || generatedExcerpt;
 
       link.append(meta, title, excerpt);
       card.appendChild(link);

@@ -3,9 +3,16 @@ create table if not exists public.month_diaries (
   title text not null check (length(btrim(title)) > 0),
   diary_date date not null,
   body_html text not null check (length(btrim(body_html)) > 0),
+  background_image text,
+  card_excerpt text,
   is_published boolean not null default true,
   created_at timestamptz not null default now()
 );
+
+alter table public.month_diaries
+  add column if not exists background_image text;
+alter table public.month_diaries
+  add column if not exists card_excerpt text;
 
 create table if not exists public.month_diary_admins (
   user_id uuid primary key references auth.users(id) on delete cascade
@@ -83,4 +90,4 @@ create policy "Month diary admins can upload images"
 -- on conflict do nothing;
 
 comment on table public.month_diaries is
-  'Monthly diary entries; body_html is sanitized before rendering by the site.';
+  'Monthly diary entries; body_html is sanitized, and background_image and card_excerpt are optional.';

@@ -288,6 +288,10 @@
         line-height: 2;
       }
 
+      .diary-card-excerpt {
+        min-height: 90px;
+      }
+
       .diary-editor {
         background: var(--surface);
       }
@@ -1120,6 +1124,47 @@
               </div>
 
               <div class="field">
+                <label>슬라이드 배경 이미지 (선택)</label>
+                <div class="upload-box">
+                  <div class="upload-controls">
+                    <label for="diary-background-file">이미지 파일 업로드</label>
+                    <input
+                      type="file"
+                      id="diary-background-file"
+                      accept="image/jpeg,image/png,image/gif,image/webp,image/avif"
+                    />
+                    <span
+                      class="hint"
+                      id="diary-background-status"
+                      aria-live="polite"
+                    ></span>
+                  </div>
+                  <img
+                    id="diary-background-preview"
+                    class="img-preview"
+                    alt="슬라이드 배경 미리보기"
+                  />
+                  <label for="diary-background-image">또는 이미지 URL 입력</label>
+                  <input
+                    type="url"
+                    id="diary-background-image"
+                    placeholder="이미지를 업로드하거나 이미지 URL을 입력하세요"
+                  />
+                </div>
+                <div class="hint">비워두면 배경 이미지 없이 표시됩니다.</div>
+              </div>
+
+              <div class="field">
+                <label for="diary-card-excerpt">슬라이드 요약 문구 (선택)</label>
+                <textarea
+                  id="diary-card-excerpt"
+                  class="diary-card-excerpt"
+                  maxlength="300"
+                  placeholder="비워두면 본문에서 자동으로 가져옵니다."
+                ></textarea>
+              </div>
+
+              <div class="field">
                 <label>본문 <span class="req">*</span></label>
                 <div id="diaryEditorToolbar">
                   <span class="ql-formats">
@@ -1280,6 +1325,18 @@
       const newDiaryBtn = document.getElementById("newDiaryBtn");
       const diaryImageFile = document.getElementById("diaryImageFile");
       const diaryImageStatus = document.getElementById("diaryImageStatus");
+      const diaryBackgroundFile = document.getElementById(
+        "diary-background-file",
+      );
+      const diaryBackgroundImage = document.getElementById(
+        "diary-background-image",
+      );
+      const diaryBackgroundPreview = document.getElementById(
+        "diary-background-preview",
+      );
+      const diaryBackgroundStatus = document.getElementById(
+        "diary-background-status",
+      );
 
       let allWorks = [];
       let editingId = null;
@@ -1297,6 +1354,7 @@
       let editingDiaryId = null;
       let diaryImageSelection = null;
       let diaryImageUploading = false;
+      let diaryBackgroundUploading = false;
 
       // =========================================================
       // 공통 이미지 업로드 및 미리보기 핸들러
@@ -1421,6 +1479,16 @@
         const files = Array.from(diaryImageFile.files || []);
         if (!files.length) return;
 
+        if (diaryBackgroundUploading) {
+          showStatus(
+            diaryImageStatus,
+            "배경 이미지 업로드가 끝난 뒤 본문 이미지를 추가해 주세요.",
+            true,
+          );
+          diaryImageFile.value = "";
+          return;
+        }
+
         const extensionByMime = {
           "image/jpeg": "jpg",
           "image/png": "png",
@@ -1534,6 +1602,95 @@
           cancelDiaryEditBtn.disabled = false;
           diaryImageFile.value = "";
           diaryImageSelection = null;
+        }
+      });
+
+      diaryBackgroundImage.addEventListener("input", () => {
+        updatePreview(diaryBackgroundPreview, diaryBackgroundImage.value);
+      });
+
+      diaryBackgroundFile.addEventListener("change", async () => {
+        const file = diaryBackgroundFile.files?.[0];
+        if (!file) return;
+
+        if (diaryImageUploading) {
+          showStatus(
+            diaryBackgroundStatus,
+            "본문 이미지 업로드가 끝난 뒤 배경 이미지를 추가해 주세요.",
+            true,
+          );
+          diaryBackgroundFile.value = "";
+          return;
+        }
+
+        const extensionByMime = {
+          "image/jpeg": "jpg",
+          "image/png": "png",
+          "image/gif": "gif",
+          "image/webp": "webp",
+          "image/avif": "avif",
+        };
+        const extension = extensionByMime[file.type];
+        if (!extension) {
+          showStatus(
+            diaryBackgroundStatus,
+            "JPG, PNG, GIF, WebP, AVIF 이미지를 선택해 주세요.",
+            true,
+          );
+          diaryBackgroundFile.value = "";
+          return;
+        }
+        if (file.size > 10 * 1024 * 1024) {
+          showStatus(
+            diaryBackgroundStatus,
+            "배경 이미지는 10MB 이하만 업로드할 수 있어요.",
+            true,
+          );
+          diaryBackgroundFile.value = "";
+          return;
+        }
+
+        const randomId = Math.random().toString(36).slice(2, 10);
+        const fileName = `month-diary-background-${Date.now()}-${randomId}.${extension}`;
+        diaryBackgroundUploading = true;
+        diarySubmitBtn.disabled = true;
+        diaryBackgroundFile.disabled = true;
+        diaryBackgroundImage.disabled = true;
+        newDiaryBtn.disabled = true;
+        cancelDiaryEditBtn.disabled = true;
+        diaryBackgroundStatus.className = "status";
+        diaryBackgroundStatus.textContent = "배경 이미지를 업로드하고 있어요...";
+
+        try {
+          const { error } = await sb.storage
+            .from(DIARY_STORAGE_BUCKET)
+            .upload(fileName, file, {
+              cacheControl: "3600",
+              upsert: false,
+            });
+          if (error) throw error;
+
+          const { data } = sb.storage
+            .from(DIARY_STORAGE_BUCKET)
+            .getPublicUrl(fileName);
+          diaryBackgroundImage.value = data.publicUrl;
+          updatePreview(diaryBackgroundPreview, data.publicUrl);
+          showStatus(diaryBackgroundStatus, "배경 이미지를 업로드했어요.");
+        } catch (error) {
+          console.error("월간닷컴 배경 이미지 업로드 오류:", error);
+          showStatus(
+            diaryBackgroundStatus,
+            `업로드 실패: ${error.message}`,
+            true,
+          );
+        } finally {
+          diaryBackgroundUploading = false;
+          diarySubmitBtn.disabled = false;
+          diaryBackgroundFile.disabled = false;
+          diaryBackgroundImage.disabled = false;
+          newDiaryBtn.disabled = false;
+          cancelDiaryEditBtn.disabled = false;
+          diaryBackgroundFile.value = "";
         }
       });
 
@@ -2450,7 +2607,9 @@
         try {
           const { data, error } = await sb
             .from("month_diaries")
-            .select("id, title, diary_date, body_html, is_published")
+            .select(
+              "id, title, diary_date, body_html, background_image, card_excerpt, is_published",
+            )
             .order("diary_date", { ascending: false })
             .order("id", { ascending: false });
 
@@ -2533,6 +2692,11 @@
         cancelDiaryEditBtn.classList.remove("hidden");
         document.getElementById("diary-title").value = target.title;
         document.getElementById("diary-date").value = target.diary_date;
+        diaryBackgroundImage.value = target.background_image || "";
+        diaryBackgroundFile.value = "";
+        updatePreview(diaryBackgroundPreview, target.background_image || "");
+        document.getElementById("diary-card-excerpt").value =
+          target.card_excerpt || "";
         document.getElementById("diaryPublished").checked =
           target.is_published !== false;
         diaryEditor.clipboard.dangerouslyPasteHTML(
@@ -2551,6 +2715,12 @@
         diaryForm.reset();
         document.getElementById("diary-date").value = localDateValue();
         document.getElementById("diaryPublished").checked = true;
+        diaryBackgroundImage.value = "";
+        diaryBackgroundFile.value = "";
+        diaryBackgroundStatus.className = "hint";
+        diaryBackgroundStatus.textContent = "";
+        updatePreview(diaryBackgroundPreview, "");
+        document.getElementById("diary-card-excerpt").value = "";
         diaryEditor.setText("");
         diaryFormTitle.textContent = "새 일기 작성";
         diarySubmitBtn.textContent = "일기 등록하기";
@@ -2609,6 +2779,15 @@
       diaryForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
+        if (diaryBackgroundUploading) {
+          showStatus(
+            diaryFormStatus,
+            "배경 이미지 업로드가 끝난 뒤 저장해 주세요.",
+            true,
+          );
+          return;
+        }
+
         if (diaryImageUploading) {
           showStatus(
             diaryFormStatus,
@@ -2630,6 +2809,9 @@
           body_html: DOMPurify.sanitize(diaryEditor.root.innerHTML, {
             USE_PROFILES: { html: true },
           }),
+          background_image: diaryBackgroundImage.value.trim() || null,
+          card_excerpt:
+            document.getElementById("diary-card-excerpt").value.trim() || null,
           is_published: document.getElementById("diaryPublished").checked,
         };
         const isEditing = editingDiaryId !== null;
