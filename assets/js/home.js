@@ -160,26 +160,49 @@ async function initWorkSlider() {
    2. INTERVIEW
 ======================================== */
 
+function getInterviewTimestamp(value) {
+  const match = /^(\d{4})\.(\d{1,2})\.(\d{1,2})$/.exec(value);
+  if (!match) return Number.NaN;
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const timestamp = Date.UTC(year, month - 1, day);
+  const parsed = new Date(timestamp);
+
+  if (
+    parsed.getUTCFullYear() !== year ||
+    parsed.getUTCMonth() !== month - 1 ||
+    parsed.getUTCDate() !== day
+  ) {
+    return Number.NaN;
+  }
+
+  return timestamp;
+}
+
 async function initInterviewList() {
   const interviewList = document.getElementById("interview-list");
 
   if (!interviewList) return;
 
   try {
-    const response = await fetch("./interviews/interviews.json");
+    const db = window.supabase.createClient(
+      "https://jxyucxgpdlfidzwizski.supabase.co",
+      "sb_publishable_hhdmoi0xScMatNS8Nb9ZVA_FG-DQoG-",
+    );
+    const { data: interviews, error } = await db
+      .from("notices")
+      .select("date, category, title, url");
 
-    if (!response.ok) {
-      throw new Error("인터뷰 데이터를 불러오지 못했습니다.");
+    if (error) throw error;
+    if (!Array.isArray(interviews)) {
+      throw new Error("인터뷰 데이터 형식이 올바르지 않습니다.");
     }
-
-    const interviews = await response.json();
 
     // 날짜 기준 최신순 정렬
     interviews.sort((a, b) => {
-      const dateA = new Date(a.date.replaceAll(".", "-"));
-      const dateB = new Date(b.date.replaceAll(".", "-"));
-
-      return dateB - dateA;
+      return getInterviewTimestamp(b.date) - getInterviewTimestamp(a.date);
     });
 
     const fragment = document.createDocumentFragment();

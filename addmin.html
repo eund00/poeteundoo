@@ -242,6 +242,7 @@
       input[type="email"],
       input[type="password"],
       input[type="number"],
+      input[type="url"],
       select,
       textarea {
         width: 100%;
@@ -547,6 +548,14 @@
             id="tabTVBtn"
           >
             TV 채널 관리
+          </button>
+          <button
+            type="button"
+            class="tab-btn"
+            data-tab="interviews"
+            id="tabInterviewsBtn"
+          >
+            공지 관리
           </button>
         </nav>
 
@@ -930,6 +939,101 @@
             </form>
           </section>
         </div>
+
+        <!-- ==================== [탭 4] 공지 관리 ==================== -->
+        <div id="panel-interviews" class="hidden">
+          <section class="card">
+            <div class="section-header">
+              <div class="section-title">
+                <h2 id="interviewsTitle">공지 목록</h2>
+              </div>
+              <button
+                type="button"
+                id="newInterviewBtn"
+                class="secondary"
+              >
+                + 새 공지 추가
+              </button>
+            </div>
+            <div id="interviewsList" class="works-list">
+              <div class="hint">공지 목록을 불러오는 중...</div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="section-header">
+              <div class="section-title">
+                <h2 id="interviewFormTitle">새 공지 추가</h2>
+              </div>
+              <button
+                type="button"
+                id="cancelInterviewEditBtn"
+                class="secondary hidden"
+              >
+                수정 취소
+              </button>
+            </div>
+
+            <form id="interviewForm">
+              <div class="row">
+                <div class="field">
+                  <label for="interview-date"
+                    >날짜 <span class="req">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="interview-date"
+                    required
+                    pattern="[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}"
+                    title="YYYY.M.D 형식으로 입력하세요."
+                    placeholder="예: 2026.10.31"
+                  />
+                </div>
+                <div class="field">
+                  <label for="interview-category"
+                    >분류 <span class="req">*</span></label
+                  >
+                  <select id="interview-category" required>
+                    <option value="" disabled selected>분류를 선택하세요</option>
+                    <option value="집중해요">집중해요</option>
+                    <option value="함께해요">함께해요</option>
+                    <option value="들어봐요">들어봐요</option>
+                    <option value="돈벌어요">돈벌어요</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="interview-title"
+                  >제목 <span class="req">*</span></label
+                >
+                <input
+                  type="text"
+                  id="interview-title"
+                  required
+                  placeholder="공지 제목"
+                />
+              </div>
+
+              <div class="field">
+                <label for="interview-url"
+                  >링크 URL <span class="req">*</span></label
+                >
+                <input
+                  type="url"
+                  id="interview-url"
+                  required
+                  placeholder="https://..."
+                />
+              </div>
+
+              <button type="submit" id="interviewSubmitBtn">
+                공지 추가
+              </button>
+              <div id="interviewFormStatus" class="status"></div>
+            </form>
+          </section>
+        </div>
       </div>
     </div>
 
@@ -951,9 +1055,11 @@
       const tabWorksBtn = document.getElementById("tabWorksBtn");
       const tabMemoryBtn = document.getElementById("tabMemoryBtn");
       const tabTVBtn = document.getElementById("tabTVBtn");
+      const tabInterviewsBtn = document.getElementById("tabInterviewsBtn");
       const panelWorks = document.getElementById("panel-works");
       const panelMemory = document.getElementById("panel-memory");
       const panelTV = document.getElementById("panel-tv");
+      const panelInterviews = document.getElementById("panel-interviews");
 
       // [작품 관리] 요소
       const workForm = document.getElementById("workForm");
@@ -995,6 +1101,20 @@
       );
       const newTVChannelBtn = document.getElementById("newTVChannelBtn");
 
+      // [공지 관리] 요소
+      const interviewForm = document.getElementById("interviewForm");
+      const interviewFormTitle = document.getElementById("interviewFormTitle");
+      const interviewFormStatus = document.getElementById(
+        "interviewFormStatus",
+      );
+      const interviewsListEl = document.getElementById("interviewsList");
+      const interviewsTitleEl = document.getElementById("interviewsTitle");
+      const interviewSubmitBtn = document.getElementById("interviewSubmitBtn");
+      const cancelInterviewEditBtn = document.getElementById(
+        "cancelInterviewEditBtn",
+      );
+      const newInterviewBtn = document.getElementById("newInterviewBtn");
+
       let allWorks = [];
       let editingId = null;
 
@@ -1003,6 +1123,9 @@
 
       let allTVChannels = [];
       let editingTVChannelId = null;
+
+      let allInterviews = [];
+      let editingInterviewId = null;
 
       // =========================================================
       // 공통 이미지 업로드 및 미리보기 핸들러
@@ -1091,17 +1214,23 @@
         const isWorks = tabName === "works";
         const isMemory = tabName === "memory";
         const isTV = tabName === "tv";
+        const isInterviews = tabName === "interviews";
         tabWorksBtn.classList.toggle("active", isWorks);
         tabMemoryBtn.classList.toggle("active", isMemory);
         tabTVBtn.classList.toggle("active", isTV);
+        tabInterviewsBtn.classList.toggle("active", isInterviews);
         panelWorks.classList.toggle("hidden", !isWorks);
         panelMemory.classList.toggle("hidden", !isMemory);
         panelTV.classList.toggle("hidden", !isTV);
+        panelInterviews.classList.toggle("hidden", !isInterviews);
       }
 
       tabWorksBtn.addEventListener("click", () => switchTab("works"));
       tabMemoryBtn.addEventListener("click", () => switchTab("memory"));
       tabTVBtn.addEventListener("click", () => switchTab("tv"));
+      tabInterviewsBtn.addEventListener("click", () =>
+        switchTab("interviews"),
+      );
 
       // 접기/펼치기 공통 유틸
       function setSectionExpanded(toggle, content, expanded, label) {
@@ -1783,7 +1912,220 @@
       });
 
       // =========================================================
-      // 4. 인증 세션 관리
+      // 4. 공지 관리
+      // =========================================================
+      function parseInterviewDate(value) {
+        const match = /^(\d{4})\.(\d{1,2})\.(\d{1,2})$/.exec(value);
+        if (!match) return Number.NaN;
+
+        const year = Number(match[1]);
+        const month = Number(match[2]);
+        const day = Number(match[3]);
+        const timestamp = Date.UTC(year, month - 1, day);
+        const parsed = new Date(timestamp);
+
+        if (
+          parsed.getUTCFullYear() !== year ||
+          parsed.getUTCMonth() !== month - 1 ||
+          parsed.getUTCDate() !== day
+        ) {
+          return Number.NaN;
+        }
+
+        return timestamp;
+      }
+
+      async function loadInterviews() {
+        const { data, error } = await sb
+          .from("notices")
+          .select("id, date, category, title, url");
+
+        if (error) {
+          interviewsListEl.innerHTML = `<div class="hint">공지 조회 오류: ${escapeHtml(error.message)}</div>`;
+          return;
+        }
+
+        allInterviews = (data || []).sort(
+          (a, b) =>
+            parseInterviewDate(b.date) - parseInterviewDate(a.date),
+        );
+        interviewsTitleEl.textContent = `공지 목록 (${allInterviews.length}개)`;
+        renderInterviews();
+      }
+
+      function renderInterviews() {
+        if (allInterviews.length === 0) {
+          interviewsListEl.innerHTML =
+            '<div class="hint">등록된 공지가 없습니다.</div>';
+          return;
+        }
+
+        interviewsListEl.innerHTML = allInterviews
+          .map((interview) => {
+            const isEditing = editingInterviewId === interview.id;
+            return `
+          <div class="work-item ${isEditing ? "editing" : ""}">
+            <div class="work-meta">
+              <span class="work-id">${escapeHtml(interview.date)}</span>
+              <span class="work-sub">${escapeHtml(interview.category)}</span>
+              <span class="work-title">${escapeHtml(interview.title)}</span>
+            </div>
+            <div class="item-actions">
+              <button type="button" class="secondary" data-interview-action="edit" data-interview-id="${escapeHtml(interview.id)}">수정</button>
+              <button type="button" class="danger" data-interview-action="delete" data-interview-id="${escapeHtml(interview.id)}">삭제</button>
+            </div>
+          </div>
+        `;
+          })
+          .join("");
+      }
+
+      function resetInterviewForm() {
+        editingInterviewId = null;
+        interviewForm.reset();
+        interviewFormTitle.textContent = "새 공지 추가";
+        interviewSubmitBtn.textContent = "공지 추가";
+        cancelInterviewEditBtn.classList.add("hidden");
+        interviewFormStatus.className = "status";
+        renderInterviews();
+      }
+
+      function startEditInterview(id) {
+        const interview = allInterviews.find((item) => item.id === id);
+        if (!interview) return;
+
+        editingInterviewId = interview.id;
+        interviewFormTitle.textContent = `공지 수정 중 (${interview.title})`;
+        interviewSubmitBtn.textContent = "수정 내용 저장하기";
+        cancelInterviewEditBtn.classList.remove("hidden");
+        interviewFormStatus.className = "status";
+        document.getElementById("interview-date").value = interview.date;
+        document.getElementById("interview-category").value =
+          interview.category;
+        document.getElementById("interview-title").value = interview.title;
+        document.getElementById("interview-url").value = interview.url;
+
+        renderInterviews();
+        interviewFormTitle.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+
+      interviewsListEl.addEventListener("click", async (event) => {
+        const button = event.target.closest(
+          "button[data-interview-action]",
+        );
+        if (!button) return;
+
+        const { interviewAction, interviewId } = button.dataset;
+        if (interviewAction === "edit") {
+          startEditInterview(interviewId);
+          return;
+        }
+        if (interviewAction !== "delete") return;
+
+        const interview = allInterviews.find(
+          (item) => item.id === interviewId,
+        );
+        const label = interview ? interview.title : interviewId;
+        if (
+          !confirm(
+            `정말 「${label}」 공지를 삭제할까요?\n삭제 후에는 복구할 수 없습니다.`,
+          )
+        ) {
+          return;
+        }
+
+        const { error } = await sb
+          .from("notices")
+          .delete()
+          .eq("id", interviewId);
+        if (error) {
+          showStatus(
+            interviewFormStatus,
+            "삭제 오류: " + error.message,
+            true,
+          );
+          return;
+        }
+
+        if (editingInterviewId === interviewId) {
+          resetInterviewForm();
+        }
+        showStatus(
+          interviewFormStatus,
+          `「${label}」 공지가 삭제되었습니다.`,
+        );
+        await loadInterviews();
+      });
+
+      newInterviewBtn.addEventListener("click", () => {
+        resetInterviewForm();
+        interviewFormTitle.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      });
+
+      cancelInterviewEditBtn.addEventListener("click", resetInterviewForm);
+
+      interviewForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const payload = {
+          date: document.getElementById("interview-date").value.trim(),
+          category: document
+            .getElementById("interview-category")
+            .value.trim(),
+          title: document.getElementById("interview-title").value.trim(),
+          url: document.getElementById("interview-url").value.trim(),
+        };
+        if (!Number.isFinite(parseInterviewDate(payload.date))) {
+          showStatus(
+            interviewFormStatus,
+            "날짜를 YYYY.M.D 형식의 유효한 날짜로 입력해 주세요.",
+            true,
+          );
+          return;
+        }
+
+        const isEditing = editingInterviewId !== null;
+        interviewSubmitBtn.disabled = true;
+        interviewSubmitBtn.textContent = isEditing
+          ? "수정 사항 저장 중..."
+          : "공지 추가 중...";
+
+        const result = isEditing
+          ? await sb
+              .from("notices")
+              .update(payload)
+              .eq("id", editingInterviewId)
+          : await sb.from("notices").insert([payload]);
+
+        interviewSubmitBtn.disabled = false;
+        if (result.error) {
+          interviewSubmitBtn.textContent = isEditing
+            ? "수정 내용 저장하기"
+            : "공지 추가";
+          showStatus(
+            interviewFormStatus,
+            `${isEditing ? "수정" : "등록"} 오류: ${result.error.message}`,
+            true,
+          );
+          return;
+        }
+
+        resetInterviewForm();
+        showStatus(
+          interviewFormStatus,
+          `「${payload.title}」 공지가 ${isEditing ? "수정" : "추가"}되었습니다.`,
+        );
+        await loadInterviews();
+      });
+
+      // =========================================================
+      // 5. 인증 세션 관리
       // =========================================================
       async function checkSession() {
         const {
@@ -1796,6 +2138,7 @@
           loadWorks();
           loadMemoryItems();
           loadTVChannels();
+          loadInterviews();
         } else {
           loginSection.classList.remove("hidden");
           adminArea.classList.add("hidden");
