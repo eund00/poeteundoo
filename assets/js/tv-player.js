@@ -6,6 +6,10 @@ let tvPlayer = null;
 let tvVolume = 50;
 let tvMuted = true;
 
+const SUPABASE_URL = "https://jxyucxgpdlfidzwizski.supabase.co";
+const SUPABASE_KEY = "sb_publishable_hhdmoi0xScMatNS8Nb9ZVA_FG-DQoG-";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 // 채널 데이터
 let tvChannels = [];
 let currentChannel = 0;
@@ -162,16 +166,27 @@ function updateChannelInfo() {
 // 채널 데이터 불러오기
 async function loadTVChannels() {
   try {
-    const response = await fetch("./data/tv-channels.json");
+    const { data, error } = await supabase
+      .from("tv_channels")
+      .select("channel, name, video_id, sort_order")
+      .order("sort_order", { ascending: true });
 
-    if (!response.ok) {
-      throw new Error(`채널 데이터 로딩 실패: ${response.status}`);
+    if (error) {
+      throw error;
     }
 
-    tvChannels = await response.json();
+    tvChannels = (data || []).map((channel) => ({
+      channel: channel.channel,
+      name: channel.name,
+      videoId: channel.video_id,
+    }));
 
     if (!Array.isArray(tvChannels) || tvChannels.length === 0) {
       throw new Error("채널 데이터가 비어 있습니다.");
+    }
+
+    if (tvChannels.some((channel) => !channel.videoId)) {
+      throw new Error("video_id가 없는 TV 채널이 있습니다.");
     }
 
     // 첫 번째 채널 설정

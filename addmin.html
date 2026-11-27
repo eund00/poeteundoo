@@ -69,6 +69,7 @@
 
       .admin-tabs {
         display: flex;
+        flex-wrap: wrap;
         gap: 8px;
         margin-bottom: 24px;
         border-bottom: 1px solid var(--border);
@@ -240,6 +241,7 @@
       input[type="text"],
       input[type="email"],
       input[type="password"],
+      input[type="number"],
       select,
       textarea {
         width: 100%;
@@ -538,6 +540,14 @@
           >
             물건기억소 (memory_items)
           </button>
+          <button
+            type="button"
+            class="tab-btn"
+            data-tab="tv"
+            id="tabTVBtn"
+          >
+            TV 채널 관리
+          </button>
         </nav>
 
         <!-- ==================== [탭 1] 작품 관리 (works) ==================== -->
@@ -824,6 +834,102 @@
             </form>
           </section>
         </div>
+
+        <!-- ==================== [탭 3] TV 채널 관리 ==================== -->
+        <div id="panel-tv" class="hidden">
+          <section class="card">
+            <div class="section-header">
+              <div class="section-title">
+                <h2 id="tvChannelsTitle">TV 채널 목록</h2>
+              </div>
+              <button type="button" id="newTVChannelBtn" class="secondary">
+                + 새 채널 추가
+              </button>
+            </div>
+            <div id="tvChannelsList" class="works-list">
+              <div class="hint">채널 목록을 불러오는 중...</div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="section-header">
+              <div class="section-title">
+                <h2 id="tvChannelFormTitle">새 TV 채널 추가</h2>
+              </div>
+              <button
+                type="button"
+                id="cancelTVChannelEditBtn"
+                class="secondary hidden"
+              >
+                수정 취소
+              </button>
+            </div>
+
+            <form id="tvChannelForm">
+              <div class="row">
+                <div class="field">
+                  <label for="tv-channel-label"
+                    >채널 표시명 <span class="req">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="tv-channel-label"
+                    required
+                    placeholder="예: CHANNEL 05"
+                  />
+                </div>
+                <div class="field">
+                  <label for="tv-channel-order"
+                    >재생 순서 <span class="req">*</span></label
+                  >
+                  <input
+                    type="number"
+                    id="tv-channel-order"
+                    min="1"
+                    step="1"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="tv-channel-name"
+                  >채널 이름 <span class="req">*</span></label
+                >
+                <input
+                  type="text"
+                  id="tv-channel-name"
+                  required
+                  placeholder="사이트에 표시할 채널 이름"
+                />
+              </div>
+
+              <div class="field">
+                <label for="tv-channel-video-id"
+                  >YouTube 동영상 ID <span class="req">*</span></label
+                >
+                <input
+                  type="text"
+                  id="tv-channel-video-id"
+                  required
+                  minlength="11"
+                  maxlength="11"
+                  pattern="[A-Za-z0-9_-]{11}"
+                  title="YouTube 주소의 동영상 ID 11자를 입력하세요."
+                  placeholder="예: _oiiz7-0M4E"
+                />
+                <div class="hint">
+                  YouTube 주소 전체가 아니라 동영상 ID만 입력하세요.
+                </div>
+              </div>
+
+              <button type="submit" id="tvChannelSubmitBtn">
+                채널 추가
+              </button>
+              <div id="tvChannelFormStatus" class="status"></div>
+            </form>
+          </section>
+        </div>
       </div>
     </div>
 
@@ -844,8 +950,10 @@
       // 탭 전환 요소
       const tabWorksBtn = document.getElementById("tabWorksBtn");
       const tabMemoryBtn = document.getElementById("tabMemoryBtn");
+      const tabTVBtn = document.getElementById("tabTVBtn");
       const panelWorks = document.getElementById("panel-works");
       const panelMemory = document.getElementById("panel-memory");
+      const panelTV = document.getElementById("panel-tv");
 
       // [작품 관리] 요소
       const workForm = document.getElementById("workForm");
@@ -873,11 +981,28 @@
       const newMemModeBtn = document.getElementById("newMemModeBtn");
       const memSubmitBtn = document.getElementById("memSubmitBtn");
 
+      // [TV 채널 관리] 요소
+      const tvChannelForm = document.getElementById("tvChannelForm");
+      const tvChannelFormTitle = document.getElementById("tvChannelFormTitle");
+      const tvChannelFormStatus = document.getElementById(
+        "tvChannelFormStatus",
+      );
+      const tvChannelsListEl = document.getElementById("tvChannelsList");
+      const tvChannelsTitleEl = document.getElementById("tvChannelsTitle");
+      const tvChannelSubmitBtn = document.getElementById("tvChannelSubmitBtn");
+      const cancelTVChannelEditBtn = document.getElementById(
+        "cancelTVChannelEditBtn",
+      );
+      const newTVChannelBtn = document.getElementById("newTVChannelBtn");
+
       let allWorks = [];
       let editingId = null;
 
       let allMemoryItems = [];
       let editingMemId = null;
+
+      let allTVChannels = [];
+      let editingTVChannelId = null;
 
       // =========================================================
       // 공통 이미지 업로드 및 미리보기 핸들러
@@ -964,14 +1089,19 @@
       // 탭 전환 로직
       function switchTab(tabName) {
         const isWorks = tabName === "works";
+        const isMemory = tabName === "memory";
+        const isTV = tabName === "tv";
         tabWorksBtn.classList.toggle("active", isWorks);
-        tabMemoryBtn.classList.toggle("active", !isWorks);
+        tabMemoryBtn.classList.toggle("active", isMemory);
+        tabTVBtn.classList.toggle("active", isTV);
         panelWorks.classList.toggle("hidden", !isWorks);
-        panelMemory.classList.toggle("hidden", isWorks);
+        panelMemory.classList.toggle("hidden", !isMemory);
+        panelTV.classList.toggle("hidden", !isTV);
       }
 
       tabWorksBtn.addEventListener("click", () => switchTab("works"));
       tabMemoryBtn.addEventListener("click", () => switchTab("memory"));
+      tabTVBtn.addEventListener("click", () => switchTab("tv"));
 
       // 접기/펼치기 공통 유틸
       function setSectionExpanded(toggle, content, expanded, label) {
@@ -1464,7 +1594,196 @@
       });
 
       // =========================================================
-      // 3. 인증 세션 관리
+      // 3. TV 채널 관리
+      // =========================================================
+      async function loadTVChannels() {
+        const { data, error } = await sb
+          .from("tv_channels")
+          .select("id, channel, name, video_id, sort_order")
+          .order("sort_order", { ascending: true });
+
+        if (error) {
+          tvChannelsListEl.innerHTML = `<div class="hint">TV 채널 조회 오류: ${escapeHtml(error.message)}</div>`;
+          return;
+        }
+
+        allTVChannels = data || [];
+        tvChannelsTitleEl.textContent = `TV 채널 목록 (${allTVChannels.length}개)`;
+        renderTVChannels();
+
+        if (editingTVChannelId === null) {
+          suggestNextTVChannelOrder();
+        }
+      }
+
+      function renderTVChannels() {
+        if (allTVChannels.length === 0) {
+          tvChannelsListEl.innerHTML =
+            '<div class="hint">등록된 TV 채널이 없습니다.</div>';
+          return;
+        }
+
+        tvChannelsListEl.innerHTML = allTVChannels
+          .map((channel) => {
+            const isEditing = editingTVChannelId === channel.id;
+            return `
+          <div class="work-item ${isEditing ? "editing" : ""}">
+            <div class="work-meta">
+              <span class="work-id">#${escapeHtml(channel.sort_order)}</span>
+              <span class="work-title">${escapeHtml(channel.channel)} · ${escapeHtml(channel.name)}</span>
+              <span class="work-sub">${escapeHtml(channel.video_id)}</span>
+            </div>
+            <div class="item-actions">
+              <button type="button" class="secondary" data-tv-action="edit" data-tv-id="${escapeHtml(channel.id)}">수정</button>
+              <button type="button" class="danger" data-tv-action="delete" data-tv-id="${escapeHtml(channel.id)}">삭제</button>
+            </div>
+          </div>
+        `;
+          })
+          .join("");
+      }
+
+      function suggestNextTVChannelOrder() {
+        const nextOrder =
+          allTVChannels.reduce(
+            (max, channel) => Math.max(max, Number(channel.sort_order) || 0),
+            0,
+          ) + 1;
+        document.getElementById("tv-channel-order").value = nextOrder;
+      }
+
+      function resetTVChannelForm() {
+        editingTVChannelId = null;
+        tvChannelForm.reset();
+        tvChannelFormTitle.textContent = "새 TV 채널 추가";
+        tvChannelSubmitBtn.textContent = "채널 추가";
+        cancelTVChannelEditBtn.classList.add("hidden");
+        tvChannelFormStatus.className = "status";
+        suggestNextTVChannelOrder();
+        renderTVChannels();
+      }
+
+      function startEditTVChannel(id) {
+        const channel = allTVChannels.find((item) => item.id === id);
+        if (!channel) return;
+
+        editingTVChannelId = channel.id;
+        tvChannelFormTitle.textContent = `TV 채널 수정 중 (${channel.channel})`;
+        tvChannelSubmitBtn.textContent = "수정 내용 저장하기";
+        cancelTVChannelEditBtn.classList.remove("hidden");
+        tvChannelFormStatus.className = "status";
+        document.getElementById("tv-channel-label").value = channel.channel;
+        document.getElementById("tv-channel-name").value = channel.name;
+        document.getElementById("tv-channel-video-id").value =
+          channel.video_id;
+        document.getElementById("tv-channel-order").value =
+          channel.sort_order;
+
+        renderTVChannels();
+        tvChannelFormTitle.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+
+      tvChannelsListEl.addEventListener("click", async (event) => {
+        const button = event.target.closest("button[data-tv-action]");
+        if (!button) return;
+
+        const { tvAction, tvId } = button.dataset;
+        if (tvAction === "edit") {
+          startEditTVChannel(tvId);
+          return;
+        }
+
+        const channel = allTVChannels.find((item) => item.id === tvId);
+        const label = channel
+          ? `${channel.channel} · ${channel.name}`
+          : tvId;
+        if (
+          !confirm(
+            `정말 「${label}」 채널을 삭제할까요?\n삭제 후에는 복구할 수 없습니다.`,
+          )
+        ) {
+          return;
+        }
+
+        const { error } = await sb
+          .from("tv_channels")
+          .delete()
+          .eq("id", tvId);
+        if (error) {
+          showStatus(tvChannelFormStatus, "삭제 오류: " + error.message, true);
+          return;
+        }
+
+        if (editingTVChannelId === tvId) {
+          resetTVChannelForm();
+        }
+        showStatus(tvChannelFormStatus, `「${label}」 채널이 삭제되었습니다.`);
+        await loadTVChannels();
+      });
+
+      newTVChannelBtn.addEventListener("click", () => {
+        resetTVChannelForm();
+        tvChannelFormTitle.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      });
+
+      cancelTVChannelEditBtn.addEventListener("click", resetTVChannelForm);
+
+      tvChannelForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        tvChannelSubmitBtn.disabled = true;
+
+        const payload = {
+          channel: document.getElementById("tv-channel-label").value.trim(),
+          name: document.getElementById("tv-channel-name").value.trim(),
+          video_id: document
+            .getElementById("tv-channel-video-id")
+            .value.trim(),
+          sort_order: Number(
+            document.getElementById("tv-channel-order").value,
+          ),
+        };
+        const isEditing = editingTVChannelId !== null;
+
+        tvChannelSubmitBtn.textContent = isEditing
+          ? "수정 사항 저장 중..."
+          : "채널 추가 중...";
+
+        const result = isEditing
+          ? await sb
+              .from("tv_channels")
+              .update(payload)
+              .eq("id", editingTVChannelId)
+          : await sb.from("tv_channels").insert([payload]);
+
+        tvChannelSubmitBtn.disabled = false;
+        if (result.error) {
+          tvChannelSubmitBtn.textContent = isEditing
+            ? "수정 내용 저장하기"
+            : "채널 추가";
+          showStatus(
+            tvChannelFormStatus,
+            `${isEditing ? "수정" : "등록"} 오류: ${result.error.message}`,
+            true,
+          );
+          return;
+        }
+
+        resetTVChannelForm();
+        showStatus(
+          tvChannelFormStatus,
+          `「${payload.channel}」 채널이 ${isEditing ? "수정" : "추가"}되었습니다.`,
+        );
+        await loadTVChannels();
+      });
+
+      // =========================================================
+      // 4. 인증 세션 관리
       // =========================================================
       async function checkSession() {
         const {
@@ -1476,6 +1795,7 @@
           logoutBtn.classList.remove("hidden");
           loadWorks();
           loadMemoryItems();
+          loadTVChannels();
         } else {
           loginSection.classList.remove("hidden");
           adminArea.classList.add("hidden");
