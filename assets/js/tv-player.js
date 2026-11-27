@@ -162,7 +162,7 @@ function updateChannelInfo() {
 // 채널 데이터 불러오기
 async function loadTVChannels() {
   try {
-    const response = await fetch("./tv-channels.json");
+    const response = await fetch("./data/tv-channels.json");
 
     if (!response.ok) {
       throw new Error(`채널 데이터 로딩 실패: ${response.status}`);

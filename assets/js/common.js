@@ -36,7 +36,7 @@ async function loadSharedHeader() {
     return;
   }
 
-  const partialUrl = new URL("header.html", commonScriptUrl);
+  const partialUrl = new URL("../../components/header.html", commonScriptUrl);
   const response = await fetch(partialUrl);
 
   if (!response.ok) {
@@ -63,7 +63,7 @@ async function loadSharedSidebar() {
     return;
   }
 
-  const partialUrl = new URL("sidebar.html", commonScriptUrl);
+  const partialUrl = new URL("../../components/sidebar.html", commonScriptUrl);
   const response = await fetch(partialUrl);
 
   if (!response.ok) {
