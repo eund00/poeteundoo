@@ -239,7 +239,7 @@
 .hero__link {
   display: inline-block;
   margin-top: 10px;
-  padding: 5px 10px 6px;
+  padding: 4px 10px;
 
   border-bottom: 1px solid #111;
   background-color: #333;
@@ -251,10 +251,6 @@
   transition:
     padding 0.25s ease,
     opacity 0.25s ease;
-}
-
-.hero__link:hover {
-  padding-right: 15px;
 }
 
 /* ========================================
