@@ -80,10 +80,10 @@ button {
   letter-spacing: -0.02em;
 }
 
-/* PC 메뉴 */
+/* 메뉴는 햄버거 사이드바로 통일 */
 
 .gnb {
-  display: block;
+  display: none;
 }
 
 .gnb__list {
@@ -604,7 +604,7 @@ main {
 ================================================== */
 
 .menu-toggle {
-  display: none;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 6px;
@@ -645,18 +645,6 @@ main {
 
   .interview {
     margin-top: 50px !important;
-  }
-
-  /* PC 메뉴 숨기기 */
-
-  .gnb {
-    display: none;
-  }
-
-  /* 햄버거 버튼 보이기 */
-
-  .menu-toggle {
-    display: flex;
   }
 }
 
