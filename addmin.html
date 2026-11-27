@@ -93,6 +93,25 @@
         font-weight: 400;
       }
 
+      .section-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      button.section-toggle {
+        width: auto;
+        padding: 2px 4px;
+        background: none;
+        color: var(--muted);
+        font-size: 1.5rem;
+        line-height: 1;
+      }
+
+      button.section-toggle:hover {
+        color: var(--ink);
+      }
+
       .works-list {
         max-height: 360px;
         overflow-y: auto;
@@ -111,7 +130,9 @@
         border: 1px solid var(--border);
         padding: 10px 12px;
         font-size: 0.92rem;
-        transition: background-color 0.2s ease, border-color 0.2s ease;
+        transition:
+          background-color 0.2s ease,
+          border-color 0.2s ease;
       }
 
       .work-item.editing {
@@ -201,7 +222,9 @@
         font-size: 0.95rem;
         font-family: inherit;
         line-height: inherit;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        transition:
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
       }
 
       input::placeholder,
@@ -255,14 +278,11 @@
         font-family: inherit;
         font-weight: 600;
         cursor: pointer;
-        transition: background-color 0.2s ease, border-color 0.2s ease,
+        transition:
+          background-color 0.2s ease,
+          border-color 0.2s ease,
           color 0.2s ease;
         width: 100%;
-      }
-
-      button:not(.secondary):not(.danger):hover {
-        background: var(--accent-dark);
-        color: #fff;
       }
 
       button:focus-visible {
@@ -292,13 +312,13 @@
       }
 
       button.danger {
-        background: var(--surface);
-        color: var(--danger);
         border: 1px solid #d9b8b3;
         padding: 7px 11px;
         font-size: 0.84rem;
         font-weight: 400;
         width: auto;
+        background-color: var(--danger);
+        color: #fff;
       }
 
       button.danger:hover {
@@ -410,7 +430,19 @@
         <!-- 2. 기존 작품 목록 (수정 / 삭제) -->
         <section class="card">
           <div class="section-header">
-            <h2 id="listTitle">등록된 작품 목록</h2>
+            <div class="section-title">
+              <button
+                type="button"
+                id="worksListToggle"
+                class="section-toggle"
+                aria-expanded="true"
+                aria-controls="worksList"
+                aria-label="등록된 작품 목록 접기"
+              >
+                🔼
+              </button>
+              <h2 id="listTitle">등록된 작품 목록</h2>
+            </div>
             <button type="button" id="newModeBtn" class="secondary">
               + 새 작품 작성 모드
             </button>
@@ -423,7 +455,19 @@
         <!-- 3. 작품 등록 및 수정 폼 -->
         <section class="card">
           <div class="section-header">
-            <h2 id="formModeTitle">새 작품 등록</h2>
+            <div class="section-title">
+              <button
+                type="button"
+                id="workFormToggle"
+                class="section-toggle"
+                aria-expanded="true"
+                aria-controls="workForm"
+                aria-label="작품 등록 폼 접기"
+              >
+                🔼
+              </button>
+              <h2 id="formModeTitle">새 작품 등록</h2>
+            </div>
             <button type="button" id="cancelEditBtn" class="secondary hidden">
               수정 취소
             </button>
@@ -537,7 +581,10 @@
       const formStatus = document.getElementById("formStatus");
       const worksListEl = document.getElementById("worksList");
       const listTitleEl = document.getElementById("listTitle");
+      const worksListToggle = document.getElementById("worksListToggle");
+      const workFormToggle = document.getElementById("workFormToggle");
       const formModeTitle = document.getElementById("formModeTitle");
+      const workFormEl = document.getElementById("workForm");
       const cancelEditBtn = document.getElementById("cancelEditBtn");
       const newModeBtn = document.getElementById("newModeBtn");
       const submitBtn = document.getElementById("submitBtn");
@@ -546,6 +593,38 @@
 
       let allWorks = [];
       let editingId = null; // null이면 새 글 등록 모드, 문자열이면 해당 ID 수정 모드
+
+      function setSectionExpanded(toggle, content, expanded, label) {
+        content.classList.toggle("hidden", !expanded);
+        toggle.setAttribute("aria-expanded", String(expanded));
+        toggle.setAttribute(
+          "aria-label",
+          `${label} ${expanded ? "접기" : "펼치기"}`,
+        );
+        toggle.textContent = expanded ? "🔼" : "🔽";
+      }
+
+      worksListToggle.addEventListener("click", () => {
+        const expanded =
+          worksListToggle.getAttribute("aria-expanded") !== "true";
+        setSectionExpanded(
+          worksListToggle,
+          worksListEl,
+          expanded,
+          "등록된 작품 목록",
+        );
+      });
+
+      workFormToggle.addEventListener("click", () => {
+        const expanded =
+          workFormToggle.getAttribute("aria-expanded") !== "true";
+        setSectionExpanded(
+          workFormToggle,
+          workFormEl,
+          expanded,
+          "작품 등록 폼",
+        );
+      });
 
       document.getElementById("work-year").value = new Date()
         .getFullYear()
@@ -669,6 +748,7 @@
           target.is_published !== false;
 
         renderWorksList();
+        setSectionExpanded(workFormToggle, workFormEl, true, "작품 등록 폼");
         formModeTitle.scrollIntoView({ behavior: "smooth", block: "start" });
       };
 
@@ -699,6 +779,7 @@
       newModeBtn.addEventListener("click", () => {
         formStatus.className = "status";
         resetToCreateMode();
+        setSectionExpanded(workFormToggle, workFormEl, true, "작품 등록 폼");
         formModeTitle.scrollIntoView({ behavior: "smooth", block: "start" });
       });
 
