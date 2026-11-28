@@ -695,7 +695,12 @@ main {
   flex-direction: column;
   width: min(380px, 85%);
   height: calc(100vh - 70px);
-  padding: 30px;
+  height: calc(100dvh - 70px);
+  max-height: calc(100dvh - 70px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 30px 30px calc(30px + env(safe-area-inset-bottom, 0px));
   border-left: 1px solid #111;
   background: #f7f6f2;
   transform: translateX(100%);
